@@ -1,6 +1,5 @@
 package sg.com.singhealth.wayfinder;
 
-
 import android.app.Activity;
 import android.content.Context;
 import android.net.Uri;
@@ -107,7 +106,6 @@ public class MainActivity extends AppCompatActivity
         if (id == R.id.action_settings) {
             return true;
         }
-
         return super.onOptionsItemSelected(item);
     }
 
@@ -156,9 +154,15 @@ public class MainActivity extends AppCompatActivity
         super.onDestroy();
     }
 
+    //---- Hide Keyboard Method ----
     public void hideKeyboard(View view) {
             InputMethodManager inputMethodManager = (InputMethodManager) getSystemService(Activity.INPUT_METHOD_SERVICE);
             inputMethodManager.hideSoftInputFromWindow(view.getWindowToken(), 0);
+    }
+
+    //---- Set Action Bar Title ----
+    public void setActionBarTitle(String title) {
+        getSupportActionBar().setTitle(title);
     }
 }
 

@@ -8,6 +8,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import sg.com.singhealth.wayfinder.MainActivity;
 import sg.com.singhealth.wayfinder.R;
 
 /**
@@ -64,6 +65,7 @@ public class MainFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+        ((MainActivity) getActivity()).setActionBarTitle("WFTester");
         // Inflate the layout for this fragment
         return inflater.inflate(R.layout.fragment_main, container, false);
     }

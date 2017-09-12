@@ -11,6 +11,7 @@ import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 
+import sg.com.singhealth.wayfinder.MainActivity;
 import sg.com.singhealth.wayfinder.R;
 
 /**
@@ -32,6 +33,8 @@ public class LearnFragment extends Fragment {
     private String mParam2;
 
     private OnFragmentInteractionListener mListener;
+
+    String a;
 
     public LearnFragment() {
         // Required empty public constructor
@@ -67,8 +70,10 @@ public class LearnFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+        ((MainActivity) getActivity()).setActionBarTitle("Learn");
         // Inflate the layout for this fragment
         return inflater.inflate(R.layout.fragment_learn, container, false);
+
     }
 
     // TODO: Rename method, update argument and hook method into UI event
