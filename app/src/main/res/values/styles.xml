@@ -2,6 +2,7 @@
 <!--
 *File Name: styles.xml
 *Created By: AY17 P3 FYPJ NYP SIT
+*Description: -
 -->
     <!-- Base application theme. -->
     <style name="AppTheme" parent="Theme.AppCompat.Light.DarkActionBar">

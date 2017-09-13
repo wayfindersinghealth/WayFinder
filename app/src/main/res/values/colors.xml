@@ -2,6 +2,7 @@
 <!--
 *File Name: colors.xml
 *Created By: AY17 P3 FYPJ NYP SIT
+*Description: -
 -->
 <resources>
     <color name="colorPrimary">#ed9107</color>

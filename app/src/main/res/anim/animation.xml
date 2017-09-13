@@ -2,6 +2,7 @@
 <!--
 *File Name: animation.xml
 *Created By: AY17 P3 FYPJ NYP SIT
+*Description: -
 -->
 <alpha xmlns:android="http://schemas.android.com/apk/res/android"
     android:fromAlpha="0.0"

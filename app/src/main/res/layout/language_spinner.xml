@@ -2,6 +2,7 @@
 <!--
 *File Name: language_spinner.xml
 *Created By: AY17 P3 FYPJ NYP SIT
+*Description: -
 -->
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="vertical"
