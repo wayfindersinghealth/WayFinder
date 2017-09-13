@@ -12,6 +12,7 @@ https://guides.github.com/activities/hello-world/
 
 -Android Application
 Android Basics: User Interface
+
 https://www.udacity.com/course/android-basics-user-interface--ud834
 Android Vocabulary Glossary
 https://developers.google.com/android/for-all/vocab-words/?hl=en
