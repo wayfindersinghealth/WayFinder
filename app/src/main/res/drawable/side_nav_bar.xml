@@ -1,5 +1,9 @@
 <shape xmlns:android="http://schemas.android.com/apk/res/android"
     android:shape="rectangle">
+<!--
+*File Name: side_nav_bar.xml
+*Created By: AY17 P3 FYPJ NYP SIT
+-->
     <gradient
         android:angle="135"
         android:centerColor="#d6aa51"

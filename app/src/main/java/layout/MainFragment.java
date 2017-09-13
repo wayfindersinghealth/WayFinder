@@ -13,6 +13,12 @@ import sg.com.singhealth.wayfinder.MainActivity;
 import sg.com.singhealth.wayfinder.R;
 
 /**
+ * File Name: MainFragment.java
+ * Created By: AY17 P3 FYPJ NYP SIT
+ * Description: -
+ */
+
+/**
  * A simple {@link Fragment} subclass.
  * Activities that contain this fragment must implement the
  * {@link MainFragment.OnFragmentInteractionListener} interface

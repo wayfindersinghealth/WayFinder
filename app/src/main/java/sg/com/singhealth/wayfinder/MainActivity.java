@@ -27,6 +27,12 @@ import android.widget.Toast;
 import layout.LearnFragment;
 import layout.MainFragment;
 
+/**
+ * File Name: MainActivity.java
+ * Created By: AY17 P3 FYPJ NYP SIT
+ * Description: -
+ */
+
 //Add [_Fragment.OnFragmentInteractionListener] if applicable
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener, MainFragment.OnFragmentInteractionListener, LearnFragment.OnFragmentInteractionListener {
@@ -108,7 +114,7 @@ public class MainActivity extends AppCompatActivity
         int id = item.getItemId();
 
         //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
+        if (id == R.id.action_refresh) {
             return true;
         }
         return super.onOptionsItemSelected(item);
@@ -122,8 +128,7 @@ public class MainActivity extends AppCompatActivity
 
         if (id == R.id.nav_learn) {
             navigationLearn();
-        }
-        else if (id == R.id.nav_preferences) {
+        } else if (id == R.id.nav_preferences) {
             navigationLanguagePreference();
         }
         /*
@@ -207,7 +212,7 @@ public class MainActivity extends AppCompatActivity
             @Override
             public void onClick(DialogInterface dialogInterface, int i) {
                 if (!mSpinner.getSelectedItem().toString().equalsIgnoreCase("Select Your Preferred Language")) {
-                    Toast.makeText(MainActivity.this, mSpinner.getSelectedItem().toString(), Toast.LENGTH_SHORT).show();
+                    Toast.makeText(MainActivity.this, "Changing....", Toast.LENGTH_SHORT).show();
                     dialogInterface.dismiss();
                 }
             }

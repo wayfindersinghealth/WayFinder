@@ -1,4 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
+<!--
+*File Name: language_spinner.xml
+*Created By: AY17 P3 FYPJ NYP SIT
+-->
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="vertical"
     android:layout_width="match_parent"
@@ -9,4 +13,5 @@
         android:id="@+id/spinnerLanguage"
         android:layout_width="match_parent"
         android:layout_height="wrap_content" />
+
 </LinearLayout>

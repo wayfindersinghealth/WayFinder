@@ -6,6 +6,7 @@ import android.net.Uri;
 import android.net.wifi.ScanResult;
 import android.net.wifi.WifiInfo;
 import android.net.wifi.WifiManager;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.util.Log;
@@ -13,8 +14,10 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -22,15 +25,28 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
+import javax.net.ssl.HttpsURLConnection;
+
 import sg.com.singhealth.wayfinder.MainActivity;
 import sg.com.singhealth.wayfinder.R;
+
+/**
+ * File Name: LearnFragment.java
+ * Created By: AY17 P3 FYPJ NYP SIT
+ * Description: -
+ */
 
 /**
  * A simple {@link Fragment} subclass.
@@ -55,6 +71,7 @@ public class LearnFragment extends Fragment {
     WifiManager wmgr;
     EditText editTextLearn;
     Button buttonLearn;
+    ListView listViewLearn;
     String location;
 
     public LearnFragment() {
@@ -91,11 +108,14 @@ public class LearnFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        ///-- Change Action Bar Title --
+        //-- Change Action Bar Title --
         ((MainActivity) getActivity()).setActionBarTitle("Learn");
 
         //-- View --
         View rootView = inflater.inflate(R.layout.fragment_learn, container, false);
+
+        //-- JSON --
+        new JSONtask().execute("https://ml.internalpositioning.com/locations?group=wayFindp3");
 
         //-- WifiManager --
         wmgr = (WifiManager) getActivity().getApplicationContext().getSystemService(Context.WIFI_SERVICE);
@@ -112,16 +132,19 @@ public class LearnFragment extends Fragment {
                     WifiInfo wifiInfo = wmgr.getConnectionInfo();
                     if(wifiInfo.getSupplicantState().toString().equals("COMPLETED")) {
                         if(!editTextLearn.getText().toString().matches("")) {
-                            insertToPost();
-                        }else{
+                          //  insertToPost();
+                        } else{
                             Toast.makeText(getActivity(), "Please Input Your Current Location." , Toast.LENGTH_SHORT).show();
                         }
                     }
-                }else{
+                } else{
                     Toast.makeText(getActivity(), "Please Turn On Your WIFI Connection." , Toast.LENGTH_SHORT).show();
                 }
             }
         });
+
+        //-- ListView Learn --
+        listViewLearn = (ListView)rootView.findViewById(R.id.listViewLearn);
 
         return rootView;
     }
@@ -167,14 +190,11 @@ public class LearnFragment extends Fragment {
 
     //-------- START OF METHODS --------
 
-
     //---- Format Data As JSON Method ----
     private String formatDataAsJSON() {
         JSONObject root = new JSONObject();
         JSONArray wifiFingerprint = new JSONArray();
         JSONObject fingerprint = new JSONObject();
-
-
 
         List<ScanResult> results = wmgr.getScanResults();
         String timeStamp = TimeUnit.MILLISECONDS.toSeconds(System.currentTimeMillis()) + "";
@@ -225,4 +245,72 @@ public class LearnFragment extends Fragment {
     }
 
     //-------- END OF METHODS --------
+
+    //-------- START OF CLASS --------
+    public class JSONtask extends AsyncTask<String, String, String > {
+        ArrayList<String> aList = new ArrayList<String>();
+
+        @Override
+        protected String doInBackground(String... params) {
+            HttpsURLConnection connection = null;
+            BufferedReader reader = null;
+
+            try{
+                URL link = new URL(params[0]);
+                connection = (HttpsURLConnection) link.openConnection();
+                connection.connect();
+
+                InputStream stream = connection.getInputStream();
+                reader =  new BufferedReader(new InputStreamReader(stream));
+
+                StringBuffer sBuffer = new StringBuffer();
+                String line = "";
+
+                while((line = reader.readLine()) != null){
+                    sBuffer.append(line);
+                }
+                String finalJson = sBuffer.toString();
+                JSONObject parentObject = new JSONObject(finalJson);
+                JSONObject parentArray = parentObject.getJSONObject("locations");
+
+                Iterator<String> iterator = parentArray.keys();
+                while(iterator.hasNext()){
+                    aList.add(iterator.next());
+                }
+
+                return aList.toString();
+
+            } catch (MalformedURLException e) {
+                e.printStackTrace();
+            } catch (IOException e) {
+                e.printStackTrace();
+            } catch (JSONException e) {
+                e.printStackTrace();
+            } finally {
+                if(connection != null) {
+                    connection.disconnect();
+                }
+                try {
+                    if(reader != null) {
+                        reader.close();
+                    }
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(String result){
+            super.onPostExecute(result);
+            ArrayAdapter<String> arrayAdapter = new ArrayAdapter<String>(
+                    getActivity(),
+                    android.R.layout.simple_list_item_1,
+                    aList );
+            listViewLearn.setAdapter(arrayAdapter);
+        }
+    }
+    //-------- END OF CLASS --------
 }

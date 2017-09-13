@@ -10,6 +10,12 @@ import org.junit.runner.RunWith;
 import static org.junit.Assert.*;
 
 /**
+ * File Name: ExampleInstrumentedTest.java
+ * Created By: AY17 P3 FYPJ NYP SIT
+ * Description: -
+ */
+
+/**
  * Instrumentation test, which will execute on an Android device.
  *
  * @see <a href="http://d.android.com/tools/testing">Testing documentation</a>

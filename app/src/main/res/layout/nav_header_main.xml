@@ -1,4 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
+<!--
+*File Name: nav_header_main.xml
+*Created By: AY17 P3 FYPJ NYP SIT
+-->
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
@@ -22,16 +26,17 @@
         android:layout_weight="0.94" />
 
     <TextView
+        android:id="@+id/textViewTitleWayFinder"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:paddingTop="@dimen/nav_header_vertical_spacing"
-        android:text="Health Buddy Way Finder"
+        android:text="@string/textViewTitleWayFinder"
         android:textAppearance="@style/TextAppearance.AppCompat.Body1" />
 
     <TextView
-        android:id="@+id/textView"
+        android:id="@+id/textViewAboutTitle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Find your way through Woodlands Integrated Health Campus with Ease." />
+        android:text="@string/textViewAboutTitleWayFinder" />
 
 </LinearLayout>

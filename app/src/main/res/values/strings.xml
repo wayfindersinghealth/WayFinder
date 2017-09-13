@@ -1,30 +1,48 @@
 <resources>
+<!--
+*File Name: strings.xml
+*Created By: AY17 P3 FYPJ NYP SIT
+-->
+    <!-- Set Application Name in manifests > AndroidManifest.xml-->
     <string name="app_name">WFTester</string>
 
+    <!-- Set ActionBarToggle in java > sg.com.singhealth.wayfinder > MainActivity -->
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
 
-    <string name="action_settings">Settings</string>
+    <!-- Controls in layout > nav_header_main.xml Layout -->
+    <string name="textViewTitleWayFinder">Health Buddy Way Finder</string>
+    <string name="textViewAboutTitleWayFinder">Find your way through Woodlands Integrated Health Campus with Ease.</string>
 
-    <!-- Controls in fragment_learn Page-->
+    <!-- Controls in layout > fragment_learn.xml Page -->
     <string name="textViewInput">Please Input Your Current Location.</string>
     <string name="editTextLearn">L311</string>
     <string name="buttonLearn">LEARN</string>
     <string name="textViewDetails">Press To View The Details About The Location.</string>
 
-    <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
-
-    <!-- TODO: Language Preferences -->
+    <!-- Controls in layout > language_spinner.xml Control -->
     <string name="show_language_preferences">Show Languge Preferences</string>
-
     <string-array name="languageList">
         <item>Language</item>
         <item>English</item>
         <item>Mandarin</item>
     </string-array>
 
+    <!-- Controls in layout > splash_screen.xml Layout -->
+    <string name="textViewLoading">WAYFINDER</string>
 
+    <!-- Controls in menu > activity_main_drawer.xml Layout -->
+    <string name="navHome">Home</string>
+    <string name="navLearn">Learn</string>
+    <string name="navFindYourWay">Find Your Way</string>
+    <string name="navHelp">Help</string>
+    <string name="navPreference">Language Preference</string>
+    <string name="navAboutWayFinder">About Way Finder</string>
 
+    <!-- Controls in menu > main.xml Control-->
+    <string name="action_refresh">Refresh</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
 
 </resources>

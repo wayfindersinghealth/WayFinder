@@ -1,4 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
+<!--
+*File Name: activity_main_drawer.xml
+*Created By: AY17 P3 FYPJ NYP SIT
+-->
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
 
     <group
@@ -7,7 +11,7 @@
         <item
             android:id="@+id/nav_home"
             android:icon="@drawable/ic_menu_home"
-            android:title="Home" />
+            android:title="@string/navHome" />
     </group>
 
     <group
@@ -16,17 +20,17 @@
         <item
             android:id="@+id/nav_learn"
             android:icon="@drawable/ic_menu_configure"
-            android:title="Learn" />
+            android:title="@string/navLearn" />
 
         <item
             android:id="@+id/nav_findYourWay"
             android:icon="@drawable/ic_menu_direction"
-            android:title="Find Your Way"/>
+            android:title="@string/navFindYourWay"/>
 
         <item
             android:id="@+id/nav_help"
             android:icon="@drawable/ic_menu_help"
-            android:title="Help" />
+            android:title="@string/navHelp" />
     </group>
 
     <group
@@ -34,10 +38,10 @@
         android:checkableBehavior="none">
         <item
             android:id="@+id/nav_preferences"
-            android:title="Language Preference" />
+            android:title="@string/navPreference" />
         <item
             android:id="@+id/nav_aboutWayFinder"
-            android:title="About Way Finder" />
+            android:title="@string/navAboutWayFinder" />
     </group>
 
 </menu>

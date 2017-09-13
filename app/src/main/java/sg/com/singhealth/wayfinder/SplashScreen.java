@@ -12,7 +12,9 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 /**
- * SplashScreen.java
+ * File Name: SplashScreen.java
+ * Created By: AY17 P3 FYPJ NYP SIT
+ * Description: -
  */
 
 public class SplashScreen extends Activity {
