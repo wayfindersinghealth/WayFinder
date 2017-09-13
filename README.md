@@ -66,6 +66,10 @@ https://www.getpostman.com/
 Params > Header > Accept Coding  - Identity (To make sure its not in other language)
 
 == Notes ==
+-Json
+-Wifi use SSID to filter the "extra" E.g. STAFF, NYP-Account, NYP-SponsoredUser
+-ml.internalpositioning.com / ml2.internalpositioning.com server
+-Use open source server
 
 == Notes ==
 -Json
