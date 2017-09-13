@@ -20,6 +20,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.ArrayAdapter;
+import android.widget.ImageButton;
 import android.widget.Spinner;
 import android.widget.Toast;
 
@@ -34,6 +35,8 @@ public class MainActivity extends AppCompatActivity
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        //-------- DO NOT TOUCH START --------
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
@@ -47,20 +50,14 @@ public class MainActivity extends AppCompatActivity
 
             @Override
             public void onDrawerClosed(View drawerView) {
-                // Code here will be triggered once the drawer closes as we dont want anything to happen so we leave this blank
                 super.onDrawerClosed(drawerView);
-                InputMethodManager inputMethodManager = (InputMethodManager)
-                        getSystemService(Context.INPUT_METHOD_SERVICE);
-                inputMethodManager.hideSoftInputFromWindow(getCurrentFocus().getWindowToken(), 0);
+                    hideKeyboard(drawerView);
             }
 
             @Override
             public void onDrawerOpened(View drawerView) {
-                // Code here will be triggered once the drawer open as we dont want anything to happen so we leave this blank
                 super.onDrawerOpened(drawerView);
-                InputMethodManager inputMethodManager = (InputMethodManager)
-                        getSystemService(Context.INPUT_METHOD_SERVICE);
-                inputMethodManager.hideSoftInputFromWindow(getCurrentFocus().getWindowToken(), 0);
+                hideKeyboard(drawerView);
             }
         };
 
@@ -81,6 +78,9 @@ public class MainActivity extends AppCompatActivity
         Fragment fragment = new MainFragment();
         FragmentManager fragmentManager = getSupportFragmentManager();
         fragmentManager.beginTransaction().replace(R.id.content, fragment).commit();
+
+        //-------- DO NOT TOUCH END --------
+
     }
 
     @Override
@@ -120,15 +120,11 @@ public class MainActivity extends AppCompatActivity
         // Handle navigation view item clicks here.
         int id = item.getItemId();
 
-        Fragment fragment;
-
         if (id == R.id.nav_learn) {
-            fragment = new LearnFragment();
-            FragmentManager fragmentManager = getSupportFragmentManager();
-            fragmentManager.beginTransaction().replace(R.id.content, fragment).commit();
+            navigationLearn();
         }
         else if (id == R.id.nav_preferences) {
-            alertDialogLanguageSpinner();
+            navigationLanguagePreference();
         }
         /*
         else if (id == R.id.nav_findYourWay) {
@@ -141,9 +137,8 @@ public class MainActivity extends AppCompatActivity
         */
         else {
             //Else Home Fragment
-            fragment = new MainFragment();
-            FragmentManager fragmentManager = getSupportFragmentManager();
-            fragmentManager.beginTransaction().replace(R.id.content, fragment).commit();
+            navigationHome();
+
         }
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
@@ -161,19 +156,41 @@ public class MainActivity extends AppCompatActivity
         super.onDestroy();
     }
 
+    //-------- START OF METHODS --------
+
     //---- Set Action Bar Title ----
     public void setActionBarTitle(String title) {
         getSupportActionBar().setTitle(title);
     }
 
-    //---- Hide Keyboard Method ----
-    public void hideKeyboard(View view) {
+    //---- Hide Keyboard Method used in app_bar_main----
+    public void hideKeyboard(View drawerView) {
         InputMethodManager inputMethodManager = (InputMethodManager) getSystemService(Activity.INPUT_METHOD_SERVICE);
-        inputMethodManager.hideSoftInputFromWindow(view.getWindowToken(), 0);
+        inputMethodManager.hideSoftInputFromWindow(drawerView.getWindowToken(), 0);
     }
 
-    //---- Alert Dialog Language Spinner ----
-    public void alertDialogLanguageSpinner() {
+    //---- Access Home Page ----
+    public void navigationHome() {
+        Fragment fragment;
+        fragment = new MainFragment();
+        FragmentManager fragmentManager = getSupportFragmentManager();
+        fragmentManager.beginTransaction().replace(R.id.content, fragment).commit();
+    }
+
+    //---- Access Learn Page ----
+    public void navigationLearn() {
+        Fragment fragment;
+        fragment = new LearnFragment();
+        FragmentManager fragmentManager = getSupportFragmentManager();
+        fragmentManager.beginTransaction().replace(R.id.content, fragment).commit();
+    }
+
+    //---- Access Find Your Way Page ----
+
+    //---- Access Help Page ----
+
+    //---- Access Language Preference Page ----
+    public void navigationLanguagePreference() {
         AlertDialog.Builder mBuilder = new AlertDialog.Builder(MainActivity.this);
         View mView = getLayoutInflater().inflate(R.layout.language_spinner, null);
         mBuilder.setTitle("Select Your Preferred Language");
@@ -207,5 +224,9 @@ public class MainActivity extends AppCompatActivity
         AlertDialog dialog = mBuilder.create();
         dialog.show();
     }
+
+    //---- Access About Way Finder Page ----
+
+    //-------- END OF METHODS --------
 }
 

@@ -3,13 +3,31 @@ package layout;
 import android.app.Activity;
 import android.content.Context;
 import android.net.Uri;
+import android.net.wifi.ScanResult;
+import android.net.wifi.WifiInfo;
+import android.net.wifi.WifiManager;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
+import android.widget.Button;
 import android.widget.EditText;
+import android.widget.TextView;
+import android.widget.Toast;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.io.IOException;
+import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 import sg.com.singhealth.wayfinder.MainActivity;
 import sg.com.singhealth.wayfinder.R;
@@ -34,7 +52,10 @@ public class LearnFragment extends Fragment {
 
     private OnFragmentInteractionListener mListener;
 
-    String a;
+    WifiManager wmgr;
+    EditText editTextLearn;
+    Button buttonLearn;
+    String location;
 
     public LearnFragment() {
         // Required empty public constructor
@@ -70,10 +91,39 @@ public class LearnFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+        ///-- Change Action Bar Title --
         ((MainActivity) getActivity()).setActionBarTitle("Learn");
-        // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_learn, container, false);
 
+        //-- View --
+        View rootView = inflater.inflate(R.layout.fragment_learn, container, false);
+
+        //-- WifiManager --
+        wmgr = (WifiManager) getActivity().getApplicationContext().getSystemService(Context.WIFI_SERVICE);
+
+        //-- EditText Learn Input--
+        editTextLearn = (EditText)rootView.findViewById(R.id.editTextLearn);
+
+        //-- Button Learn Click --
+        buttonLearn = (Button)rootView.findViewById(R.id.buttonLearn);
+        buttonLearn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if(wmgr.isWifiEnabled()){
+                    WifiInfo wifiInfo = wmgr.getConnectionInfo();
+                    if(wifiInfo.getSupplicantState().toString().equals("COMPLETED")) {
+                        if(!editTextLearn.getText().toString().matches("")) {
+                            insertToPost();
+                        }else{
+                            Toast.makeText(getActivity(), "Please Input Your Current Location." , Toast.LENGTH_SHORT).show();
+                        }
+                    }
+                }else{
+                    Toast.makeText(getActivity(), "Please Turn On Your WIFI Connection." , Toast.LENGTH_SHORT).show();
+                }
+            }
+        });
+
+        return rootView;
     }
 
     // TODO: Rename method, update argument and hook method into UI event
@@ -115,5 +165,64 @@ public class LearnFragment extends Fragment {
         void onFragmentInteraction(Uri uri);
     }
 
+    //-------- START OF METHODS --------
 
+
+    //---- Format Data As JSON Method ----
+    private String formatDataAsJSON() {
+        JSONObject root = new JSONObject();
+        JSONArray wifiFingerprint = new JSONArray();
+        JSONObject fingerprint = new JSONObject();
+
+
+
+        List<ScanResult> results = wmgr.getScanResults();
+        String timeStamp = TimeUnit.MILLISECONDS.toSeconds(System.currentTimeMillis()) + "";
+        wmgr.startScan();
+
+        for (ScanResult R : results) {
+            if (!R.SSID.equals("NYP-Student")) {
+                try {
+                    fingerprint.put("mac", R.BSSID.toString());
+                    fingerprint.put("rssi", R.level);
+                    wifiFingerprint.put(fingerprint);
+                    location = editTextLearn.getText().toString();
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+        try {
+            root.put("group", "wayfindp3");
+            root.put("username", "P3");
+            root.put("location", location);
+            root.put("time", timeStamp);
+            root.put("wifi-fingerprint", wifiFingerprint);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        return root.toString();
+    }
+
+    //---- Insert To Post Method ----
+    private void insertToPost(){
+        String json = formatDataAsJSON();
+        Log.d("json String", json.toString());
+
+        String urlString = "https://ml.internalpositioning.com/learn";
+
+        try {
+            URL url = new URL(urlString);
+            HttpURLConnection connection = (HttpURLConnection)url.openConnection();
+            connection.setRequestMethod("POST");
+            connection.setDoInput(true);
+            connection.connect();
+        } catch (MalformedURLException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    //-------- END OF METHODS --------
 }

@@ -6,6 +6,12 @@
 
     <string name="action_settings">Settings</string>
 
+    <!-- Controls in fragment_learn Page-->
+    <string name="textViewInput">Please Input Your Current Location.</string>
+    <string name="editTextLearn">L311</string>
+    <string name="buttonLearn">LEARN</string>
+    <string name="textViewDetails">Press To View The Details About The Location.</string>
+
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
 

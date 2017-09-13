@@ -7,6 +7,7 @@ import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageButton;
 
 import sg.com.singhealth.wayfinder.MainActivity;
 import sg.com.singhealth.wayfinder.R;
@@ -65,9 +66,22 @@ public class MainFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        ((MainActivity) getActivity()).setActionBarTitle("WFTester");
-        // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_main, container, false);
+        //-- Change Action Bar Title --
+        ((MainActivity)getActivity()).setActionBarTitle("WFTester");
+
+        View rootView = inflater.inflate(R.layout.fragment_main, container, false);
+
+        //-- ImageButton Learn Click--
+        ImageButton imageButtonLearn = (ImageButton)rootView.findViewById(R.id.imageButtonLearn);
+        imageButtonLearn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                //-- Call Access Learn Page Method from MainAvtivity.java --
+                ((MainActivity)getActivity()).navigationLearn();
+            }
+        });
+
+        return rootView;
     }
 
     // TODO: Rename method, update argument and hook method into UI event
