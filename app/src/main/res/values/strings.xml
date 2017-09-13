@@ -8,4 +8,17 @@
 
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
+
+    <!-- TODO: Language Preferences -->
+    <string name="show_language_preferences">Show Languge Preferences</string>
+
+    <string-array name="languageList">
+        <item>Language</item>
+        <item>English</item>
+        <item>Mandarin</item>
+    </string-array>
+
+
+
+
 </resources>

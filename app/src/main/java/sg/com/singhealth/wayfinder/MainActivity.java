@@ -2,6 +2,7 @@ package sg.com.singhealth.wayfinder;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.net.Uri;
 import android.os.Bundle;
 
@@ -11,12 +12,16 @@ import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
+import android.widget.ArrayAdapter;
+import android.widget.Spinner;
+import android.widget.Toast;
 
 import layout.LearnFragment;
 import layout.MainFragment;
@@ -37,7 +42,7 @@ public class MainActivity extends AppCompatActivity
                 this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
         drawer.setDrawerListener(toggle);
 
-        //---- Hide Keyboard in DrawerLayout ----
+        //-- Hide Keyboard in DrawerLayout --
         ActionBarDrawerToggle actionBarDrawerToggle = new ActionBarDrawerToggle(this, drawer, toolbar, R.string.app_name, R.string.app_name) {
 
             @Override
@@ -62,10 +67,10 @@ public class MainActivity extends AppCompatActivity
         //Setting the actionbarToggle to drawer layout
         drawer.setDrawerListener(actionBarDrawerToggle);
 
-        //calling sync state is necessay or else your hamburger icon wont show up
+        //Calling sync state is necessary or else your hamburger icon wont show up
         actionBarDrawerToggle.syncState();
 
-        //---- End Keyboard in DrawerLayout ----
+        //-- End Keyboard in DrawerLayout --
 
         toggle.syncState();
 
@@ -119,13 +124,16 @@ public class MainActivity extends AppCompatActivity
 
         if (id == R.id.nav_learn) {
             fragment = new LearnFragment();
+            FragmentManager fragmentManager = getSupportFragmentManager();
+            fragmentManager.beginTransaction().replace(R.id.content, fragment).commit();
+        }
+        else if (id == R.id.nav_preferences) {
+            alertDialogLanguageSpinner();
         }
         /*
         else if (id == R.id.nav_findYourWay) {
 
         } else if (id == R.id.nav_help) {
-
-        } else if (id == R.id.nav_preferences) {
 
         } else if (id == R.id.nav_aboutWayFinder) {
 
@@ -134,10 +142,9 @@ public class MainActivity extends AppCompatActivity
         else {
             //Else Home Fragment
             fragment = new MainFragment();
+            FragmentManager fragmentManager = getSupportFragmentManager();
+            fragmentManager.beginTransaction().replace(R.id.content, fragment).commit();
         }
-
-        FragmentManager fragmentManager = getSupportFragmentManager();
-        fragmentManager.beginTransaction().replace(R.id.content, fragment).commit();
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
@@ -154,15 +161,51 @@ public class MainActivity extends AppCompatActivity
         super.onDestroy();
     }
 
-    //---- Hide Keyboard Method ----
-    public void hideKeyboard(View view) {
-            InputMethodManager inputMethodManager = (InputMethodManager) getSystemService(Activity.INPUT_METHOD_SERVICE);
-            inputMethodManager.hideSoftInputFromWindow(view.getWindowToken(), 0);
-    }
-
     //---- Set Action Bar Title ----
     public void setActionBarTitle(String title) {
         getSupportActionBar().setTitle(title);
+    }
+
+    //---- Hide Keyboard Method ----
+    public void hideKeyboard(View view) {
+        InputMethodManager inputMethodManager = (InputMethodManager) getSystemService(Activity.INPUT_METHOD_SERVICE);
+        inputMethodManager.hideSoftInputFromWindow(view.getWindowToken(), 0);
+    }
+
+    //---- Alert Dialog Language Spinner ----
+    public void alertDialogLanguageSpinner() {
+        AlertDialog.Builder mBuilder = new AlertDialog.Builder(MainActivity.this);
+        View mView = getLayoutInflater().inflate(R.layout.language_spinner, null);
+        mBuilder.setTitle("Select Your Preferred Language");
+
+        //-- Start of Language Spinner --
+        final Spinner mSpinner = (Spinner) mView.findViewById(R.id.spinnerLanguage);
+        ArrayAdapter<String> adapter = new ArrayAdapter<String>(MainActivity.this,
+                android.R.layout.simple_spinner_item, getResources().getStringArray(R.array.languageList));
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        mSpinner.setAdapter(adapter);
+        //-- End of Language Spinner --
+
+        mBuilder.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+                if (!mSpinner.getSelectedItem().toString().equalsIgnoreCase("Select Your Preferred Language")) {
+                    Toast.makeText(MainActivity.this, mSpinner.getSelectedItem().toString(), Toast.LENGTH_SHORT).show();
+                    dialogInterface.dismiss();
+                }
+            }
+        });
+
+        mBuilder.setNegativeButton("Dismiss", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+                dialogInterface.dismiss();
+            }
+        });
+
+        mBuilder.setView(mView);
+        AlertDialog dialog = mBuilder.create();
+        dialog.show();
     }
 }
 
