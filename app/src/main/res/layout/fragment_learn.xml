@@ -27,7 +27,7 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <EditText
-        android:id="@+id/editTextLearn"
+        android:id="@+id/locationText"
         android:hint="@string/editTextLearn"
         android:layout_width="0dp"
         android:layout_height="48dp"
@@ -42,7 +42,9 @@
         tools:layout_constraintLeft_creator="1"
         android:layout_marginBottom="23dp"
         app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/textViewInput" />
+        app:layout_constraintTop_toTopOf="@+id/textViewInput"
+        app:layout_constraintHorizontal_bias="1.0"
+        app:layout_constraintVertical_bias="0.0" />
 
     <Button
         android:id="@+id/buttonLearn"
@@ -54,7 +56,7 @@
         android:layout_marginEnd="16dp"
         tools:layout_constraintRight_creator="1"
         app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintBaseline_toBaselineOf="@+id/editTextLearn"
+        app:layout_constraintBaseline_toBaselineOf="@+id/locationText"
         tools:layout_constraintBaseline_creator="1" />
 
     <ImageView

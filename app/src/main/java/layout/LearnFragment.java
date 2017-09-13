@@ -24,6 +24,7 @@ import android.widget.Toast;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.w3c.dom.Text;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -69,7 +70,7 @@ public class LearnFragment extends Fragment {
     private OnFragmentInteractionListener mListener;
 
     WifiManager wmgr;
-    EditText editTextLearn;
+    TextView locText;
     Button buttonLearn;
     ListView listViewLearn;
     String location;
@@ -121,7 +122,7 @@ public class LearnFragment extends Fragment {
         wmgr = (WifiManager) getActivity().getApplicationContext().getSystemService(Context.WIFI_SERVICE);
 
         //-- EditText Learn Input--
-        editTextLearn = (EditText)rootView.findViewById(R.id.editTextLearn);
+        locText = (TextView) rootView.findViewById(R.id.locationText);
 
         //-- Button Learn Click --
         buttonLearn = (Button)rootView.findViewById(R.id.buttonLearn);
@@ -131,8 +132,8 @@ public class LearnFragment extends Fragment {
                 if(wmgr.isWifiEnabled()){
                     WifiInfo wifiInfo = wmgr.getConnectionInfo();
                     if(wifiInfo.getSupplicantState().toString().equals("COMPLETED")) {
-                        if(!editTextLearn.getText().toString().matches("")) {
-                          //  insertToPost();
+                        if(!locText.getText().toString().matches("")) {
+                            formatDataAsJSON();
                         } else{
                             Toast.makeText(getActivity(), "Please Input Your Current Location." , Toast.LENGTH_SHORT).show();
                         }
@@ -206,7 +207,7 @@ public class LearnFragment extends Fragment {
                     fingerprint.put("mac", R.BSSID.toString());
                     fingerprint.put("rssi", R.level);
                     wifiFingerprint.put(fingerprint);
-                    location = editTextLearn.getText().toString();
+                    location = locText.getText().toString();
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
@@ -221,32 +222,17 @@ public class LearnFragment extends Fragment {
         } catch (JSONException e) {
             e.printStackTrace();
         }
+        Log.d("JSON Value",root.toString());
         return root.toString();
     }
 
-    //---- Insert To Post Method ----
-    private void insertToPost(){
-        String json = formatDataAsJSON();
-        Log.d("json String", json.toString());
 
-        String urlString = "https://ml.internalpositioning.com/learn";
-
-        try {
-            URL url = new URL(urlString);
-            HttpURLConnection connection = (HttpURLConnection)url.openConnection();
-            connection.setRequestMethod("POST");
-            connection.setDoInput(true);
-            connection.connect();
-        } catch (MalformedURLException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
 
     //-------- END OF METHODS --------
 
     //-------- START OF CLASS --------
+
+
     public class JSONtask extends AsyncTask<String, String, String > {
         ArrayList<String> aList = new ArrayList<String>();
 
