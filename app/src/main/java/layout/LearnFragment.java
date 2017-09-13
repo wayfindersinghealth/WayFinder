@@ -226,13 +226,10 @@ public class LearnFragment extends Fragment {
         return root.toString();
     }
 
-
-
     //-------- END OF METHODS --------
 
     //-------- START OF CLASS --------
-
-
+    //---- JSON Task Class ----
     public class JSONtask extends AsyncTask<String, String, String > {
         ArrayList<String> aList = new ArrayList<String>();
 
