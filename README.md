@@ -3,7 +3,9 @@ AY17 P3 FYPJ  - W@rkz
 Feel free to edit/add if theres anything missing. Thank You!
 
 -------- 04/09/2017  --------
+
 -- Discussed  --
+
 -Create Account for Phone, GitHub and FireBase
 GitHub Guides:
 https://guides.github.com/activities/hello-world/
