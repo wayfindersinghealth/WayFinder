@@ -116,10 +116,10 @@ public class LearnFragment extends Fragment {
         ((MainActivity) getActivity()).setActionBarTitle("Learn");
 
         //-- View --
-        View rootView = inflater.inflate(R.layout.fragment_learn, container, false);
+        final View rootView = inflater.inflate(R.layout.fragment_learn, container, false);
 
         //-- JSON --
-        new JSONtask().execute("https://ml.internalpositioning.com/locations?group=wayFindp3");
+        new GetLocations().execute("https://ml.internalpositioning.com/locations?group=wayFindp3");
 
         //-- WifiManager --
         wmgr = (WifiManager) getActivity().getApplicationContext().getSystemService(Context.WIFI_SERVICE);
@@ -136,9 +136,11 @@ public class LearnFragment extends Fragment {
                     WifiInfo wifiInfo = wmgr.getConnectionInfo();
                     if(wifiInfo.getSupplicantState().toString().equals("COMPLETED")) {
                         if(!locText.getText().toString().matches("")) {
-                            new postAPI().execute("https://ml.internalpositioning.com/learn", formatDataAsJSON());
-                            new JSONtask().execute("https://ml.internalpositioning.com/locations?group=wayFindp3");
-
+                            new PostLearnAPI().execute("https://ml.internalpositioning.com/learn", formatDataAsJSON());
+                            new GetCalculateAPI().execute("https://ml.internalpositioning.com/calculate?group=wayFindp3");
+                            new GetLocations().execute("https://ml.internalpositioning.com/locations?group=wayFindp3");
+                            //Hide Keyboard After Pressing Button
+                            ((MainActivity) getActivity()).hideKeyboard(rootView);
                         } else{
                             Toast.makeText(getActivity(), "Please Input Your Current Location." , Toast.LENGTH_SHORT).show();
                         }
@@ -195,7 +197,6 @@ public class LearnFragment extends Fragment {
     }
 
     //-------- START OF METHODS --------
-
     //---- Format Data As JSON Method ----
     private String formatDataAsJSON() {
         JSONObject root = new JSONObject();
@@ -234,12 +235,12 @@ public class LearnFragment extends Fragment {
     //-------- END OF METHODS --------
 
     //-------- START OF CLASS --------
-    //---- JSON Task Class ----
-    public class postAPI extends AsyncTask<String, String, String>{
+    //---- PostLearnAPI Task Class ----
+    public class PostLearnAPI extends AsyncTask<String, String, String>{
 
         @Override
         protected String doInBackground(String... params) {
-            HttpURLConnection connection = null;
+            HttpsURLConnection connection = null;
             BufferedReader reader = null;
             BufferedWriter writer = null;
             String result;
@@ -247,14 +248,14 @@ public class LearnFragment extends Fragment {
             try{
                 //Connecting to API
                 URL link = new URL(params[0]);
-                connection = (HttpURLConnection) link.openConnection();
+                connection = (HttpsURLConnection) link.openConnection();
                 connection.setDoOutput(true);
                 connection.setRequestProperty("Content-Type", "application/json");
                 connection.setRequestProperty("Accept", "application/json");
                 connection.setRequestMethod("POST");
                 connection.connect();
 
-                //writing to API
+                //Writing to API
                 OutputStream outputStream =  connection.getOutputStream();
                 writer = new BufferedWriter(new OutputStreamWriter(outputStream, "UTF-8"));
                 writer.write(formatDataAsJSON());
@@ -295,12 +296,65 @@ public class LearnFragment extends Fragment {
             super.onPostExecute(result);
             Log.d("result of post", result + " ");
             Toast.makeText(getActivity(), "Learning Your Location" , Toast.LENGTH_SHORT).show();
-            //new JSONtask().execute("https://ml.internalpositioning.com/locations?group=wayFindp3");
         }
     }
 
-    //---- JSON Task Class ----
-    public class JSONtask extends AsyncTask<String, String, String > {
+    //---- GetCalculateAPI Class ----
+    public class GetCalculateAPI extends AsyncTask<String, String, String> {
+
+        @Override
+        protected String doInBackground(String... params) {
+            HttpsURLConnection connection = null;
+            BufferedReader reader = null;
+
+            try{
+                //Connecting to API
+                URL link = new URL(params[0]);
+                connection = (HttpsURLConnection) link.openConnection();
+                connection.connect();
+
+                //Reading results of Post
+                InputStream stream = connection.getInputStream();
+                reader =  new BufferedReader(new InputStreamReader(stream));
+
+                StringBuffer sBuffer = new StringBuffer();
+                String line = "";
+
+                while((line = reader.readLine()) != null){
+                    sBuffer.append(line);
+                }
+                String finalJson = sBuffer.toString();
+
+                return finalJson.toString();
+            } catch (MalformedURLException e) {
+                e.printStackTrace();
+            } catch (IOException e) {
+                e.printStackTrace();
+            } finally {
+                if(connection != null) {
+                    connection.disconnect();
+                }
+                try {
+                    if(reader != null) {
+                        reader.close();
+                    }
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(String result){
+            super.onPostExecute(result);
+            Log.d("Calculate Result", result + " ");
+        }
+    }
+
+    //---- GetLocations Class ----
+    public class GetLocations extends AsyncTask<String, String, String > {
         ArrayList<String> aList = new ArrayList<String>();
 
         @Override
@@ -309,10 +363,12 @@ public class LearnFragment extends Fragment {
             BufferedReader reader = null;
 
             try{
+                //Connecting to API
                 URL link = new URL(params[0]);
                 connection = (HttpsURLConnection) link.openConnection();
                 connection.connect();
 
+                //Reading results of Post
                 InputStream stream = connection.getInputStream();
                 reader =  new BufferedReader(new InputStreamReader(stream));
 

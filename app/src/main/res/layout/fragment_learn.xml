@@ -52,7 +52,6 @@
         android:layout_height="wrap_content"
         android:text="@string/buttonLearn"
         android:background="@color/colorSplashScreenBackground"
-        android:onClick="hideKeyboard"
         android:layout_marginEnd="16dp"
         tools:layout_constraintRight_creator="1"
         app:layout_constraintRight_toRightOf="parent"
