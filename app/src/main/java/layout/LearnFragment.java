@@ -27,9 +27,12 @@ import org.json.JSONObject;
 import org.w3c.dom.Text;
 
 import java.io.BufferedReader;
+import java.io.BufferedWriter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.io.OutputStream;
+import java.io.OutputStreamWriter;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -133,7 +136,9 @@ public class LearnFragment extends Fragment {
                     WifiInfo wifiInfo = wmgr.getConnectionInfo();
                     if(wifiInfo.getSupplicantState().toString().equals("COMPLETED")) {
                         if(!locText.getText().toString().matches("")) {
-                            formatDataAsJSON();
+                            new postAPI().execute("https://ml.internalpositioning.com/learn", formatDataAsJSON());
+                            new JSONtask().execute("https://ml.internalpositioning.com/locations?group=wayFindp3");
+
                         } else{
                             Toast.makeText(getActivity(), "Please Input Your Current Location." , Toast.LENGTH_SHORT).show();
                         }
@@ -229,6 +234,71 @@ public class LearnFragment extends Fragment {
     //-------- END OF METHODS --------
 
     //-------- START OF CLASS --------
+    //---- JSON Task Class ----
+    public class postAPI extends AsyncTask<String, String, String>{
+
+        @Override
+        protected String doInBackground(String... params) {
+            HttpURLConnection connection = null;
+            BufferedReader reader = null;
+            BufferedWriter writer = null;
+            String result;
+
+            try{
+                //Connecting to API
+                URL link = new URL(params[0]);
+                connection = (HttpURLConnection) link.openConnection();
+                connection.setDoOutput(true);
+                connection.setRequestProperty("Content-Type", "application/json");
+                connection.setRequestProperty("Accept", "application/json");
+                connection.setRequestMethod("POST");
+                connection.connect();
+
+                //writing to API
+                OutputStream outputStream =  connection.getOutputStream();
+                writer = new BufferedWriter(new OutputStreamWriter(outputStream, "UTF-8"));
+                writer.write(formatDataAsJSON());
+                writer.close();
+                outputStream.close();
+
+                //Reading results of Post
+                reader = new BufferedReader(new InputStreamReader(connection.getInputStream(), "UTF-8"));
+                String line = null;
+                StringBuilder sb = new StringBuilder();
+
+                while((line = reader.readLine())!= null){
+                    sb.append(line);
+                }
+                result = sb.toString();
+                return result;
+
+            } catch (MalformedURLException e) {
+                e.printStackTrace();
+            } catch (IOException e) {
+                e.printStackTrace();
+            } finally{
+                if(connection != null){
+                    connection.disconnect();
+                } try{
+                    if(reader != null){
+                        reader.close();
+                    }
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(String result){
+            super.onPostExecute(result);
+            Log.d("result of post", result + " ");
+            Toast.makeText(getActivity(), "Learning Your Location" , Toast.LENGTH_SHORT).show();
+            //new JSONtask().execute("https://ml.internalpositioning.com/locations?group=wayFindp3");
+        }
+    }
+
     //---- JSON Task Class ----
     public class JSONtask extends AsyncTask<String, String, String > {
         ArrayList<String> aList = new ArrayList<String>();
