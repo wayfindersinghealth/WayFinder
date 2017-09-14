@@ -1,9 +1,12 @@
 package sg.com.singhealth.wayfinder;
 
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.view.Window;
 import android.view.WindowManager;
 import android.view.animation.Animation;
@@ -61,7 +64,24 @@ public class SplashScreen extends Activity {
         @Override
         protected void onPostExecute(Void result) {
             super.onPostExecute(result);
-            Intent i = new Intent(SplashScreen.this, MainActivity.class);
+
+            //-- Shared Preferences --
+            SharedPreferences getPrefs = PreferenceManager.getDefaultSharedPreferences(getBaseContext());
+            boolean isFirstStart = getPrefs.getBoolean("firstStart", true);
+
+            Intent i;
+            if (isFirstStart){
+                //-- Introduction Tutorial Slide --
+                i = new Intent(SplashScreen.this, IntroductionTutorial.class);
+                //-- Preferences Editor --
+                SharedPreferences.Editor e = getPrefs.edit();
+                e.putBoolean("firstStart", false);
+                e.apply();
+            } else {
+                //-- Application Layout --
+                i = new Intent(SplashScreen.this, MainActivity.class);
+            }
+
             startActivity(i);
             finish();
         }

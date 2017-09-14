@@ -35,6 +35,12 @@
             </intent-filter>
         </activity>
 
+        <!-- IntroductionTutorial-->
+        <activity android:name=".IntroductionTutorial"
+            android:screenOrientation="portrait"
+            android:theme="@style/AppTheme.NoActionBar">
+        </activity>
+
         <!-- MainActivity -->
         <activity
             android:name=".MainActivity"
