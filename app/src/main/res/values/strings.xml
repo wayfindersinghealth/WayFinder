@@ -22,7 +22,8 @@
     <string name="textViewDetails">Press To View The Details About The Location.</string>
 
     <!-- Controls in layout > fragment_find_way -->
-    <string name="access_token">pk.eyJ1Ijoid2F5ZmluZGVyc2luZ2hlYWx0aCIsImEiOiJjajdsYXJ0cWwwdzBwMnhsYXQzbzc3MDFuIn0.meR6XGTiU1tgb9UhyZ75qg</string>
+    <string name="textViewTo">To:</string>
+
     <!-- Controls in layout > language_spinner.xml Control -->
     <string name="show_language_preferences">Show Languge Preferences</string>
     <string-array name="languageList">

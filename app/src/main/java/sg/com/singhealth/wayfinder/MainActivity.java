@@ -151,7 +151,6 @@ public class MainActivity extends AppCompatActivity
         else {
             //Else Home Fragment
             navigationHome();
-
         }
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);

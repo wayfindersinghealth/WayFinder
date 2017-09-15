@@ -8,11 +8,13 @@ import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Spinner;
 
 import com.mapbox.mapboxsdk.constants.Style;
 import com.mapbox.mapboxsdk.maps.MapboxMapOptions;
 import com.mapbox.mapboxsdk.maps.SupportMapFragment;
 
+import sg.com.singhealth.wayfinder.MainActivity;
 import sg.com.singhealth.wayfinder.R;
 
 /**
@@ -34,6 +36,8 @@ public class FindYourWayFragment extends Fragment {
     private String mParam2;
 
     private OnFragmentInteractionListener mListener;
+
+    Spinner spinnerTo;
 
     public FindYourWayFragment() {
         // Required empty public constructor
@@ -69,16 +73,22 @@ public class FindYourWayFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_find_your_way, container, false);
+        //-- Change Action Bar Title --
+        ((MainActivity)getActivity()).setActionBarTitle("WayFinder");
+
+        //-- View --
+        final View rootView = inflater.inflate(R.layout.fragment_learn, container, false);
+
+        spinnerTo = (Spinner) rootView.findViewById(R.id.spinnerTo);
+
+        return rootView;
     }
 
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        SupportMapFragment smf = SupportMapFragment.newInstance();
-        //SupportMapFragment smf = SupportMapFragment.newInstance(new MapboxMapOptions().styleUrl(Style.DARK));
+        SupportMapFragment smf = SupportMapFragment.newInstance(new MapboxMapOptions().styleUrl(Style.MAPBOX_STREETS));
 
         //Child or not result same
         getFragmentManager().beginTransaction().add(R.id.mapView, smf).commit();

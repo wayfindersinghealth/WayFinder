@@ -215,6 +215,7 @@ public class LearnFragment extends Fragment {
 
     //-------- START OF METHODS --------
     //---- ListView Context Menu ----
+    /*
     public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMenuInfo menuInfo) {
         super.onCreateContextMenu(menu, v, menuInfo);
         AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo)menuInfo;
@@ -222,6 +223,7 @@ public class LearnFragment extends Fragment {
         MenuInflater inflater = this.getActivity().getMenuInflater();
         inflater.inflate(R.layout.fragment_learn, menu);
     }
+    */
 
     //---- Format Data As JSON Method ----
     private String formatDataAsJSON() {
