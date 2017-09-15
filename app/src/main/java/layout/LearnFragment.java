@@ -136,7 +136,7 @@ public class LearnFragment extends Fragment {
                     WifiInfo wifiInfo = wmgr.getConnectionInfo();
                     if(wifiInfo.getSupplicantState().toString().equals("COMPLETED")) {
                         if(!locText.getText().toString().matches("")) {
-                            new PostLearnAPI().execute("https://ml.internalpositioning.com/learn", formatDataAsJSON());
+                            new PostLearnAPI().execute("https://ml.internalpositioning.com/learn");
                             new GetCalculateAPI().execute("https://ml.internalpositioning.com/calculate?group=wayFindp3");
                             new GetLocations().execute("https://ml.internalpositioning.com/locations?group=wayFindp3");
                             //Hide Keyboard After Pressing Button
