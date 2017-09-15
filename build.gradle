@@ -18,6 +18,8 @@ allprojects {
         //---- Start Of Open Source Repositories ----
         //-- Tutorial Start Page --
         maven { url 'https://jitpack.io'}
+        //-- MapBox --
+        mavenCentral()
         //---- End Of Open Source Repositories ----
     }
 }

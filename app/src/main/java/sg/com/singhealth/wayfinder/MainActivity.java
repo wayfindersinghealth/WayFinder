@@ -1,7 +1,6 @@
 package sg.com.singhealth.wayfinder;
 
 import android.app.Activity;
-import android.content.Context;
 import android.content.DialogInterface;
 import android.net.Uri;
 import android.os.Bundle;
@@ -20,7 +19,6 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.ArrayAdapter;
-import android.widget.ImageButton;
 import android.widget.Spinner;
 import android.widget.Toast;
 
@@ -35,7 +33,7 @@ import layout.MainFragment;
 
 //Add [_Fragment.OnFragmentInteractionListener] if applicable
 public class MainActivity extends AppCompatActivity
-        implements NavigationView.OnNavigationItemSelectedListener, MainFragment.OnFragmentInteractionListener, LearnFragment.OnFragmentInteractionListener {
+        implements NavigationView.OnNavigationItemSelectedListener, MainFragment.OnFragmentInteractionListener, LearnFragment.OnFragmentInteractionListener{
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -131,10 +129,11 @@ public class MainActivity extends AppCompatActivity
         } else if (id == R.id.nav_preferences) {
             navigationLanguagePreference();
         }
-        /*
-        else if (id == R.id.nav_findYourWay) {
 
-        } else if (id == R.id.nav_help) {
+        else if (id == R.id.nav_findYourWay) {
+            navigationFindYourWay();
+
+        } /*else if (id == R.id.nav_help) {
 
         } else if (id == R.id.nav_aboutWayFinder) {
 
@@ -191,6 +190,8 @@ public class MainActivity extends AppCompatActivity
     }
 
     //---- Access Find Your Way Page ----
+    public void navigationFindYourWay() {
+    }
 
     //---- Access Help Page ----
 
