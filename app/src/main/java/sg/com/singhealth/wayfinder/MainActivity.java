@@ -1,6 +1,7 @@
 package sg.com.singhealth.wayfinder;
 
 import android.app.Activity;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
@@ -15,6 +16,7 @@ import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -23,8 +25,10 @@ import android.widget.ArrayAdapter;
 import android.widget.Spinner;
 import android.widget.Toast;
 
+import com.mapbox.mapboxsdk.Mapbox;
 import com.mapbox.mapboxsdk.maps.MapView;
 
+import layout.FindYourWayFragment;
 import layout.LearnFragment;
 import layout.MainFragment;
 
@@ -36,7 +40,7 @@ import layout.MainFragment;
 
 //Add [_Fragment.OnFragmentInteractionListener] if applicable
 public class MainActivity extends AppCompatActivity
-        implements NavigationView.OnNavigationItemSelectedListener, MainFragment.OnFragmentInteractionListener, LearnFragment.OnFragmentInteractionListener{
+        implements NavigationView.OnNavigationItemSelectedListener, MainFragment.OnFragmentInteractionListener, LearnFragment.OnFragmentInteractionListener, FindYourWayFragment.OnFragmentInteractionListener{
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -86,6 +90,8 @@ public class MainActivity extends AppCompatActivity
         FragmentManager fragmentManager = getSupportFragmentManager();
         fragmentManager.beginTransaction().replace(R.id.content, fragment).commit();
 
+        //Set MapBox Access
+        Mapbox.getInstance(this, "pk.eyJ1IjoidmFjeGUiLCJhIjoiY2lmNm51djhoMDA3NXRtbTAyczRxMXBzOSJ9.fsYPDRGLsY0gE9cwo5k59Q");
         //-------- DO NOT TOUCH END --------
 
     }
@@ -194,10 +200,10 @@ public class MainActivity extends AppCompatActivity
 
     //---- Access Find Your Way Page ----
     public void navigationFindYourWay() {
-        Intent mapIntent = new Intent(this, MapActivity.class);
-        //Added code try prevent stack
-        mapIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-        startActivity(mapIntent);
+        Fragment fragment;
+        fragment = new FindYourWayFragment();
+        FragmentManager fragmentManager = getSupportFragmentManager();
+        fragmentManager.beginTransaction().replace(R.id.content, fragment).commit();
     }
 
     //---- Access Help Page ----
