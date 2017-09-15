@@ -50,6 +50,10 @@
             android:theme="@style/AppTheme.NoActionBar">
         </activity>
 
+        <!-- MapActivity -->
+        <activity android:name=".MapActivity"
+            android:screenOrientation="portrait">
+        </activity>
     </application>
 
 </manifest>

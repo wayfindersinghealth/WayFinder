@@ -75,6 +75,7 @@ public class MainFragment extends Fragment {
         //-- Change Action Bar Title --
         ((MainActivity)getActivity()).setActionBarTitle("WayFinder");
 
+        //-- View --
         View rootView = inflater.inflate(R.layout.fragment_main, container, false);
 
         //-- ImageButton Learn Click--

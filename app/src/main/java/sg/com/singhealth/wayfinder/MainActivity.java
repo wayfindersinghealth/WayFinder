@@ -2,6 +2,7 @@ package sg.com.singhealth.wayfinder;
 
 import android.app.Activity;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 
@@ -21,6 +22,8 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.ArrayAdapter;
 import android.widget.Spinner;
 import android.widget.Toast;
+
+import com.mapbox.mapboxsdk.maps.MapView;
 
 import layout.LearnFragment;
 import layout.MainFragment;
@@ -191,6 +194,10 @@ public class MainActivity extends AppCompatActivity
 
     //---- Access Find Your Way Page ----
     public void navigationFindYourWay() {
+        Intent mapIntent = new Intent(this, MapActivity.class);
+        //Added code try prevent stack
+        mapIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+        startActivity(mapIntent);
     }
 
     //---- Access Help Page ----
