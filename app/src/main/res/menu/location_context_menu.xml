@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+*File Name: location_context_menu.xml
+*Created By: AY17 P3 FYPJ NYP SIT
+*Description: -
+-->
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:id="@+id/viewLocation"
+        android:title="@string/viewLocation" />
+    <item
+        android:id="@+id/editLocation"
+        android:title="@string/editLocation" />
+    <item
+        android:id="@+id/deleteLocation"
+        android:title="@string/deleteLocation" />
+</menu>
