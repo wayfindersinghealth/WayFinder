@@ -505,5 +505,5 @@ public class LearnFragment extends Fragment {
             databaseLocation.child(id).setValue(locDetail);
         }
     }
-    //-------- END OF CLASS --------
+    //-------- END OF CLASS ---------
 }
