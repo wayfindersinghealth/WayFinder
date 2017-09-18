@@ -8,13 +8,21 @@ import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Spinner;
 
+import com.mapbox.mapboxsdk.Mapbox;
+import com.mapbox.mapboxsdk.annotations.MarkerViewOptions;
+import com.mapbox.mapboxsdk.camera.CameraPosition;
+import com.mapbox.mapboxsdk.camera.CameraUpdateFactory;
 import com.mapbox.mapboxsdk.constants.Style;
+import com.mapbox.mapboxsdk.geometry.LatLng;
+import com.mapbox.mapboxsdk.maps.MapView;
+import com.mapbox.mapboxsdk.maps.MapboxMap;
 import com.mapbox.mapboxsdk.maps.MapboxMapOptions;
+import com.mapbox.mapboxsdk.maps.OnMapReadyCallback;
 import com.mapbox.mapboxsdk.maps.SupportMapFragment;
 
-import sg.com.singhealth.wayfinder.MainActivity;
+import java.util.Map;
+
 import sg.com.singhealth.wayfinder.R;
 
 /**
@@ -34,10 +42,10 @@ public class FindYourWayFragment extends Fragment {
     // TODO: Rename and change types of parameters
     private String mParam1;
     private String mParam2;
+    private MapView mapView;
+    private LatLng currentLatLng;
 
     private OnFragmentInteractionListener mListener;
-
-    Spinner spinnerTo;
 
     public FindYourWayFragment() {
         // Required empty public constructor
@@ -73,27 +81,22 @@ public class FindYourWayFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        //-- Change Action Bar Title --
-        ((MainActivity)getActivity()).setActionBarTitle("WayFinder");
-
-        //-- View --
-        final View rootView = inflater.inflate(R.layout.fragment_learn, container, false);
-
-        spinnerTo = (Spinner) rootView.findViewById(R.id.spinnerTo);
-
+        // Inflate the layout for this fragment
+        final View rootView = inflater.inflate(R.layout.fragment_find_your_way, container, false);
         return rootView;
     }
 
-    @Override
+        @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
-        super.onViewCreated(view, savedInstanceState);
+          super.onViewCreated(view, savedInstanceState);
 
-        SupportMapFragment smf = SupportMapFragment.newInstance(new MapboxMapOptions().styleUrl(Style.MAPBOX_STREETS));
+          //SupportMapFragment smf = SupportMapFragment.newInstance();
+          SupportMapFragment smf = SupportMapFragment.newInstance(new MapboxMapOptions().styleUrl(Style.DARK));
+          //Child or not result same
+          getFragmentManager().beginTransaction().add(R.id.mapView, smf).commit();
+         // getChildFragmentManager().beginTransaction().add(R.id.mapView, smf).commit();
+      }
 
-        //Child or not result same
-        getFragmentManager().beginTransaction().add(R.id.mapView, smf).commit();
-       // getChildFragmentManager().beginTransaction().add(R.id.mapView, smf).commit();
-    }
 
     // TODO: Rename method, update argument and hook method into UI event
     public void onButtonPressed(Uri uri) {

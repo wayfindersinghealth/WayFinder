@@ -221,7 +221,7 @@ public class LearnFragment extends Fragment {
         AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo)menuInfo;
         menu.setHeaderTitle(listViewLearn.getItemAtPosition(info.position).toString());
         MenuInflater inflater = this.getActivity().getMenuInflater();
-        inflater.inflate(R.layout.fragment_learn, menu);
+      //  inflater.inflate(R.layout.fragment_learn, menu);
     }
     */
 
@@ -447,6 +447,7 @@ public class LearnFragment extends Fragment {
                     getActivity(),
                     android.R.layout.simple_list_item_1,
                     aList );
+
             listViewLearn.setAdapter(arrayAdapter);
             registerForContextMenu(listViewLearn);
         }
