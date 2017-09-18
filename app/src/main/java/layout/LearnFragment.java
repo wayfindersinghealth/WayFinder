@@ -3,8 +3,8 @@ package layout;
 import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Context;
-import android.location.Criteria;
 import android.location.Location;
+import android.location.LocationListener;
 import android.location.LocationManager;
 import android.net.Uri;
 import android.net.wifi.ScanResult;
@@ -86,31 +86,9 @@ public class LearnFragment extends Fragment {
     TextView locText;
     Button buttonLearn;
     ListView listViewLearn;
-    String loc;
-    double lat, lon;
-
-    Location location; // location
-    double latitude; // latitude
-    double longitude; // longitude
-
-    // flag for GPS status
-    boolean isGPSEnabled = false;
-
-    // flag for network status
-    boolean isNetworkEnabled = false;
-
-    // flag for GPS status
-    boolean canGetLocation = false;
-
-    // The minimum distance to change Updates in meters
-    private static final long MIN_DISTANCE_CHANGE_FOR_UPDATES = 10; // 10 meters
-
-    // The minimum time between updates in milliseconds
-    private static final long MIN_TIME_BW_UPDATES = 1000 * 60 * 1; // 1 minute
-
-    // Declaring a Location Manager
-    protected LocationManager locationManager;
-
+    String location;
+    private LocationListener locListen;
+    private LocationManager locMgr;
     public LearnFragment() {
         // Required empty public constructor
     }
@@ -160,6 +138,7 @@ public class LearnFragment extends Fragment {
         //-- EditText Learn Input--
         locText = (TextView) rootView.findViewById(R.id.locationText);
 
+
         //-- Button Learn Click --
         buttonLearn = (Button)rootView.findViewById(R.id.buttonLearn);
         buttonLearn.setOnClickListener(new View.OnClickListener() {
@@ -169,13 +148,11 @@ public class LearnFragment extends Fragment {
                     WifiInfo wifiInfo = wmgr.getConnectionInfo();
                     if(wifiInfo.getSupplicantState().toString().equals("COMPLETED")) {
                         if(!locText.getText().toString().matches("")) {
-                            //new PostLearnAPI().execute("https://ml.internalpositioning.com/learn");
-                            //new GetCalculateAPI().execute("https://ml.internalpositioning.com/calculate?group=wayFindp3");
-                            //new GetLocations().execute("https://ml.internalpositioning.com/locations?group=wayFindp3");
-                            //-- Get LatLng Coordinates --
-                            getLocation();
-                            //Hide Keyboard After Pressing Button
-                            ((MainActivity) getActivity()).hideKeyboard(rootView);
+                           //new PostLearnAPI().execute("https://ml.internalpositioning.com/learn");
+                           //new GetCalculateAPI().execute("https://ml.internalpositioning.com/calculate?group=wayFindp3");
+                           //new GetLocations().execute("https://ml.internalpositioning.com/locations?group=wayFindp3");
+                           //Hide Keyboard After Pressing Button
+                           //((MainActivity) getActivity()).hideKeyboard(rootView);
                         } else{
                             Toast.makeText(getActivity(), "Please Input Your Current Location." , Toast.LENGTH_SHORT).show();
                         }
@@ -269,7 +246,7 @@ public class LearnFragment extends Fragment {
                     fingerprint.put("mac", R.BSSID.toString());
                     fingerprint.put("rssi", R.level);
                     wifiFingerprint.put(fingerprint);
-                    loc = locText.getText().toString();
+                    location = locText.getText().toString();
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
@@ -278,7 +255,7 @@ public class LearnFragment extends Fragment {
         try {
             root.put("group", "wayfindp3");
             root.put("username", "P3");
-            root.put("location", loc);
+            root.put("location", location);
             root.put("time", timeStamp);
             root.put("wifi-fingerprint", wifiFingerprint);
         } catch (JSONException e) {
@@ -286,35 +263,6 @@ public class LearnFragment extends Fragment {
         }
         Log.d("JSON Value",root.toString());
         return root.toString();
-    }
-
-    //---- Get Location Method ----
-    public Location getLocation() {
-        try {
-            LocationManager locationManager = (LocationManager) getActivity().getApplicationContext().getSystemService(Context.LOCATION_SERVICE);
-            //-- Getting Network Status --
-            isNetworkEnabled = locationManager.isProviderEnabled(LocationManager.NETWORK_PROVIDER);
-            if (!isNetworkEnabled) {
-                Log.d("Network not Enabled", "GG");
-            } else {
-                this.canGetLocation = true;
-                //-- Get Location from Network Provider
-                if (isNetworkEnabled) {
-                    if (locationManager != null) {
-                        location = locationManager.getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
-                        if (location != null) {
-                            latitude = location.getLatitude();
-                            longitude = location.getLongitude();
-                            Log.d("LatLong", + latitude + ", " + longitude);
-                        }
-                    }
-                }
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-
-        return location;
     }
 
     //-------- END OF METHODS --------
@@ -509,5 +457,7 @@ public class LearnFragment extends Fragment {
             registerForContextMenu(listViewLearn);
         }
     }
+
+
     //-------- END OF CLASS --------
 }
