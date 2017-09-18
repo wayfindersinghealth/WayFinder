@@ -14,7 +14,9 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.v4.app.Fragment;
+import android.support.v4.text.TextUtilsCompat;
 import android.support.v7.app.AlertDialog;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.ContextMenu;
 import android.view.LayoutInflater;
@@ -29,6 +31,9 @@ import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -52,6 +57,7 @@ import java.util.concurrent.TimeUnit;
 
 import javax.net.ssl.HttpsURLConnection;
 
+import sg.com.singhealth.wayfinder.LocationDetail;
 import sg.com.singhealth.wayfinder.MainActivity;
 import sg.com.singhealth.wayfinder.R;
 
@@ -86,7 +92,6 @@ public class LearnFragment extends Fragment {
     Button buttonLearn;
     ListView listViewLearn;
     String loc;
-    double lat, lon;
 
     //-- Variables for Get Location Methods --
     Location location;
@@ -98,6 +103,8 @@ public class LearnFragment extends Fragment {
     public LearnFragment() {
         // Required empty public constructor
     }
+
+    DatabaseReference databaseLocation;
 
     /**
      * Use this factory method to create a new instance of
@@ -144,6 +151,8 @@ public class LearnFragment extends Fragment {
         //-- EditText Learn Input--
         locText = (TextView) rootView.findViewById(R.id.locationText);
 
+        //--Connecting to DB
+        databaseLocation = FirebaseDatabase.getInstance().getReference("locations");
         //-- Button Learn Click --
         buttonLearn = (Button)rootView.findViewById(R.id.buttonLearn);
         buttonLearn.setOnClickListener(new View.OnClickListener() {
@@ -153,9 +162,9 @@ public class LearnFragment extends Fragment {
                     WifiInfo wifiInfo = wmgr.getConnectionInfo();
                     if(wifiInfo.getSupplicantState().toString().equals("COMPLETED")) {
                         if(!locText.getText().toString().matches("")) {
-                            //new PostLearnAPI().execute("https://ml.internalpositioning.com/learn");
-                            //new GetCalculateAPI().execute("https://ml.internalpositioning.com/calculate?group=wayFindp3");
-                            //new GetLocations().execute("https://ml.internalpositioning.com/locations?group=wayFindp3");
+                           // new PostLearnAPI().execute("https://ml.internalpositioning.com/learn");
+                           // new GetCalculateAPI().execute("https://ml.internalpositioning.com/calculate?group=wayFindp3");
+                           // new GetLocations().execute("https://ml.internalpositioning.com/locations?group=wayFindp3");
                             //-- Get LatLng Coordinates --
                             getLocation();
                             //Hide Keyboard After Pressing Button
@@ -266,7 +275,7 @@ public class LearnFragment extends Fragment {
         try {
             LocationManager locationManager = (LocationManager) getActivity().getApplicationContext().getSystemService(Context.LOCATION_SERVICE);
             //-- Getting Network Status --
-            isNetworkEnabled = locationManager.isProviderEnabled(LocationManager.NETWORK_PROVIDER);
+            isNetworkEnabled = locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER);
             if (!isNetworkEnabled) {
                 Log.d("Network not Enabled", "GG");
             } else {
@@ -274,11 +283,13 @@ public class LearnFragment extends Fragment {
                 //-- Get Location from Network Provider
                 if (isNetworkEnabled) {
                     if (locationManager != null) {
-                        location = locationManager.getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
+
                         if (location != null) {
-                            latitude = location.getLatitude();
-                            longitude = location.getLongitude();
-                            Log.d("LatLong", + latitude + ", " + longitude);
+                            location = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
+                            Log.d("Latitude Longitude", location.getLatitude() +" " +  location.getLongitude());
+                          //  latitude = location.getLatitude();
+                          //  longitude = location.getLongitude();
+
                         }
                     }
                 }
@@ -480,6 +491,18 @@ public class LearnFragment extends Fragment {
 
             listViewLearn.setAdapter(arrayAdapter);
             registerForContextMenu(listViewLearn);
+        }
+    }
+
+    private void addLocation(){
+        String locationName = locText.getText().toString();
+        double latitude = getLocation().getLatitude();
+        double longitude = getLocation().getLongitude();
+
+        if(!TextUtils.isEmpty(locationName)){
+            String id = databaseLocation.push().getKey();
+            LocationDetail locDetail = new LocationDetail(id, locationName, latitude, longitude);
+            databaseLocation.child(id).setValue(locDetail);
         }
     }
     //-------- END OF CLASS --------
