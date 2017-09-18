@@ -81,7 +81,6 @@ public class LearnFragment extends Fragment {
 
     private OnFragmentInteractionListener mListener;
 
-    private static final int LEARN_PERIOD_TIME = 3000;
     WifiManager wmgr;
     TextView locText;
     Button buttonLearn;
@@ -89,27 +88,12 @@ public class LearnFragment extends Fragment {
     String loc;
     double lat, lon;
 
-    Location location; // location
-    double latitude; // latitude
-    double longitude; // longitude
-
-    // flag for GPS status
-    boolean isGPSEnabled = false;
-
-    // flag for network status
+    //-- Variables for Get Location Methods --
+    Location location;
+    double latitude;
+    double longitude;
     boolean isNetworkEnabled = false;
-
-    // flag for GPS status
     boolean canGetLocation = false;
-
-    // The minimum distance to change Updates in meters
-    private static final long MIN_DISTANCE_CHANGE_FOR_UPDATES = 10; // 10 meters
-
-    // The minimum time between updates in milliseconds
-    private static final long MIN_TIME_BW_UPDATES = 1000 * 60 * 1; // 1 minute
-
-    // Declaring a Location Manager
-    protected LocationManager locationManager;
 
     public LearnFragment() {
         // Required empty public constructor
@@ -189,16 +173,7 @@ public class LearnFragment extends Fragment {
         //-- ListView Learn --
         listViewLearn = (ListView)rootView.findViewById(R.id.listViewLearn);
         registerForContextMenu(listViewLearn);
-        /*
-        listViewLearn.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
-            @Override
-            public boolean onItemLongClick(AdapterView<?> adapterView, View view, int i, long l) {
-                AlertDialog.Builder mBuilder = new AlertDialog.Builder(getActivity());
-                Toast.makeText(getActivity(), listViewLearn.getItemAtPosition(i).toString(), Toast.LENGTH_SHORT).show();
-                return false;
-            }
-        });
-        */
+
         return rootView;
     }
 
