@@ -23,7 +23,14 @@ import com.mapbox.mapboxsdk.maps.SupportMapFragment;
 
 import java.util.Map;
 
+import sg.com.singhealth.wayfinder.MainActivity;
 import sg.com.singhealth.wayfinder.R;
+
+/**
+ * File Name: FindYourWayFragment.java
+ * Created By: AY17 P3 FYPJ NYP SIT
+ * Description: -
+ */
 
 /**
  * A simple {@link Fragment} subclass.
@@ -72,6 +79,7 @@ public class FindYourWayFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        Mapbox.getInstance(getActivity(), getString(R.string.access_token));
         if (getArguments() != null) {
             mParam1 = getArguments().getString(ARG_PARAM1);
             mParam2 = getArguments().getString(ARG_PARAM2);
@@ -81,24 +89,50 @@ public class FindYourWayFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
+        //-- Change Action Bar Title --
+        ((MainActivity) getActivity()).setActionBarTitle("Find Your Way");
+
+        //-- View --
         final View rootView = inflater.inflate(R.layout.fragment_find_your_way, container, false);
+
+        //-- MapBox MapView --
+        mapView = (MapView) rootView.findViewById(R.id.mapView);
+        mapView.onCreate(savedInstanceState);
+
+        mapView.getMapAsync(new OnMapReadyCallback() {
+            @Override
+            public void onMapReady(MapboxMap mapboxMap) {
+
+                //-- Customize map with markers, polylines, etc. --
+                final LatLng zoomLocation = new LatLng(1.3792949602146791, 103.84983998176449);
+                CameraPosition position = new CameraPosition.Builder()
+                        .target(zoomLocation)
+                        .zoom(19) // Sets the zoom
+                        //.tilt(60)
+                        .build(); // Creates a CameraPosition from the builder
+
+                //mapboxMap.setMinZoom(19);
+                mapboxMap.animateCamera(CameraUpdateFactory
+                        .newCameraPosition(position), 2000);
+
+                MarkerViewOptions markerViewOptions = new MarkerViewOptions()
+                        .position(new LatLng(1.379292, 103.849695));
+
+                mapboxMap.addMarker(markerViewOptions);
+/*
+                position = new CameraPosition.Builder()
+                        .target(currentLatLng)
+                        .zoom(20) // Sets the zoom
+                        .tilt(60)
+                        .build(); // Creates a CameraPosition from the builder
+*/
+                mapboxMap.setCameraPosition(position);
+            }
+        });
+
         return rootView;
     }
-
-        @Override
-    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
-          super.onViewCreated(view, savedInstanceState);
-
-          //SupportMapFragment smf = SupportMapFragment.newInstance();
-          SupportMapFragment smf = SupportMapFragment.newInstance(new MapboxMapOptions().styleUrl(Style.DARK));
-          //Child or not result same
-          getFragmentManager().beginTransaction().add(R.id.mapView, smf).commit();
-         // getChildFragmentManager().beginTransaction().add(R.id.mapView, smf).commit();
-      }
-
-
-    // TODO: Rename method, update argument and hook method into UI event
+        // TODO: Rename method, update argument and hook method into UI event
     public void onButtonPressed(Uri uri) {
         if (mListener != null) {
             mListener.onFragmentInteraction(uri);
@@ -136,4 +170,56 @@ public class FindYourWayFragment extends Fragment {
         // TODO: Update argument type and name
         void onFragmentInteraction(Uri uri);
     }
+
+    //-------- START OF METHODS --------
+    //-- MapBox onStart Method --
+    @Override
+    public void onStart() {
+        super.onStart();
+        mapView.onStart();
+    }
+
+    //-- MapBox onResume Method --
+    @Override
+    public void onResume() {
+        super.onResume();
+        mapView.onResume();
+    }
+
+    //-- MapBox onPause Method --
+    @Override
+    public void onPause() {
+        super.onPause();
+        mapView.onPause();
+    }
+
+    //-- MapBox onStop Method --
+    @Override
+    public void onStop() {
+        super.onStop();
+        mapView.onStop();
+    }
+
+    //-- MapBox onSaveInstanceState Method --
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        mapView.onSaveInstanceState(outState);
+    }
+
+    //-- MapBox onLowMemory Method --
+    @Override
+    public void onLowMemory() {
+        super.onLowMemory();
+        mapView.onLowMemory();
+    }
+
+    //-- MapBox onDestory Method --
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        mapView.onDestroy();
+    }
+
+    //-------- END OF METHODS --------
 }
