@@ -2,10 +2,13 @@ package layout;
 
 import android.content.Context;
 import android.graphics.Color;
+import android.location.Location;
+import android.location.LocationManager;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
@@ -59,6 +62,19 @@ public class FindYourWayFragment extends Fragment {
     private String mParam2;
     private MapView mapView;
     private LatLng currentLatLng;
+
+    //-- Variables for Get Location Methods --
+    Location location;
+    double latitude;
+    double longitude;
+    boolean isGPSEnabled = false;
+    boolean isNetworkEnabled = false;
+    boolean canGetLocation = false;
+    // The minimum distance to change Updates in meters
+    private static final long MIN_DISTANCE_CHANGE_FOR_UPDATES = 10; // 10 meters
+    // The minimum time between updates in milliseconds
+    private static final long MIN_TIME_BW_UPDATES = 1000 * 60 * 1; // 1 minute
+
 
     private OnFragmentInteractionListener mListener;
 
@@ -127,7 +143,9 @@ public class FindYourWayFragment extends Fragment {
                 mapboxMap.setCameraPosition(position);
 
                 //-- MapBox Marker Location --
-                MarkerViewOptions markerViewOptions = new MarkerViewOptions().position(new LatLng(1.379292, 103.849695));
+                getLocation();
+                Log.d("LatLong", + latitude + ", " + longitude);
+                MarkerViewOptions markerViewOptions = new MarkerViewOptions().position(new LatLng(latitude, longitude));
 
                 mapboxMap.addMarker(markerViewOptions);
 
@@ -241,5 +259,55 @@ public class FindYourWayFragment extends Fragment {
         mapView.onDestroy();
     }
 
+    //---- Get Location Method ----
+    public Location getLocation() {
+        try {
+            LocationManager locationManager = (LocationManager) getActivity().getApplicationContext().getSystemService(Context.LOCATION_SERVICE);
+
+            //-- Getting GPS Status --
+            isGPSEnabled = locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER);
+
+            //-- Getting Network Status --
+            isNetworkEnabled = locationManager.isProviderEnabled(LocationManager.NETWORK_PROVIDER);
+            if (!isGPSEnabled && !isNetworkEnabled) {
+                Log.d("Network not Enabled", "GG");
+            } else {
+                this.canGetLocation = true;
+                //-- Get Location from Network Provider
+
+                if (isNetworkEnabled) {
+                    if (locationManager != null) {
+                        location = locationManager.getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
+                        if (location != null) {
+                            latitude = location.getLatitude();
+                            longitude = location.getLongitude();
+                            Log.d("Network Provider", + latitude + ", " + longitude);
+                        }
+                    }
+                }
+
+                /*
+                // if GPS Enabled get lat/long using GPS Services
+                if (isGPSEnabled) {
+                    if (location == null) {
+
+                    Log.d("GPS Enabled", "GPS Enabled");
+                        if (locationManager != null) {
+                            location = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
+                            if (location == null) {
+                                latitude = location.getLatitude();
+                                longitude = location.getLongitude();
+                                Log.d("GPS", + latitude + ", " + longitude);
+                            }
+                        }
+                    }
+                }*/
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return location;
+    }
     //-------- END OF METHODS --------
 }

@@ -1,0 +1,63 @@
+{
+  "project_info": {
+    "project_number": "225851701973",
+    "firebase_url": "https://wayfinderdb.firebaseio.com",
+    "project_id": "wayfinderdb",
+    "storage_bucket": "wayfinderdb.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:225851701973:android:9f8474c25ee7ef20",
+        "android_client_info": {
+          "package_name": "sg.com.singhealth.wayfinder"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "225851701973-fdd60u5qtia0obmlkshvdm55ne79dili.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "sg.com.singhealth.wayfinder",
+            "certificate_hash": "0dc8877158c6832482eb73930701387820b6b70a"
+          }
+        },
+        {
+          "client_id": "225851701973-0vsaits8sq8uib90kdacivc75r6lka46.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "sg.com.singhealth.wayfinder",
+            "certificate_hash": "e6e3f2c04548f4a427528818e3e2dc3ab1dd096c"
+          }
+        },
+        {
+          "client_id": "225851701973-ar72ak51trjc96hasu69mnhlfvv90q9f.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBvyJq29ljGMFu7oqGZv6SVCk3gCDK8YA8"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "225851701973-ar72ak51trjc96hasu69mnhlfvv90q9f.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

@@ -92,6 +92,7 @@ public class LearnFragment extends Fragment {
     Button buttonLearn;
     ListView listViewLearn;
     String loc;
+    double lat, lon;
 
     //-- Variables for Get Location Methods --
     Location location;
@@ -162,9 +163,9 @@ public class LearnFragment extends Fragment {
                     WifiInfo wifiInfo = wmgr.getConnectionInfo();
                     if(wifiInfo.getSupplicantState().toString().equals("COMPLETED")) {
                         if(!locText.getText().toString().matches("")) {
-                           // new PostLearnAPI().execute("https://ml.internalpositioning.com/learn");
-                           // new GetCalculateAPI().execute("https://ml.internalpositioning.com/calculate?group=wayFindp3");
-                           // new GetLocations().execute("https://ml.internalpositioning.com/locations?group=wayFindp3");
+                            //new PostLearnAPI().execute("https://ml.internalpositioning.com/learn");
+                            //new GetCalculateAPI().execute("https://ml.internalpositioning.com/calculate?group=wayFindp3");
+                            //new GetLocations().execute("https://ml.internalpositioning.com/locations?group=wayFindp3");
                             //-- Get LatLng Coordinates --
                             getLocation();
                             //Hide Keyboard After Pressing Button
@@ -275,7 +276,7 @@ public class LearnFragment extends Fragment {
         try {
             LocationManager locationManager = (LocationManager) getActivity().getApplicationContext().getSystemService(Context.LOCATION_SERVICE);
             //-- Getting Network Status --
-            isNetworkEnabled = locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER);
+            isNetworkEnabled = locationManager.isProviderEnabled(LocationManager.NETWORK_PROVIDER);
             if (!isNetworkEnabled) {
                 Log.d("Network not Enabled", "GG");
             } else {
@@ -283,13 +284,11 @@ public class LearnFragment extends Fragment {
                 //-- Get Location from Network Provider
                 if (isNetworkEnabled) {
                     if (locationManager != null) {
-
+                        location = locationManager.getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
                         if (location != null) {
-                            location = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
-                            Log.d("Latitude Longitude", location.getLatitude() +" " +  location.getLongitude());
-                          //  latitude = location.getLatitude();
-                          //  longitude = location.getLongitude();
-
+                            latitude = location.getLatitude();
+                            longitude = location.getLongitude();
+                            Log.d("LatLong", + latitude + ", " + longitude);
                         }
                     }
                 }
