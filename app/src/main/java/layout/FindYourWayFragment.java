@@ -1,6 +1,7 @@
 package layout;
 
 import android.content.Context;
+import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -12,10 +13,12 @@ import android.view.ViewGroup;
 
 import com.mapbox.mapboxsdk.Mapbox;
 import com.mapbox.mapboxsdk.annotations.MarkerViewOptions;
+import com.mapbox.mapboxsdk.annotations.PolygonOptions;
 import com.mapbox.mapboxsdk.camera.CameraPosition;
 import com.mapbox.mapboxsdk.camera.CameraUpdateFactory;
 import com.mapbox.mapboxsdk.constants.Style;
 import com.mapbox.mapboxsdk.geometry.LatLng;
+import com.mapbox.mapboxsdk.geometry.LatLngBounds;
 import com.mapbox.mapboxsdk.maps.MapView;
 import com.mapbox.mapboxsdk.maps.MapboxMap;
 import com.mapbox.mapboxsdk.maps.MapboxMapOptions;
@@ -46,6 +49,10 @@ public class FindYourWayFragment extends Fragment {
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";
+    private static final LatLngBounds NYPBLKL_BOUNDS = new LatLngBounds.Builder()
+            .include(new LatLng(1.3792949602146791, 103.84983998176449))
+            .include(new LatLng(1.3792949602146791, 103.84983998176449))
+            .build();
 
     // TODO: Rename and change types of parameters
     private String mParam1;
@@ -107,25 +114,30 @@ public class FindYourWayFragment extends Fragment {
             @Override
             public void onMapReady(MapboxMap mapboxMap) {
 
-            //-- Customize map with markers, polylines, etc. --
-            //-- MapBox URL --
-            mapboxMap.setStyleUrl(getString((R.string.mapbox_url)));
+                //-- Customize map with markers, polylines, etc. --
+                //-- MapBox URL --
+                mapboxMap.setStyleUrl(getString((R.string.mapbox_url)));
 
-            //-- MapBox Zoom On Location --
-            final LatLng zoomLocation = new LatLng(1.3792949602146791, 103.84983998176449);
-            CameraPosition position = new CameraPosition.Builder()
-                .target(zoomLocation)
-                .zoom(19) // Sets the zoom
-                .build(); // Creates a CameraPosition from the builder
-            mapboxMap.setCameraPosition(position);
+                //-- MapBox Zoom On Location --
+                final LatLng zoomLocation = new LatLng(1.3792949602146791, 103.84983998176449);
+                CameraPosition position = new CameraPosition.Builder()
+                    .target(zoomLocation)
+                    .zoom(19) // Sets the zoom
+                    .build(); // Creates a CameraPosition from the builder
+                mapboxMap.setCameraPosition(position);
 
-            //-- MapBox Marker Location --
-            MarkerViewOptions markerViewOptions = new MarkerViewOptions().position(new LatLng(1.379292, 103.849695));
+                //-- MapBox Marker Location --
+                MarkerViewOptions markerViewOptions = new MarkerViewOptions().position(new LatLng(1.379292, 103.849695));
 
-            mapboxMap.addMarker(markerViewOptions);
+                mapboxMap.addMarker(markerViewOptions);
 
-            mapboxMap.animateCamera(CameraUpdateFactory.newCameraPosition(position), 2000);
+                mapboxMap.animateCamera(CameraUpdateFactory.newCameraPosition(position), 2000);
 
+                //-- Set Camera LatLng Bounds --
+                mapboxMap.setLatLngBoundsForCameraTarget(NYPBLKL_BOUNDS);
+
+                mapboxMap.setMaxZoomPreference(20);
+                mapboxMap.setMinZoomPreference(19.2);
             /*
             //mapboxMap.setMinZoom(19);
             position = new CameraPosition.Builder()
