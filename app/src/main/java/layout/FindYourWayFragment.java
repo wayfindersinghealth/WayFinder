@@ -79,7 +79,10 @@ public class FindYourWayFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        //-- MapBox Access Token --
         Mapbox.getInstance(getActivity(), getString(R.string.access_token));
+
         if (getArguments() != null) {
             mParam1 = getArguments().getString(ARG_PARAM1);
             mParam2 = getArguments().getString(ARG_PARAM2);
@@ -103,30 +106,34 @@ public class FindYourWayFragment extends Fragment {
             @Override
             public void onMapReady(MapboxMap mapboxMap) {
 
-                //-- Customize map with markers, polylines, etc. --
-                final LatLng zoomLocation = new LatLng(1.3792949602146791, 103.84983998176449);
-                CameraPosition position = new CameraPosition.Builder()
-                        .target(zoomLocation)
-                        .zoom(19) // Sets the zoom
-                        //.tilt(60)
-                        .build(); // Creates a CameraPosition from the builder
+            //-- Customize map with markers, polylines, etc. --
+            //-- MapBox URL --
+            mapboxMap.setStyleUrl(getString((R.string.mapbox_url)));
 
-                //mapboxMap.setMinZoom(19);
-                mapboxMap.animateCamera(CameraUpdateFactory
-                        .newCameraPosition(position), 2000);
+            //-- MapBox Zoom On Location --
+            final LatLng zoomLocation = new LatLng(1.3792949602146791, 103.84983998176449);
+            CameraPosition position = new CameraPosition.Builder()
+                .target(zoomLocation)
+                .zoom(19) // Sets the zoom
+                .build(); // Creates a CameraPosition from the builder
+            mapboxMap.setCameraPosition(position);
 
-                MarkerViewOptions markerViewOptions = new MarkerViewOptions()
-                        .position(new LatLng(1.379292, 103.849695));
+            //-- MapBox Marker Location --
+            MarkerViewOptions markerViewOptions = new MarkerViewOptions().position(new LatLng(1.379292, 103.849695));
 
-                mapboxMap.addMarker(markerViewOptions);
-/*
-                position = new CameraPosition.Builder()
-                        .target(currentLatLng)
-                        .zoom(20) // Sets the zoom
-                        .tilt(60)
-                        .build(); // Creates a CameraPosition from the builder
-*/
-                mapboxMap.setCameraPosition(position);
+            mapboxMap.addMarker(markerViewOptions);
+
+            mapboxMap.animateCamera(CameraUpdateFactory.newCameraPosition(position), 2000);
+
+            /*
+            //mapboxMap.setMinZoom(19);
+            position = new CameraPosition.Builder()
+                .target(currentLatLng)
+                .zoom(20) // Sets the zoom
+                .tilt(60)
+                .build(); // Creates a CameraPosition from the builder
+            */
+
             }
         });
 

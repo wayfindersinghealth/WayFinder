@@ -90,10 +90,7 @@ public class MainActivity extends AppCompatActivity
         FragmentManager fragmentManager = getSupportFragmentManager();
         fragmentManager.beginTransaction().replace(R.id.content, fragment).commit();
 
-        //Set MapBox Access
-        Mapbox.getInstance(this, "pk.eyJ1IjoidmFjeGUiLCJhIjoiY2lmNm51djhoMDA3NXRtbTAyczRxMXBzOSJ9.fsYPDRGLsY0gE9cwo5k59Q");
         //-------- DO NOT TOUCH END --------
-
     }
 
     @Override
