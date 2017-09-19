@@ -1,5 +1,6 @@
 package layout;
 
+import android.app.Service;
 import android.content.Context;
 import android.graphics.Color;
 import android.location.Location;
@@ -28,6 +29,7 @@ import com.mapbox.mapboxsdk.maps.MapboxMapOptions;
 import com.mapbox.mapboxsdk.maps.OnMapReadyCallback;
 import com.mapbox.mapboxsdk.maps.SupportMapFragment;
 
+import java.util.List;
 import java.util.Map;
 
 import sg.com.singhealth.wayfinder.MainActivity;
@@ -61,20 +63,8 @@ public class FindYourWayFragment extends Fragment {
     private String mParam1;
     private String mParam2;
     private MapView mapView;
-    private LatLng currentLatLng;
 
-    //-- Variables for Get Location Methods --
-    Location location;
-    double latitude;
-    double longitude;
-    boolean isGPSEnabled = false;
-    boolean isNetworkEnabled = false;
-    boolean canGetLocation = false;
-    // The minimum distance to change Updates in meters
-    private static final long MIN_DISTANCE_CHANGE_FOR_UPDATES = 10; // 10 meters
-    // The minimum time between updates in milliseconds
-    private static final long MIN_TIME_BW_UPDATES = 1000 * 60 * 1; // 1 minute
-
+    protected LocationManager locationManager;
 
     private OnFragmentInteractionListener mListener;
 
@@ -143,9 +133,9 @@ public class FindYourWayFragment extends Fragment {
                 mapboxMap.setCameraPosition(position);
 
                 //-- MapBox Marker Location --
-                getLocation();
-                Log.d("LatLong", + latitude + ", " + longitude);
-                MarkerViewOptions markerViewOptions = new MarkerViewOptions().position(new LatLng(latitude, longitude));
+
+                Location myLocation = getLocation();
+                MarkerViewOptions markerViewOptions = new MarkerViewOptions().position(new LatLng(myLocation.getLatitude(),myLocation.getLongitude()));
 
                 mapboxMap.addMarker(markerViewOptions);
 
@@ -210,49 +200,49 @@ public class FindYourWayFragment extends Fragment {
     }
 
     //-------- START OF METHODS --------
-    //-- MapBox onStart Method --
+    //---- MapBox onStart Method ----
     @Override
     public void onStart() {
         super.onStart();
         mapView.onStart();
     }
 
-    //-- MapBox onResume Method --
+    //---- MapBox onResume Method ----
     @Override
     public void onResume() {
         super.onResume();
         mapView.onResume();
     }
 
-    //-- MapBox onPause Method --
+    //---- MapBox onPause Method ----
     @Override
     public void onPause() {
         super.onPause();
         mapView.onPause();
     }
 
-    //-- MapBox onStop Method --
+    //---- MapBox onStop Method ----
     @Override
     public void onStop() {
         super.onStop();
         mapView.onStop();
     }
 
-    //-- MapBox onSaveInstanceState Method --
+    //---- MapBox onSaveInstanceState Method ----
     @Override
     public void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
         mapView.onSaveInstanceState(outState);
     }
 
-    //-- MapBox onLowMemory Method --
+    //---- MapBox onLowMemory Method ----
     @Override
     public void onLowMemory() {
         super.onLowMemory();
         mapView.onLowMemory();
     }
 
-    //-- MapBox onDestory Method --
+    //---- MapBox onDestory Method ----
     @Override
     public void onDestroy() {
         super.onDestroy();
@@ -261,53 +251,21 @@ public class FindYourWayFragment extends Fragment {
 
     //---- Get Location Method ----
     public Location getLocation() {
-        try {
-            LocationManager locationManager = (LocationManager) getActivity().getApplicationContext().getSystemService(Context.LOCATION_SERVICE);
 
-            //-- Getting GPS Status --
-            isGPSEnabled = locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER);
-
-            //-- Getting Network Status --
-            isNetworkEnabled = locationManager.isProviderEnabled(LocationManager.NETWORK_PROVIDER);
-            if (!isGPSEnabled && !isNetworkEnabled) {
-                Log.d("Network not Enabled", "GG");
-            } else {
-                this.canGetLocation = true;
-                //-- Get Location from Network Provider
-
-                if (isNetworkEnabled) {
-                    if (locationManager != null) {
-                        location = locationManager.getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
-                        if (location != null) {
-                            latitude = location.getLatitude();
-                            longitude = location.getLongitude();
-                            Log.d("Network Provider", + latitude + ", " + longitude);
-                        }
-                    }
-                }
-
-                /*
-                // if GPS Enabled get lat/long using GPS Services
-                if (isGPSEnabled) {
-                    if (location == null) {
-
-                    Log.d("GPS Enabled", "GPS Enabled");
-                        if (locationManager != null) {
-                            location = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
-                            if (location == null) {
-                                latitude = location.getLatitude();
-                                longitude = location.getLongitude();
-                                Log.d("GPS", + latitude + ", " + longitude);
-                            }
-                        }
-                    }
-                }*/
+        locationManager = (LocationManager)getActivity().getApplicationContext().getSystemService(Context.LOCATION_SERVICE);
+        List<String> providers = locationManager.getProviders(true);
+        Location bestLocation = null;
+        for (String provider : providers) {
+            Location l = locationManager.getLastKnownLocation(provider);
+            if (l == null) {
+                continue;
             }
-        } catch (Exception e) {
-            e.printStackTrace();
+            if (bestLocation == null || l.getAccuracy() < bestLocation.getAccuracy()) {
+                bestLocation = l;
+            }
         }
-
-        return location;
+        return bestLocation;
     }
+
     //-------- END OF METHODS --------
 }

@@ -154,6 +154,7 @@ public class LearnFragment extends Fragment {
 
         //--Connecting to DB
         databaseLocation = FirebaseDatabase.getInstance().getReference("locations");
+
         //-- Button Learn Click --
         buttonLearn = (Button)rootView.findViewById(R.id.buttonLearn);
         buttonLearn.setOnClickListener(new View.OnClickListener() {

@@ -28,11 +28,8 @@ public class LocationDetail {
         return latitude;
     }
 
-
     public double getLongitude() {
         return longitude;
     }
-
-
 
 }
