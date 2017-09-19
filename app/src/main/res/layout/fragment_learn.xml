@@ -1,5 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
-<!--
+<?xml version="1.0" encoding="utf-8"?><!--
 *File Name: fragment_learn.xml
 *Created By: AY17 P3 FYPJ NYP SIT
 *Description: -
@@ -58,8 +57,7 @@
         app:layout_constraintBaseline_toBaselineOf="@+id/locationText"
         tools:layout_constraintBaseline_creator="1" />
 
-    <ImageView
-        xmlns:android="http://schemas.android.com/apk/res/android"
+    <ImageView xmlns:android="http://schemas.android.com/apk/res/android"
         android:src="@android:drawable/divider_horizontal_dark"
         android:background="@color/colorPrimary"
         android:layout_width="0dp"

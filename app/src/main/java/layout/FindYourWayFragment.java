@@ -4,9 +4,11 @@ import android.app.Service;
 import android.content.Context;
 import android.graphics.Color;
 import android.location.Location;
+import android.location.LocationListener;
 import android.location.LocationManager;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.util.Log;
@@ -64,6 +66,14 @@ public class FindYourWayFragment extends Fragment {
     private String mParam2;
     private MapView mapView;
 
+    //-- Variables for Get Location Methods --
+    Location location;
+    double latitude;
+    double longitude;
+    boolean isNetworkEnabled = false;
+    boolean canGetLocation = false;
+
+
     protected LocationManager locationManager;
 
     private OnFragmentInteractionListener mListener;
@@ -112,32 +122,34 @@ public class FindYourWayFragment extends Fragment {
         //-- View --
         final View rootView = inflater.inflate(R.layout.fragment_find_your_way, container, false);
 
+
+        //-- Getting LatLng
+        getLocation();
+
         //-- MapBox MapView --
         mapView = (MapView) rootView.findViewById(R.id.mapView);
         mapView.onCreate(savedInstanceState);
 
         mapView.getMapAsync(new OnMapReadyCallback() {
             @Override
-            public void onMapReady(MapboxMap mapboxMap) {
+            public void onMapReady(final MapboxMap mapboxMap) {
 
                 //-- Customize map with markers, polylines, etc. --
                 //-- MapBox URL --
                 mapboxMap.setStyleUrl(getString((R.string.mapbox_url)));
 
                 //-- MapBox Zoom On Location --
-                final LatLng zoomLocation = new LatLng(1.3792949602146791, 103.84983998176449);
+                final LatLng zoomLocation = new LatLng(1.3792949602146791, 103.84943998176449);
                 CameraPosition position = new CameraPosition.Builder()
-                    .target(zoomLocation)
-                    .zoom(19) // Sets the zoom
-                    .build(); // Creates a CameraPosition from the builder
+                        .target(zoomLocation)
+                        .zoom(19) // Sets the zoom
+                        .build(); // Creates a CameraPosition from the builder
                 mapboxMap.setCameraPosition(position);
 
-                //-- MapBox Marker Location --
-
                 Location myLocation = getLocation();
-                MarkerViewOptions markerViewOptions = new MarkerViewOptions().position(new LatLng(myLocation.getLatitude(),myLocation.getLongitude()));
-
+                MarkerViewOptions markerViewOptions = new MarkerViewOptions().position(new LatLng(myLocation.getLatitude(), myLocation.getLongitude()));
                 mapboxMap.addMarker(markerViewOptions);
+
 
                 mapboxMap.animateCamera(CameraUpdateFactory.newCameraPosition(position), 2000);
 
@@ -160,7 +172,8 @@ public class FindYourWayFragment extends Fragment {
 
         return rootView;
     }
-        // TODO: Rename method, update argument and hook method into UI event
+
+    // TODO: Rename method, update argument and hook method into UI event
     public void onButtonPressed(Uri uri) {
         if (mListener != null) {
             mListener.onFragmentInteraction(uri);
@@ -248,23 +261,34 @@ public class FindYourWayFragment extends Fragment {
         super.onDestroy();
         mapView.onDestroy();
     }
-
-    //---- Get Location Method ----
+    //-- Get Location Method New
     public Location getLocation() {
+        try {
+            LocationManager locationManager = (LocationManager) getActivity().getApplicationContext().getSystemService(Context.LOCATION_SERVICE);
+            //-- Getting Network Status --
+            isNetworkEnabled = locationManager.isProviderEnabled(LocationManager.NETWORK_PROVIDER);
+            if (!isNetworkEnabled) {
+                Log.d("Network not Enabled", "GG");
+            } else {
+                this.canGetLocation = true;
+                //-- Get Location from Network Provider
+                if (isNetworkEnabled) {
+                    if (locationManager != null) {
+                        location = locationManager.getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
+                        if (location != null) {
+                            latitude = location.getLatitude();
+                            longitude = location.getLongitude();
+                            Log.d("LatLong", +latitude + ", " + longitude);
+                        }
+                    }
+                }
+            }
 
-        locationManager = (LocationManager)getActivity().getApplicationContext().getSystemService(Context.LOCATION_SERVICE);
-        List<String> providers = locationManager.getProviders(true);
-        Location bestLocation = null;
-        for (String provider : providers) {
-            Location l = locationManager.getLastKnownLocation(provider);
-            if (l == null) {
-                continue;
-            }
-            if (bestLocation == null || l.getAccuracy() < bestLocation.getAccuracy()) {
-                bestLocation = l;
-            }
+        } catch (Exception e) {
+            e.printStackTrace();
         }
-        return bestLocation;
+
+        return location;
     }
 
     //-------- END OF METHODS --------

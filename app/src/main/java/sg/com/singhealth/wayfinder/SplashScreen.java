@@ -54,8 +54,7 @@ public class SplashScreen extends Activity {
         protected Void doInBackground(Void... arg0) {
             try {
                 Thread.sleep(SPLASH_SHOW_TIME);
-            }
-            catch (InterruptedException e) {
+            } catch (InterruptedException e) {
                 e.printStackTrace();
             }
             return null;
@@ -70,7 +69,7 @@ public class SplashScreen extends Activity {
             boolean isFirstStart = getPrefs.getBoolean("firstStart", true);
 
             Intent i;
-            if (isFirstStart){
+            if (isFirstStart) {
                 //-- Introduction Tutorial Slide --
                 i = new Intent(SplashScreen.this, IntroductionTutorial.class);
                 //-- Preferences Editor --

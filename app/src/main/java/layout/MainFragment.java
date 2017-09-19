@@ -73,28 +73,28 @@ public class MainFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         //-- Change Action Bar Title --
-        ((MainActivity)getActivity()).setActionBarTitle("WayFinder");
+        ((MainActivity) getActivity()).setActionBarTitle("WayFinder");
 
         //-- View --
         View rootView = inflater.inflate(R.layout.fragment_main, container, false);
 
         //-- ImageButton Learn Click--
-        ImageButton imageButtonLearn = (ImageButton)rootView.findViewById(R.id.imageButtonLearn);
+        ImageButton imageButtonLearn = (ImageButton) rootView.findViewById(R.id.imageButtonLearn);
         imageButtonLearn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 //-- Call Access Learn Page Method from MainAvtivity.java --
-                ((MainActivity)getActivity()).navigationLearn();
+                ((MainActivity) getActivity()).navigationLearn();
             }
         });
 
         //-- ImageButton Find Your Way Click --
-        ImageButton imageButtonFindYourWay = (ImageButton)rootView.findViewById(R.id.imageButtonFindYourWay);
+        ImageButton imageButtonFindYourWay = (ImageButton) rootView.findViewById(R.id.imageButtonFindYourWay);
         imageButtonFindYourWay.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 //-- Call Access Find Your Way Page Method from MainAvtivity.java --
-                ((MainActivity)getActivity()).navigationFindYourWay();
+                ((MainActivity) getActivity()).navigationFindYourWay();
             }
         });
 

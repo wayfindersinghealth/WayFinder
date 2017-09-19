@@ -40,7 +40,7 @@ import layout.MainFragment;
 
 //Add [_Fragment.OnFragmentInteractionListener] if applicable
 public class MainActivity extends AppCompatActivity
-        implements NavigationView.OnNavigationItemSelectedListener, MainFragment.OnFragmentInteractionListener, LearnFragment.OnFragmentInteractionListener, FindYourWayFragment.OnFragmentInteractionListener{
+        implements NavigationView.OnNavigationItemSelectedListener, MainFragment.OnFragmentInteractionListener, LearnFragment.OnFragmentInteractionListener, FindYourWayFragment.OnFragmentInteractionListener {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -62,7 +62,7 @@ public class MainActivity extends AppCompatActivity
             @Override
             public void onDrawerClosed(View drawerView) {
                 super.onDrawerClosed(drawerView);
-                    hideKeyboard(drawerView);
+                hideKeyboard(drawerView);
             }
 
             @Override
@@ -134,9 +134,7 @@ public class MainActivity extends AppCompatActivity
             navigationLearn();
         } else if (id == R.id.nav_preferences) {
             navigationLanguagePreference();
-        }
-
-        else if (id == R.id.nav_findYourWay) {
+        } else if (id == R.id.nav_findYourWay) {
             navigationFindYourWay();
 
         } /*else if (id == R.id.nav_help) {
@@ -144,8 +142,7 @@ public class MainActivity extends AppCompatActivity
         } else if (id == R.id.nav_aboutWayFinder) {
 
         }
-        */
-        else {
+        */ else {
             //Else Home Fragment
             navigationHome();
         }

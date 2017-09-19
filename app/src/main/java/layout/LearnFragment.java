@@ -156,33 +156,35 @@ public class LearnFragment extends Fragment {
         databaseLocation = FirebaseDatabase.getInstance().getReference("locations");
 
         //-- Button Learn Click --
-        buttonLearn = (Button)rootView.findViewById(R.id.buttonLearn);
+        buttonLearn = (Button) rootView.findViewById(R.id.buttonLearn);
         buttonLearn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if(wmgr.isWifiEnabled()){
+                if (wmgr.isWifiEnabled()) {
                     WifiInfo wifiInfo = wmgr.getConnectionInfo();
-                    if(wifiInfo.getSupplicantState().toString().equals("COMPLETED")) {
-                        if(!locText.getText().toString().matches("")) {
+                    if (wifiInfo.getSupplicantState().toString().equals("COMPLETED")) {
+                        if (!locText.getText().toString().matches("")) {
+
                             //new PostLearnAPI().execute("https://ml.internalpositioning.com/learn");
                             //new GetCalculateAPI().execute("https://ml.internalpositioning.com/calculate?group=wayFindp3");
                             //new GetLocations().execute("https://ml.internalpositioning.com/locations?group=wayFindp3");
+
                             //-- Get LatLng Coordinates ---
                             getLocation();
                             //Hide Keyboard After Pressing Button
                             ((MainActivity) getActivity()).hideKeyboard(rootView);
-                        } else{
-                            Toast.makeText(getActivity(), "Please Input Your Current Location." , Toast.LENGTH_SHORT).show();
+                        } else {
+                            Toast.makeText(getActivity(), "Please Input Your Current Location.", Toast.LENGTH_SHORT).show();
                         }
                     }
-                } else{
-                    Toast.makeText(getActivity(), "Please Turn On Your WIFI Connection." , Toast.LENGTH_SHORT).show();
+                } else {
+                    Toast.makeText(getActivity(), "Please Turn On Your WIFI Connection.", Toast.LENGTH_SHORT).show();
                 }
             }
         });
 
         //-- ListView Learn --
-        listViewLearn = (ListView)rootView.findViewById(R.id.listViewLearn);
+        listViewLearn = (ListView) rootView.findViewById(R.id.listViewLearn);
         registerForContextMenu(listViewLearn);
 
         return rootView;
@@ -231,7 +233,7 @@ public class LearnFragment extends Fragment {
     //---- ListView Context Menu ----
     public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMenuInfo menuInfo) {
         super.onCreateContextMenu(menu, v, menuInfo);
-        AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo)menuInfo;
+        AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo) menuInfo;
         menu.setHeaderTitle(listViewLearn.getItemAtPosition(info.position).toString());
         MenuInflater inflater = this.getActivity().getMenuInflater();
         inflater.inflate(R.menu.location_context_menu, menu);
@@ -268,7 +270,7 @@ public class LearnFragment extends Fragment {
         } catch (JSONException e) {
             e.printStackTrace();
         }
-        Log.d("JSON Value",root.toString());
+        Log.d("JSON Value", root.toString());
         return root.toString();
     }
 
@@ -289,7 +291,7 @@ public class LearnFragment extends Fragment {
                         if (location != null) {
                             latitude = location.getLatitude();
                             longitude = location.getLongitude();
-                            Log.d("LatLong", + latitude + ", " + longitude);
+                            Log.d("LatLong", +latitude + ", " + longitude);
                         }
                     }
                 }
@@ -306,7 +308,7 @@ public class LearnFragment extends Fragment {
     //-------- START OF CLASS --------
 
     //---- PostLearnAPI Task Class ----
-    public class PostLearnAPI extends AsyncTask<String, String, String>{
+    public class PostLearnAPI extends AsyncTask<String, String, String> {
 
         @Override
         protected String doInBackground(String... params) {
@@ -315,7 +317,7 @@ public class LearnFragment extends Fragment {
             BufferedWriter writer = null;
             String result;
 
-            try{
+            try {
                 //Connecting to API
                 URL link = new URL(params[0]);
                 connection = (HttpsURLConnection) link.openConnection();
@@ -326,7 +328,7 @@ public class LearnFragment extends Fragment {
                 connection.connect();
 
                 //Writing to API
-                OutputStream outputStream =  connection.getOutputStream();
+                OutputStream outputStream = connection.getOutputStream();
                 writer = new BufferedWriter(new OutputStreamWriter(outputStream, "UTF-8"));
                 writer.write(formatDataAsJSON());
                 writer.close();
@@ -337,7 +339,7 @@ public class LearnFragment extends Fragment {
                 String line = null;
                 StringBuilder sb = new StringBuilder();
 
-                while((line = reader.readLine())!= null){
+                while ((line = reader.readLine()) != null) {
                     sb.append(line);
                 }
                 result = sb.toString();
@@ -347,11 +349,12 @@ public class LearnFragment extends Fragment {
                 e.printStackTrace();
             } catch (IOException e) {
                 e.printStackTrace();
-            } finally{
-                if(connection != null){
+            } finally {
+                if (connection != null) {
                     connection.disconnect();
-                } try{
-                    if(reader != null){
+                }
+                try {
+                    if (reader != null) {
                         reader.close();
                     }
                 } catch (IOException e) {
@@ -362,10 +365,10 @@ public class LearnFragment extends Fragment {
         }
 
         @Override
-        protected void onPostExecute(String result){
+        protected void onPostExecute(String result) {
             super.onPostExecute(result);
             Log.d("result of post", result + " ");
-            Toast.makeText(getActivity(), "Learning Your Location" , Toast.LENGTH_SHORT).show();
+            Toast.makeText(getActivity(), "Learning Your Location", Toast.LENGTH_SHORT).show();
         }
     }
 
@@ -377,7 +380,7 @@ public class LearnFragment extends Fragment {
             HttpsURLConnection connection = null;
             BufferedReader reader = null;
 
-            try{
+            try {
                 //Connecting to API
                 URL link = new URL(params[0]);
                 connection = (HttpsURLConnection) link.openConnection();
@@ -385,12 +388,12 @@ public class LearnFragment extends Fragment {
 
                 //Reading results of Post
                 InputStream stream = connection.getInputStream();
-                reader =  new BufferedReader(new InputStreamReader(stream));
+                reader = new BufferedReader(new InputStreamReader(stream));
 
                 StringBuffer sBuffer = new StringBuffer();
                 String line = "";
 
-                while((line = reader.readLine()) != null){
+                while ((line = reader.readLine()) != null) {
                     sBuffer.append(line);
                 }
                 String finalJson = sBuffer.toString();
@@ -401,11 +404,11 @@ public class LearnFragment extends Fragment {
             } catch (IOException e) {
                 e.printStackTrace();
             } finally {
-                if(connection != null) {
+                if (connection != null) {
                     connection.disconnect();
                 }
                 try {
-                    if(reader != null) {
+                    if (reader != null) {
                         reader.close();
                     }
                 } catch (IOException e) {
@@ -417,14 +420,14 @@ public class LearnFragment extends Fragment {
         }
 
         @Override
-        protected void onPostExecute(String result){
+        protected void onPostExecute(String result) {
             super.onPostExecute(result);
             Log.d("Calculate Result", result + " ");
         }
     }
 
     //---- GetLocations Class ----
-    public class GetLocations extends AsyncTask<String, String, String > {
+    public class GetLocations extends AsyncTask<String, String, String> {
         ArrayList<String> aList = new ArrayList<String>();
 
         @Override
@@ -432,7 +435,7 @@ public class LearnFragment extends Fragment {
             HttpsURLConnection connection = null;
             BufferedReader reader = null;
 
-            try{
+            try {
                 //Connecting to API
                 URL link = new URL(params[0]);
                 connection = (HttpsURLConnection) link.openConnection();
@@ -440,12 +443,12 @@ public class LearnFragment extends Fragment {
 
                 //Reading results of Post
                 InputStream stream = connection.getInputStream();
-                reader =  new BufferedReader(new InputStreamReader(stream));
+                reader = new BufferedReader(new InputStreamReader(stream));
 
                 StringBuffer sBuffer = new StringBuffer();
                 String line = "";
 
-                while((line = reader.readLine()) != null){
+                while ((line = reader.readLine()) != null) {
                     sBuffer.append(line);
                 }
                 String finalJson = sBuffer.toString();
@@ -453,7 +456,7 @@ public class LearnFragment extends Fragment {
                 JSONObject parentArray = parentObject.getJSONObject("locations");
 
                 Iterator<String> iterator = parentArray.keys();
-                while(iterator.hasNext()){
+                while (iterator.hasNext()) {
                     aList.add(iterator.next());
                 }
 
@@ -466,11 +469,11 @@ public class LearnFragment extends Fragment {
             } catch (JSONException e) {
                 e.printStackTrace();
             } finally {
-                if(connection != null) {
+                if (connection != null) {
                     connection.disconnect();
                 }
                 try {
-                    if(reader != null) {
+                    if (reader != null) {
                         reader.close();
                     }
                 } catch (IOException e) {
@@ -482,24 +485,24 @@ public class LearnFragment extends Fragment {
         }
 
         @Override
-        protected void onPostExecute(String result){
+        protected void onPostExecute(String result) {
             super.onPostExecute(result);
             ArrayAdapter<String> arrayAdapter = new ArrayAdapter<String>(
                     getActivity(),
                     android.R.layout.simple_list_item_1,
-                    aList );
+                    aList);
 
             listViewLearn.setAdapter(arrayAdapter);
             registerForContextMenu(listViewLearn);
         }
     }
 
-    private void addLocation(){
+    private void addLocation() {
         String locationName = locText.getText().toString();
         double latitude = getLocation().getLatitude();
         double longitude = getLocation().getLongitude();
 
-        if(!TextUtils.isEmpty(locationName)){
+        if (!TextUtils.isEmpty(locationName)) {
             String id = databaseLocation.push().getKey();
             LocationDetail locDetail = new LocationDetail(id, locationName, latitude, longitude);
             databaseLocation.child(id).setValue(locDetail);
