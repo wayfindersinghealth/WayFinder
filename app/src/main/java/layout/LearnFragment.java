@@ -167,7 +167,7 @@ public class LearnFragment extends Fragment {
                             //new PostLearnAPI().execute("https://ml.internalpositioning.com/learn");
                             //new GetCalculateAPI().execute("https://ml.internalpositioning.com/calculate?group=wayFindp3");
                             //new GetLocations().execute("https://ml.internalpositioning.com/locations?group=wayFindp3");
-                            //-- Get LatLng Coordinates --
+                            //-- Get LatLng Coordinates ---
                             getLocation();
                             //Hide Keyboard After Pressing Button
                             ((MainActivity) getActivity()).hideKeyboard(rootView);
