@@ -18,6 +18,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.mapbox.mapboxsdk.Mapbox;
+import com.mapbox.mapboxsdk.annotations.Marker;
 import com.mapbox.mapboxsdk.annotations.MarkerViewOptions;
 import com.mapbox.mapboxsdk.annotations.PolygonOptions;
 import com.mapbox.mapboxsdk.camera.CameraPosition;
@@ -33,6 +34,8 @@ import com.mapbox.mapboxsdk.maps.SupportMapFragment;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Timer;
+import java.util.TimerTask;
 
 import sg.com.singhealth.wayfinder.MainActivity;
 import sg.com.singhealth.wayfinder.R;
@@ -68,6 +71,7 @@ public class FindYourWayFragment extends Fragment {
 
     //-- Variables for Get Location Methods --
     Location location;
+    Location oldLocation;
     double latitude;
     double longitude;
     boolean isNetworkEnabled = false;
@@ -123,8 +127,6 @@ public class FindYourWayFragment extends Fragment {
         final View rootView = inflater.inflate(R.layout.fragment_find_your_way, container, false);
 
 
-        //-- Getting LatLng
-        getLocation();
 
         //-- MapBox MapView --
         mapView = (MapView) rootView.findViewById(R.id.mapView);
@@ -146,9 +148,18 @@ public class FindYourWayFragment extends Fragment {
                         .build(); // Creates a CameraPosition from the builder
                 mapboxMap.setCameraPosition(position);
 
-                Location myLocation = getLocation();
-                MarkerViewOptions markerViewOptions = new MarkerViewOptions().position(new LatLng(myLocation.getLatitude(), myLocation.getLongitude()));
-                mapboxMap.addMarker(markerViewOptions);
+                Timer t = new Timer();
+                t.scheduleAtFixedRate(new TimerTask() {
+                    @Override
+                    public void run() {
+                        final Location myLocation;
+                        myLocation = getLocation();
+                        MarkerViewOptions markerViewOptions = new MarkerViewOptions().position(new LatLng(myLocation.getLatitude(), myLocation.getLongitude()));
+                        mapboxMap.addMarker(markerViewOptions);
+
+                    }
+                },0,1500);
+
 
 
                 mapboxMap.animateCamera(CameraUpdateFactory.newCameraPosition(position), 2000);
