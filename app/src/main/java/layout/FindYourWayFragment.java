@@ -9,6 +9,7 @@ import android.location.LocationManager;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
+import android.os.Looper;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.util.Log;
@@ -16,9 +17,12 @@ import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
+import android.widget.Toast;
 
 import com.mapbox.mapboxsdk.Mapbox;
 import com.mapbox.mapboxsdk.annotations.Marker;
+import com.mapbox.mapboxsdk.annotations.MarkerView;
 import com.mapbox.mapboxsdk.annotations.MarkerViewOptions;
 import com.mapbox.mapboxsdk.annotations.PolygonOptions;
 import com.mapbox.mapboxsdk.camera.CameraPosition;
@@ -31,6 +35,8 @@ import com.mapbox.mapboxsdk.maps.MapboxMap;
 import com.mapbox.mapboxsdk.maps.MapboxMapOptions;
 import com.mapbox.mapboxsdk.maps.OnMapReadyCallback;
 import com.mapbox.mapboxsdk.maps.SupportMapFragment;
+
+import org.w3c.dom.Text;
 
 import java.util.List;
 import java.util.Map;
@@ -76,6 +82,7 @@ public class FindYourWayFragment extends Fragment {
     double longitude;
     boolean isNetworkEnabled = false;
     boolean canGetLocation = false;
+    private MarkerView markerView;
 
 
     protected LocationManager locationManager;
@@ -128,6 +135,8 @@ public class FindYourWayFragment extends Fragment {
 
 
 
+
+
         //-- MapBox MapView --
         mapView = (MapView) rootView.findViewById(R.id.mapView);
         mapView.onCreate(savedInstanceState);
@@ -148,17 +157,18 @@ public class FindYourWayFragment extends Fragment {
                         .build(); // Creates a CameraPosition from the builder
                 mapboxMap.setCameraPosition(position);
 
-                Timer t = new Timer();
-                t.scheduleAtFixedRate(new TimerTask() {
-                    @Override
-                    public void run() {
-                        final Location myLocation;
-                        myLocation = getLocation();
-                        MarkerViewOptions markerViewOptions = new MarkerViewOptions().position(new LatLng(myLocation.getLatitude(), myLocation.getLongitude()));
-                        mapboxMap.addMarker(markerViewOptions);
 
-                    }
-                },0,1500);
+
+
+                final Location myLocation;
+                myLocation = getLocation();
+                markerView = mapboxMap.addMarker(new MarkerViewOptions().position(new LatLng(myLocation.getLatitude(), myLocation.getLongitude())));
+                if(markerView!= null){
+                    mapboxMap.removeMarker(markerView);
+                }
+                //MarkerViewOptions markerViewOptions = new MarkerViewOptions().position(new LatLng(myLocation.getLatitude(), myLocation.getLongitude()));
+
+
 
 
 
@@ -271,7 +281,9 @@ public class FindYourWayFragment extends Fragment {
     public void onDestroy() {
         super.onDestroy();
         mapView.onDestroy();
+
     }
+
     //-- Get Location Method New
     public Location getLocation() {
         try {
@@ -290,6 +302,7 @@ public class FindYourWayFragment extends Fragment {
                             latitude = location.getLatitude();
                             longitude = location.getLongitude();
                             Log.d("LatLong", +latitude + ", " + longitude);
+
                         }
                     }
                 }
