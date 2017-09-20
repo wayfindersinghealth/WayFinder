@@ -21,6 +21,7 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.AutoCompleteTextView;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -109,7 +110,8 @@ public class FindYourWayFragment extends Fragment {
     protected LocationManager locationManager;
     WifiManager wmgr;
 
-    Spinner spinnerTo;
+    //Spinner spinnerTo;
+    AutoCompleteTextView spinnerTo;
 
     private OnFragmentInteractionListener mListener;
 
@@ -160,8 +162,12 @@ public class FindYourWayFragment extends Fragment {
         //-- JSON Get Locations --
         new GetLocations().execute("https://ml.internalpositioning.com/locations?group=wayFindp3");
 
+        //-- Location AutoCompleteTextView --
+        //https://gist.github.com/ruuhkis/d942330d97163d868ee7
+        spinnerTo = (AutoCompleteTextView) rootView.findViewById(R.id.spinnerTo);
+
         //-- Location Spinner --
-        spinnerTo = (Spinner) rootView.findViewById(R.id.spinnerTo);
+       // spinnerTo = (Spinner) rootView.findViewById(R.id.spinnerTo);
 
         //-- WifiManager --
         wmgr = (WifiManager) getActivity().getApplicationContext().getSystemService(Context.WIFI_SERVICE);
@@ -276,6 +282,7 @@ public class FindYourWayFragment extends Fragment {
     }
 
     //-------- START OF METHODS --------
+
     //---- MapBox onStart Method ----
     @Override
     public void onStart() {
@@ -524,12 +531,20 @@ public class FindYourWayFragment extends Fragment {
         @Override
         protected void onPostExecute(String result){
             super.onPostExecute(result);
+            //-- Spinner --
+           // ArrayAdapter<String> arrayAdapter = new ArrayAdapter<String>(
+            //        getActivity(),
+            //        android.R.layout.simple_spinner_item,
+             //       aList);
+           // arrayAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+            //-- AutoCompleteTextView --
             ArrayAdapter<String> arrayAdapter = new ArrayAdapter<String>(
                     getActivity(),
-                    android.R.layout.simple_spinner_item,
+                    android.R.layout.simple_list_item_1,
                     aList);
-            arrayAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+
             spinnerTo.setAdapter(arrayAdapter);
+            spinnerTo.setThreshold(0);
         }
     }
 
