@@ -17,7 +17,7 @@
 
     <!-- Controls in layout > fragment_learn.xml Page -->
     <string name="textViewInput">Please Input Your Current Location.</string>
-    <string name="editTextLearn">L311</string>
+    <string name="editTextLearn">Enter Location Name</string>
     <string name="buttonLearn">LEARN</string>
     <string name="textViewDetails">Press To View The Details About The Location.</string>
 

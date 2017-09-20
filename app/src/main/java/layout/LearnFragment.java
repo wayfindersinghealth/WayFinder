@@ -187,31 +187,6 @@ public class LearnFragment extends Fragment {
 
         //-- ListView Learn --
         listViewLearn = (ListView)rootView.findViewById(R.id.listViewLearn);
-        listViewLearn.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
-            @Override
-            public boolean onItemLongClick(AdapterView<?> adapterView, View view, int i, long l) {
-                AlertDialog.Builder mBuilder = new AlertDialog.Builder(getActivity());
-                View mView = inflater.inflate(R.layout.location_details_view, null);
-
-                //-- Set Title --
-                Object o = adapterView.getItemAtPosition(i);
-                mBuilder.setTitle(o.toString());
-
-                mBuilder.setNegativeButton("Dismiss", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialogInterface, int i) {
-                        dialogInterface.dismiss();
-                    }
-                });
-
-                mBuilder.setView(mView);
-                AlertDialog dialog = mBuilder.create();
-                dialog.show();
-
-                return false;
-            }
-        });
-
         return rootView;
     }
 
@@ -483,10 +458,12 @@ public class LearnFragment extends Fragment {
                 String finalJson = sBuffer.toString();
                 JSONObject parentObject = new JSONObject(finalJson);
                 JSONObject parentArray = parentObject.getJSONObject("locations");
+                Log.d("parentArray string",parentArray.toString());
 
                 Iterator<String> iterator = parentArray.keys();
                 while(iterator.hasNext()){
-                    aList.add(iterator.next());
+
+                    aList.add(iterator.next().toUpperCase());
                 }
 
                 return aList.toString();
