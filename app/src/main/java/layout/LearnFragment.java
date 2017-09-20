@@ -145,16 +145,16 @@ public class LearnFragment extends Fragment {
         //-- View --
         final View rootView = inflater.inflate(R.layout.fragment_learn, container, false);
 
-        //-- JSON --
+        //-- JSON Get Locations --
         new GetLocations().execute("https://ml.internalpositioning.com/locations?group=wayFindp3");
 
         //-- WifiManager --
         wmgr = (WifiManager) getActivity().getApplicationContext().getSystemService(Context.WIFI_SERVICE);
 
-        //-- EditText Learn Input--
+        //-- EditText Learn Input --
         locText = (TextView) rootView.findViewById(R.id.locationText);
 
-        //--Connecting to DB
+        //-- Connecting to DB --
         databaseLocation = FirebaseDatabase.getInstance().getReference("locations");
 
         //-- Button Learn Click --
@@ -499,7 +499,6 @@ public class LearnFragment extends Fragment {
                     aList );
 
             listViewLearn.setAdapter(arrayAdapter);
-            registerForContextMenu(listViewLearn);
         }
     }
 

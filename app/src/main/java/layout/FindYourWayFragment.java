@@ -20,6 +20,8 @@ import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
+import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -47,11 +49,14 @@ import org.w3c.dom.Text;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Timer;
@@ -104,6 +109,8 @@ public class FindYourWayFragment extends Fragment {
     protected LocationManager locationManager;
     WifiManager wmgr;
 
+    Spinner spinnerTo;
+
     private OnFragmentInteractionListener mListener;
 
     public FindYourWayFragment() {
@@ -149,6 +156,12 @@ public class FindYourWayFragment extends Fragment {
 
         //-- View --
         final View rootView = inflater.inflate(R.layout.fragment_find_your_way, container, false);
+
+        //-- JSON Get Locations --
+        new GetLocations().execute("https://ml.internalpositioning.com/locations?group=wayFindp3");
+
+        //-- Location Spinner --
+        spinnerTo = (Spinner) rootView.findViewById(R.id.spinnerTo);
 
         //-- WifiManager --
         wmgr = (WifiManager) getActivity().getApplicationContext().getSystemService(Context.WIFI_SERVICE);
@@ -448,5 +461,77 @@ public class FindYourWayFragment extends Fragment {
         }
     }
 
-    //-------- END OF CLASS --------
+    //---- GetLocations Class ----
+    public class GetLocations extends AsyncTask<String, String, String > {
+        ArrayList<String> aList = new ArrayList<String>();
+
+        @Override
+        protected String doInBackground(String... params) {
+            HttpsURLConnection connection = null;
+            BufferedReader reader = null;
+
+            try{
+                //Connecting to API
+                URL link = new URL(params[0]);
+                connection = (HttpsURLConnection) link.openConnection();
+                connection.connect();
+
+                //Reading results of Post
+                InputStream stream = connection.getInputStream();
+                reader =  new BufferedReader(new InputStreamReader(stream));
+
+                StringBuffer sBuffer = new StringBuffer();
+                String line = "";
+
+                while((line = reader.readLine()) != null){
+                    sBuffer.append(line);
+                }
+                String finalJson = sBuffer.toString();
+                JSONObject parentObject = new JSONObject(finalJson);
+                JSONObject parentArray = parentObject.getJSONObject("locations");
+                Log.d("parentArray string",parentArray.toString());
+
+                Iterator<String> iterator = parentArray.keys();
+                while(iterator.hasNext()){
+
+                    aList.add(iterator.next().toUpperCase());
+                }
+
+                return aList.toString();
+
+            } catch (MalformedURLException e) {
+                e.printStackTrace();
+            } catch (IOException e) {
+                e.printStackTrace();
+            } catch (JSONException e) {
+                e.printStackTrace();
+            } finally {
+                if(connection != null) {
+                    connection.disconnect();
+                }
+                try {
+                    if(reader != null) {
+                        reader.close();
+                    }
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(String result){
+            super.onPostExecute(result);
+            ArrayAdapter<String> arrayAdapter = new ArrayAdapter<String>(
+                    getActivity(),
+                    android.R.layout.simple_spinner_item,
+                    aList);
+            arrayAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+            spinnerTo.setAdapter(arrayAdapter);
+        }
+    }
+
+    //-------- END OF CLASS ---------
 }
