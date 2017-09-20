@@ -192,8 +192,10 @@ public class LearnFragment extends Fragment {
             public boolean onItemLongClick(AdapterView<?> adapterView, View view, int i, long l) {
                 AlertDialog.Builder mBuilder = new AlertDialog.Builder(getActivity());
                 View mView = inflater.inflate(R.layout.location_details_view, null);
-                mBuilder.setTitle("Test");
 
+                //-- Set Title --
+                Object o = adapterView.getItemAtPosition(i);
+                mBuilder.setTitle(o.toString());
 
                 mBuilder.setNegativeButton("Dismiss", new DialogInterface.OnClickListener() {
                     @Override
@@ -209,10 +211,6 @@ public class LearnFragment extends Fragment {
                 return false;
             }
         });
-
-
-
-        //registerForContextMenu(listViewLearn);
 
         return rootView;
     }
@@ -257,22 +255,6 @@ public class LearnFragment extends Fragment {
     }
 
     //-------- START OF METHODS --------
-    //---- ListView Context Menu ----
-    /*
-    public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMenuInfo menuInfo) {
-        super.onCreateContextMenu(menu, v, menuInfo);
-        AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo)menuInfo;
-        menu.setHeaderTitle(listViewLearn.getItemAtPosition(info.position).toString());
-        MenuInflater inflater = this.getActivity().getMenuInflater();
-        inflater.inflate(R.menu.location_context_menu, menu);
-    }
-    */
-
-    //---- ListView Alert Dialog ----
-    public void listViewDetails() {
-
-
-    }
 
     //---- Format Data As JSON Method ----
     private String formatDataAsJSON() {
