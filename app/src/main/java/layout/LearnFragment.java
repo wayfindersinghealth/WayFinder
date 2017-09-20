@@ -3,6 +3,7 @@ package layout;
 import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.location.Criteria;
 import android.location.Location;
 import android.location.LocationManager;
@@ -29,6 +30,7 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
+import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -135,7 +137,7 @@ public class LearnFragment extends Fragment {
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+    public View onCreateView(final LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         //-- Change Action Bar Title --
         ((MainActivity) getActivity()).setActionBarTitle("Learn");
@@ -185,7 +187,32 @@ public class LearnFragment extends Fragment {
 
         //-- ListView Learn --
         listViewLearn = (ListView)rootView.findViewById(R.id.listViewLearn);
-        registerForContextMenu(listViewLearn);
+        listViewLearn.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
+            @Override
+            public boolean onItemLongClick(AdapterView<?> adapterView, View view, int i, long l) {
+                AlertDialog.Builder mBuilder = new AlertDialog.Builder(getActivity());
+                View mView = inflater.inflate(R.layout.location_details_view, null);
+                mBuilder.setTitle("Test");
+
+
+                mBuilder.setNegativeButton("Dismiss", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        dialogInterface.dismiss();
+                    }
+                });
+
+                mBuilder.setView(mView);
+                AlertDialog dialog = mBuilder.create();
+                dialog.show();
+
+                return false;
+            }
+        });
+
+
+
+        //registerForContextMenu(listViewLearn);
 
         return rootView;
     }
@@ -231,12 +258,20 @@ public class LearnFragment extends Fragment {
 
     //-------- START OF METHODS --------
     //---- ListView Context Menu ----
+    /*
     public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMenuInfo menuInfo) {
         super.onCreateContextMenu(menu, v, menuInfo);
         AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo)menuInfo;
         menu.setHeaderTitle(listViewLearn.getItemAtPosition(info.position).toString());
         MenuInflater inflater = this.getActivity().getMenuInflater();
         inflater.inflate(R.menu.location_context_menu, menu);
+    }
+    */
+
+    //---- ListView Alert Dialog ----
+    public void listViewDetails() {
+
+
     }
 
     //---- Format Data As JSON Method ----
@@ -301,6 +336,19 @@ public class LearnFragment extends Fragment {
         }
 
         return location;
+    }
+
+    //---- addLocation Methods ----
+    private void addLocation(){
+        String locationName = locText.getText().toString();
+        double latitude = getLocation().getLatitude();
+        double longitude = getLocation().getLongitude();
+
+        if(!TextUtils.isEmpty(locationName)){
+            String id = databaseLocation.push().getKey();
+            LocationDetail locDetail = new LocationDetail(id, locationName, latitude, longitude);
+            databaseLocation.child(id).setValue(locDetail);
+        }
     }
 
     //-------- END OF METHODS --------
@@ -496,16 +544,5 @@ public class LearnFragment extends Fragment {
         }
     }
 
-    private void addLocation(){
-        String locationName = locText.getText().toString();
-        double latitude = getLocation().getLatitude();
-        double longitude = getLocation().getLongitude();
-
-        if(!TextUtils.isEmpty(locationName)){
-            String id = databaseLocation.push().getKey();
-            LocationDetail locDetail = new LocationDetail(id, locationName, latitude, longitude);
-            databaseLocation.child(id).setValue(locDetail);
-        }
-    }
     //-------- END OF CLASS ---------
 }

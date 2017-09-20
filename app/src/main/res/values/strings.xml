@@ -45,11 +45,6 @@
     <string name="navPreference">Language Preference</string>
     <string name="navAboutWayFinder">About Way Finder</string>
 
-    <!-- Controls in menu > location_context_menu.xml -->
-    <string name="viewLocation">View Location Details</string>
-    <string name="editLocation">Edit Location Name</string>
-    <string name="deleteLocation">Delete Location</string>
-
     <!-- Controls in menu > main.xml Control-->
     <string name="action_refresh">Refresh</string>
 

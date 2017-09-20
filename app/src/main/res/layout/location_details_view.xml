@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+*File Name: location_details_view.xml
+*Created By: AY17 P3 FYPJ NYP SIT
+*Description: -
+-->
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:padding="20dp">>
+
+    <TextView
+        android:id="@+id/getLongtitude"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:text="Test01"/>
+
+    <TextView
+        android:id="@+id/getLatitude"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:text="Test02"/>
+
+    <TextView
+        android:id="@+id/getAccuracy"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:text="Test03"/>
+
+</LinearLayout>

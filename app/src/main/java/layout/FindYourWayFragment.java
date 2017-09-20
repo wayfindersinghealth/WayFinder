@@ -7,6 +7,9 @@ import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
 import android.net.Uri;
+import android.net.wifi.ScanResult;
+import android.net.wifi.WifiManager;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
@@ -36,12 +39,26 @@ import com.mapbox.mapboxsdk.maps.MapboxMapOptions;
 import com.mapbox.mapboxsdk.maps.OnMapReadyCallback;
 import com.mapbox.mapboxsdk.maps.SupportMapFragment;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 import org.w3c.dom.Text;
 
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.OutputStream;
+import java.io.OutputStreamWriter;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.List;
 import java.util.Map;
 import java.util.Timer;
 import java.util.TimerTask;
+import java.util.concurrent.TimeUnit;
+
+import javax.net.ssl.HttpsURLConnection;
 
 import sg.com.singhealth.wayfinder.MainActivity;
 import sg.com.singhealth.wayfinder.R;
@@ -73,7 +90,7 @@ public class FindYourWayFragment extends Fragment {
     // TODO: Rename and change types of parameters
     private String mParam1;
     private String mParam2;
-    private MapView mapView;
+    MapView mapView;
 
     //-- Variables for Get Location Methods --
     Location location;
@@ -82,10 +99,10 @@ public class FindYourWayFragment extends Fragment {
     double longitude;
     boolean isNetworkEnabled = false;
     boolean canGetLocation = false;
-    private MarkerView markerView;
-
+    private static MarkerView markerView;
 
     protected LocationManager locationManager;
+    WifiManager wmgr;
 
     private OnFragmentInteractionListener mListener;
 
@@ -133,9 +150,11 @@ public class FindYourWayFragment extends Fragment {
         //-- View --
         final View rootView = inflater.inflate(R.layout.fragment_find_your_way, container, false);
 
+        //-- WifiManager --
+        wmgr = (WifiManager) getActivity().getApplicationContext().getSystemService(Context.WIFI_SERVICE);
 
-
-
+        //-- Track Location --
+        new PostTrackAPI().execute("https://ml.internalpositioning.com/track");
 
         //-- MapBox MapView --
         mapView = (MapView) rootView.findViewById(R.id.mapView);
@@ -157,20 +176,33 @@ public class FindYourWayFragment extends Fragment {
                         .build(); // Creates a CameraPosition from the builder
                 mapboxMap.setCameraPosition(position);
 
-
-
-
                 final Location myLocation;
                 myLocation = getLocation();
+                Log.d("First GET", "Getting Location 1");
                 markerView = mapboxMap.addMarker(new MarkerViewOptions().position(new LatLng(myLocation.getLatitude(), myLocation.getLongitude())));
-                if(markerView!= null){
-                    mapboxMap.removeMarker(markerView);
-                }
+
+                /*
+                final Timer t = new Timer();
+                t.scheduleAtFixedRate(new TimerTask() {
+                    @Override
+                    public void run() {
+
+                        if (markerView!= null){
+                            Log.d("Second GET", "Getting Location 2");
+
+                           final Location urLocation;
+                           urLocation = getLocation();
+                           LatLng latLng  = new LatLng(urLocation.getLatitude(), urLocation.getLongitude());
+                           markerView.setPosition(latLng);
+                        }
+
+                    }
+                },0,2500
+
+                );
+                */
+
                 //MarkerViewOptions markerViewOptions = new MarkerViewOptions().position(new LatLng(myLocation.getLatitude(), myLocation.getLongitude()));
-
-
-
-
 
                 mapboxMap.animateCamera(CameraUpdateFactory.newCameraPosition(position), 2000);
 
@@ -281,9 +313,7 @@ public class FindYourWayFragment extends Fragment {
     public void onDestroy() {
         super.onDestroy();
         mapView.onDestroy();
-
     }
-
     //-- Get Location Method New
     public Location getLocation() {
         try {
@@ -296,18 +326,17 @@ public class FindYourWayFragment extends Fragment {
                 this.canGetLocation = true;
                 //-- Get Location from Network Provider
                 if (isNetworkEnabled) {
+
                     if (locationManager != null) {
                         location = locationManager.getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
                         if (location != null) {
                             latitude = location.getLatitude();
                             longitude = location.getLongitude();
                             Log.d("LatLong", +latitude + ", " + longitude);
-
                         }
                     }
                 }
             }
-
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -315,5 +344,112 @@ public class FindYourWayFragment extends Fragment {
         return location;
     }
 
+    //---- Format Data As JSON Method ----
+    private String formatDataAsJSON() {
+        JSONObject root = new JSONObject();
+        JSONArray wifiFingerprint = new JSONArray();
+        JSONObject fingerprint = new JSONObject();
+
+        List<ScanResult> results = wmgr.getScanResults();
+        String timeStamp = TimeUnit.MILLISECONDS.toSeconds(System.currentTimeMillis()) + "";
+        wmgr.startScan();
+
+        for (ScanResult R : results) {
+            if (!R.SSID.equals("NYP-Student")) {
+                try {
+                    fingerprint.put("mac", R.BSSID.toString());
+                    fingerprint.put("rssi", R.level);
+                    wifiFingerprint.put(fingerprint);
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+        try {
+            root.put("group", "wayfindp3");
+            root.put("username", "P3");
+            root.put("time", timeStamp);
+            root.put("wifi-fingerprint", wifiFingerprint);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        Log.d("JSON Value",root.toString());
+        return root.toString();
+    }
+
     //-------- END OF METHODS --------
+
+    //-------- START OF CLASS --------
+
+    //---- PostTrackAPI Task Class ----
+    public class PostTrackAPI extends AsyncTask<String, String, String> {
+
+        @Override
+        protected String doInBackground(String... params) {
+            HttpsURLConnection connection = null;
+            BufferedReader reader = null;
+            BufferedWriter writer = null;
+            String result;
+
+            try{
+                //Connecting to API
+                URL link = new URL(params[0]);
+                connection = (HttpsURLConnection) link.openConnection();
+                connection.setDoOutput(true);
+                connection.setRequestProperty("Content-Type", "application/json");
+                connection.setRequestProperty("Accept", "application/json");
+                connection.setRequestMethod("POST");
+                connection.connect();
+
+                //Writing to API
+                OutputStream outputStream =  connection.getOutputStream();
+                writer = new BufferedWriter(new OutputStreamWriter(outputStream, "UTF-8"));
+                writer.write(formatDataAsJSON());
+                writer.close();
+                outputStream.close();
+
+                //Reading results of Post
+                reader = new BufferedReader(new InputStreamReader(connection.getInputStream(), "UTF-8"));
+                String line = null;
+                StringBuffer sb = new StringBuffer();
+                String finalJSON;
+
+                while((line = reader.readLine())!= null){
+                    sb.append(line);
+                }
+                finalJSON = sb.toString();
+
+                JSONObject jsonObject = new JSONObject(finalJSON);
+                result =  jsonObject.getString("location");
+                return result;
+
+            } catch (MalformedURLException e) {
+                e.printStackTrace();
+            } catch (IOException e) {
+                e.printStackTrace();
+            } catch (JSONException e) {
+                e.printStackTrace();
+            } finally{
+                if(connection != null){
+                    connection.disconnect();
+                } try{
+                    if(reader != null){
+                        reader.close();
+                    }
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(String result){
+            super.onPostExecute(result);
+            Log.d("result of post", result + " ");
+            Toast.makeText(getActivity(), result + " " , Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    //-------- END OF CLASS --------
 }
