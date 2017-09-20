@@ -153,8 +153,6 @@ public class FindYourWayFragment extends Fragment {
         //-- WifiManager --
         wmgr = (WifiManager) getActivity().getApplicationContext().getSystemService(Context.WIFI_SERVICE);
 
-
-
         //-- MapBox MapView --
         mapView = (MapView) rootView.findViewById(R.id.mapView);
         mapView.onCreate(savedInstanceState);
@@ -180,7 +178,6 @@ public class FindYourWayFragment extends Fragment {
                 Log.d("First GET", "Getting Location 1");
                 markerView = mapboxMap.addMarker(new MarkerViewOptions().position(new LatLng(myLocation.getLatitude(), myLocation.getLongitude())));
 
-
                 final Timer t = new Timer();
                 t.scheduleAtFixedRate(new TimerTask() {
                     @Override
@@ -200,9 +197,7 @@ public class FindYourWayFragment extends Fragment {
 
                     }
                 },0,2500
-
                 );
-
 
                 //MarkerViewOptions markerViewOptions = new MarkerViewOptions().position(new LatLng(myLocation.getLatitude(), myLocation.getLongitude()));
 
@@ -316,7 +311,7 @@ public class FindYourWayFragment extends Fragment {
         super.onDestroy();
         mapView.onDestroy();
     }
-    //-- Get Location Method New
+    //---- Get Location Method New ----
     public Location getLocation() {
         try {
             LocationManager locationManager = (LocationManager) getActivity().getApplicationContext().getSystemService(Context.LOCATION_SERVICE);

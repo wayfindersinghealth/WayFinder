@@ -16,6 +16,7 @@ import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -159,6 +160,12 @@ public class MainActivity extends AppCompatActivity
     }
 
     @Override
+    public void onPause() {
+        onPause();
+        super.onPause();
+    }
+
+    @Override
     public void onDestroy() {
         super.onDestroy();
     }
@@ -174,6 +181,14 @@ public class MainActivity extends AppCompatActivity
     public void hideKeyboard(View drawerView) {
         InputMethodManager inputMethodManager = (InputMethodManager) getSystemService(Activity.INPUT_METHOD_SERVICE);
         inputMethodManager.hideSoftInputFromWindow(drawerView.getWindowToken(), 0);
+    }
+
+    //---- Home Button ----
+    public boolean onKeyDown(int keyCode, KeyEvent event) {
+        if (keyCode == KeyEvent.KEYCODE_HOME) {
+            onPause();
+        }
+        return true;
     }
 
     //---- Access Home Page ----
