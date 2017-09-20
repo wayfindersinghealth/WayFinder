@@ -298,7 +298,7 @@ public class LearnFragment extends Fragment {
         }
         try {
             root.put("group", "wayfindp3");
-            root.put("username", "P3");
+            root.put("username", "p3");
             root.put("location", loc);
             root.put("time", timeStamp);
             root.put("wifi-fingerprint", wifiFingerprint);

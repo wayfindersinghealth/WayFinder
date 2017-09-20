@@ -153,8 +153,7 @@ public class FindYourWayFragment extends Fragment {
         //-- WifiManager --
         wmgr = (WifiManager) getActivity().getApplicationContext().getSystemService(Context.WIFI_SERVICE);
 
-        //-- Track Location --
-        new PostTrackAPI().execute("https://ml.internalpositioning.com/track");
+
 
         //-- MapBox MapView --
         mapView = (MapView) rootView.findViewById(R.id.mapView);
@@ -181,11 +180,14 @@ public class FindYourWayFragment extends Fragment {
                 Log.d("First GET", "Getting Location 1");
                 markerView = mapboxMap.addMarker(new MarkerViewOptions().position(new LatLng(myLocation.getLatitude(), myLocation.getLongitude())));
 
-                /*
+
                 final Timer t = new Timer();
                 t.scheduleAtFixedRate(new TimerTask() {
                     @Override
                     public void run() {
+
+                        //-- Track Location --
+                        new PostTrackAPI().execute("https://ml.internalpositioning.com/track");
 
                         if (markerView!= null){
                             Log.d("Second GET", "Getting Location 2");
@@ -200,7 +202,7 @@ public class FindYourWayFragment extends Fragment {
                 },0,2500
 
                 );
-                */
+
 
                 //MarkerViewOptions markerViewOptions = new MarkerViewOptions().position(new LatLng(myLocation.getLatitude(), myLocation.getLongitude()));
 
@@ -367,7 +369,7 @@ public class FindYourWayFragment extends Fragment {
         }
         try {
             root.put("group", "wayfindp3");
-            root.put("username", "P3");
+            root.put("username", "p3");
             root.put("time", timeStamp);
             root.put("wifi-fingerprint", wifiFingerprint);
         } catch (JSONException e) {
