@@ -1,109 +1,58 @@
-# WayFinder
+# WayFinder Features
 
-AY17 P3 FYPJ  - W@rkz
+### AY17 P3 FYPJ  - W@rkz Logs
 
-Feel free to edit/add if theres anything missing. Thank You!
+### -------- FEATURES  --------
 
--------- 04/09/2017  --------
+**1. ---- Splash Screen ----**
 
--- Discussed  --
+- Circular Progress View (OpenSource)
 
--Create Account for Phone, GitHub and FireBase
+https://github.com/rahatarmanahmed/CircularProgressView
 
-GitHub Guides:
+- Fade in Animation
 
-https://guides.github.com/activities/hello-world/
+**2. ---- Introduction ----**
 
--Android Application
+- Application Introduction
 
-Android Basics: User Interface
+https://github.com/apl-devs/AppIntro
 
-https://www.udacity.com/course/android-basics-user-interface--ud834
+**3. ---- Learn ----**
 
-Android Vocabulary Glossary
+- EditText Input Location
 
-https://developers.google.com/android/for-all/vocab-words/?hl=en
+- Learn Button Click
 
--Wireless Fingerprinting
+- Save Locations upon Learn Button Click into FireBase Database 
 
--Navigation
+- ListView Locations From Database
 
--- Hardware Used  --
+- Learning Locations Using POST/Learn, GET/Calculate, GET/Locations
 
--Android Phone Nexus 5 Version 6.0.1
+**4. ---- Find Your Way ----**
 
--- Software Used --
+- AutoCompleteTextView To
 
--Android Studio 2.3.3
+- Retrieve Destination Locations using GET/Locations to store in AutoCompleteTextView To
 
-https://developer.android.com/studio/index.html
+- MapBox map from previous semester
 
--GitHub
+- Locking of Map in a specific location
 
-https://github.com/
+- Getting Current Locations Using POST/Track and Network Provider (Latitude and Longtitude)
 
--Git 2.14.1
+- MarkerView to Mark Current Location
 
-https://git-scm.com/
+**5. ---- Help ----**
 
--FireBase
+**6. ---- Language Preference ----**
 
-https://firebase.google.com/
+- Alert Dialog
 
-== Notes ==
+- Spinner 
 
---------------------------------
+**7. ---- About Way Finder ----**
 
--------- 09/05/2017 --------
 
--- Discussed  --
 
--HTTP Get/Post
-
-HTTP Methods: GET vs. POST
-
-https://www.w3schools.com/tags/ref_httpmethods.asp
-
--High-Precision Indoor Positioning Framework
-
-*FIND V0.5
-
-https://github.com/schollz/find
-
-*FIND- Indoor Positioning System (Android Client App)
-
-https://github.com/schollz/find-client-android
-
-https://www.internalpositioning.com/
-
--SSID Logger
-
-https://github.com/zordius/ssidLogger
-
--MapBox
-
-https://github.com/mapbox/mapbox-android-demo
-
--- Software Used  --
-
--SmartSniff
-
-http://www.nirsoft.net/utils/smsniff.html
-
--PostMan
-
-https://www.getpostman.com/
-
-Params > Header > Accept Coding  - Identity (To make sure its not in other language)
-
-== Notes ==
-
--Json
-
--Wifi use SSID to filter the "extra" E.g. STAFF, NYP-Account, NYP-SponsoredUser
-
--ml.internalpositioning.com / ml2.internalpositioning.com server
-
--Use open source server
-
---------------------------------
