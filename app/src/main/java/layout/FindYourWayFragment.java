@@ -317,7 +317,7 @@ public class FindYourWayFragment extends Fragment {
                 Log.d("Network not Enabled", "GG");
             } else {
                 this.canGetLocation = true;
-                //-- Get Location from Network Provider
+                //-- Get Location from Network Provider --
                 if (isNetworkEnabled) {
 
                     if (locationManager != null) {
