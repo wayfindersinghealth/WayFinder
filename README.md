@@ -1,4 +1,4 @@
-# ![](https://raw.githubusercontent.com/wayfindersinghealth/WayFinder/master/sing_health_logo.png) WayFinder
+# ![](https://raw.githubusercontent.com/wayfindersinghealth/WayFinder/master/ic_launcher.jpg) WayFinder
 
 # About
 
