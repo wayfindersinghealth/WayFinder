@@ -1,8 +1,6 @@
 # WayFinder Features
 
-AY17 P3 FYPJ  - W@rkz
-
-Feel free to edit/add if theres anything missing. Thank You!
+# AY17 P3 FYPJ  - W@rkz Logs
 
 ### -------- FEATURES  --------
 
@@ -19,5 +17,7 @@ https://github.com/rahatarmanahmed/CircularProgressView
 - Application Introduction
 
 https://github.com/apl-devs/AppIntro
+
+
 
 
