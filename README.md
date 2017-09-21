@@ -24,7 +24,11 @@ https://github.com/apl-devs/AppIntro
 
 - Learn Button Click
 
+- Save Locations upon Learn Button Click into FireBase Database 
+
 - ListView Locations From Database
+
+- Learning Using POST/Learn, GET/Calculate, GET/Locations
 
 **4. ---- Find Your Way ----**
 
