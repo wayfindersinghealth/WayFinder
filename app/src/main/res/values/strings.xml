@@ -27,6 +27,8 @@
     <string name="access_token">pk.eyJ1IjoiZnlwcm9qZWN0MTk5NyIsImEiOiJjajN5N3d0eXkwMDdmMzNxbWgxOGprb3BjIn0.wnvIyS6cTSGYJE_nkXZr7w</string>
     <string name="mapbox_url">mapbox://styles/fyproject1997/cj4nveqvt6t3c2sp8vdqbvypg</string>
 
+    <!-- Controls in layout > fragment_help.xml Page -->
+
     <!-- Controls in layout > language_spinner.xml Control -->
     <string name="show_language_preferences">Show Languge Preferences</string>
     <string-array name="languageList">
@@ -34,6 +36,12 @@
         <item>English</item>
         <item>Mandarin</item>
     </string-array>
+
+    <!-- Controls in layout > fragment_about.xml Page -->
+    <string name="aboutWayFinder">About Way Finder</string>
+    <string name="aboutWayFinderDetails">Hiiii</string>
+    <string name="aboutSingHealth">About SingHealth</string>
+    <string name="aboutSingHealthDetails">SingHealth provides tertiary medical care across a comprehensive spectrum of over 40 specialties with the in-depth expertise of 150 sub-specialties. Supported by a faculty of over 1,000 internationally-qualified medical specialists and well-equipped with advanced medical diagnostic and treatment technology, the group is recognised in the region for charting new breakthroughs in treatments. \n\nAs an Academic Medical Centre, we seek to transform patient care by integrating clinical services, teaching and research. Patients at SingHealth enjoy the benefit of leading-edge treatments with a focus on quality and holistic care, in an integrated and multidisciplinary setting.</string>
 
     <!-- Controls in layout > splash_screen.xml Layout -->
     <string name="textViewLoading">WAYFINDER</string>
@@ -44,7 +52,7 @@
     <string name="navFindYourWay">Find Your Way</string>
     <string name="navHelp">Help</string>
     <string name="navPreference">Language Preference</string>
-    <string name="navAboutWayFinder">About Way Finder</string>
+    <string name="navAbout">About</string>
 
     <!-- Controls in menu > main.xml Control-->
     <string name="action_refresh">Refresh</string>

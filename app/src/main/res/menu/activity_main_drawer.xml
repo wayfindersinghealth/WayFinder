@@ -40,8 +40,8 @@
             android:id="@+id/nav_preferences"
             android:title="@string/navPreference" />
         <item
-            android:id="@+id/nav_aboutWayFinder"
-            android:title="@string/navAboutWayFinder" />
+            android:id="@+id/nav_about"
+            android:title="@string/navAbout" />
     </group>
 
 </menu>

@@ -23,6 +23,7 @@ import android.widget.ArrayAdapter;
 import android.widget.Spinner;
 import android.widget.Toast;
 
+import layout.AboutFragment;
 import layout.FindYourWayFragment;
 import layout.LearnFragment;
 import layout.MainFragment;
@@ -35,7 +36,11 @@ import layout.MainFragment;
 
 //Add [_Fragment.OnFragmentInteractionListener] if applicable
 public class MainActivity extends AppCompatActivity
-        implements NavigationView.OnNavigationItemSelectedListener, MainFragment.OnFragmentInteractionListener, LearnFragment.OnFragmentInteractionListener, FindYourWayFragment.OnFragmentInteractionListener {
+        implements NavigationView.OnNavigationItemSelectedListener,
+        MainFragment.OnFragmentInteractionListener,
+        LearnFragment.OnFragmentInteractionListener,
+        FindYourWayFragment.OnFragmentInteractionListener,
+        AboutFragment.OnFragmentInteractionListener{
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -135,10 +140,11 @@ public class MainActivity extends AppCompatActivity
 
         } /*else if (id == R.id.nav_help) {
 
-        } else if (id == R.id.nav_aboutWayFinder) {
-
+        } */
+        else if (id == R.id.nav_about) {
+            navigationAbout();
         }
-        */ else {
+         else {
             //Else Home Fragment
             navigationHome();
         }
@@ -247,7 +253,13 @@ public class MainActivity extends AppCompatActivity
         dialog.show();
     }
 
-    //---- Access About Way Finder Page ----
+    //---- Access About Page ----
+    public void navigationAbout() {
+        Fragment fragment;
+        fragment = new AboutFragment();
+        FragmentManager fragmentManager = getSupportFragmentManager();
+        fragmentManager.beginTransaction().replace(R.id.content, fragment).commit();
+    }
 
     //-------- END OF METHODS --------
 }
