@@ -1,6 +1,6 @@
 # WayFinder Features
 
-## AY17 P3 FYPJ  - W@rkz Logs
+### AY17 P3 FYPJ  - W@rkz Logs
 
 ### -------- FEATURES  --------
 
@@ -18,6 +18,29 @@ https://github.com/rahatarmanahmed/CircularProgressView
 
 https://github.com/apl-devs/AppIntro
 
+**3. ---- Learn ----**
+
+- EditText Input Location
+
+- Learn Button Click
+
+- ListView Locations From Database
+
+**4. ---- Find Your Way ----**
+
+- AutoCompleteTextView To
+
+- MapBox
+
+**5. ---- Help ----**
+
+**6. ---- Language Preference ----**
+
+- Alert Dialog
+
+- Spinner 
+
+**7. ---- About Way Finder ----**
 
 
 
