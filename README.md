@@ -1,8 +1,8 @@
-# WayFinder
+# ![](https://raw.githubusercontent.com/wayfindersinghealth/WayFinder/master/static/img/FIND_icon_larger.png) WayFinder
 
 # About
 
-
+**Keywords**: indoor GPS, WiFi positioning, indoor mapping, indoor navigation, indoor positioning
 
 # Features
 
