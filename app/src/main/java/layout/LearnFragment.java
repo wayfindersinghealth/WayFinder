@@ -103,11 +103,11 @@ public class LearnFragment extends Fragment {
     boolean isNetworkEnabled = false;
     boolean canGetLocation = false;
 
+    DatabaseReference databaseLocation;
+
     public LearnFragment() {
         // Required empty public constructor
     }
-
-    DatabaseReference databaseLocation;
 
     /**
      * Use this factory method to create a new instance of
@@ -173,6 +173,7 @@ public class LearnFragment extends Fragment {
 
                             //-- Get LatLng Coordinates ---
                             getLocation();
+
                             //Hide Keyboard After Pressing Button
                             ((MainActivity) getActivity()).hideKeyboard(rootView);
                         } else{
@@ -455,6 +456,7 @@ public class LearnFragment extends Fragment {
                 while((line = reader.readLine()) != null){
                     sBuffer.append(line);
                 }
+
                 String finalJson = sBuffer.toString();
                 JSONObject parentObject = new JSONObject(finalJson);
                 JSONObject parentArray = parentObject.getJSONObject("locations");
@@ -462,7 +464,6 @@ public class LearnFragment extends Fragment {
 
                 Iterator<String> iterator = parentArray.keys();
                 while(iterator.hasNext()){
-
                     aList.add(iterator.next().toUpperCase());
                 }
 
@@ -497,7 +498,6 @@ public class LearnFragment extends Fragment {
                     getActivity(),
                     android.R.layout.simple_list_item_1,
                     aList );
-
             listViewLearn.setAdapter(arrayAdapter);
         }
     }

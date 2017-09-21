@@ -98,20 +98,14 @@ public class FindYourWayFragment extends Fragment {
     private String mParam2;
     MapView mapView;
 
-    //-- Variables for Get Location Methods --
     Location location;
-    Location oldLocation;
     double latitude;
     double longitude;
     boolean isNetworkEnabled = false;
     boolean canGetLocation = false;
     private static MarkerView markerView;
-
-    protected LocationManager locationManager;
     WifiManager wmgr;
-
-    //Spinner spinnerTo;
-    AutoCompleteTextView spinnerTo;
+    AutoCompleteTextView autoCompleteTextViewTo;
 
     private OnFragmentInteractionListener mListener;
 
@@ -164,10 +158,10 @@ public class FindYourWayFragment extends Fragment {
 
         //-- Location AutoCompleteTextView --
         //https://gist.github.com/ruuhkis/d942330d97163d868ee7
-        spinnerTo = (AutoCompleteTextView) rootView.findViewById(R.id.spinnerTo);
+        autoCompleteTextViewTo = (AutoCompleteTextView) rootView.findViewById(R.id.autoCompleteTextViewTo);
 
         //-- Location Spinner --
-       // spinnerTo = (Spinner) rootView.findViewById(R.id.spinnerTo);
+        //spinnerTo = (Spinner) rootView.findViewById(R.id.spinnerTo);
 
         //-- WifiManager --
         wmgr = (WifiManager) getActivity().getApplicationContext().getSystemService(Context.WIFI_SERVICE);
@@ -197,11 +191,11 @@ public class FindYourWayFragment extends Fragment {
                 Log.d("First GET", "Getting Location 1");
                 markerView = mapboxMap.addMarker(new MarkerViewOptions().position(new LatLng(myLocation.getLatitude(), myLocation.getLongitude())));
 
+                //-- Timer to Loops Marker Change --
                 final Timer t = new Timer();
                 t.scheduleAtFixedRate(new TimerTask() {
                     @Override
                     public void run() {
-
                         //-- Track Location --
                         new PostTrackAPI().execute("https://ml.internalpositioning.com/track");
 
@@ -213,7 +207,6 @@ public class FindYourWayFragment extends Fragment {
                            LatLng latLng  = new LatLng(urLocation.getLatitude(), urLocation.getLongitude());
                            markerView.setPosition(latLng);
                         }
-
                     }
                 },0,2500
                 );
@@ -235,7 +228,6 @@ public class FindYourWayFragment extends Fragment {
                 .tilt(60)
                 .build(); // Creates a CameraPosition from the builder
             */
-
             }
         });
 
@@ -331,6 +323,7 @@ public class FindYourWayFragment extends Fragment {
         super.onDestroy();
         mapView.onDestroy();
     }
+
     //---- Get Location Method New ----
     public Location getLocation() {
         try {
@@ -464,7 +457,7 @@ public class FindYourWayFragment extends Fragment {
         protected void onPostExecute(String result){
             super.onPostExecute(result);
             Log.d("result of post", result + " ");
-            Toast.makeText(getActivity(), result + " " , Toast.LENGTH_SHORT).show();
+            //Toast.makeText(getActivity(), result + " " , Toast.LENGTH_SHORT).show();
         }
     }
 
@@ -543,8 +536,8 @@ public class FindYourWayFragment extends Fragment {
                     android.R.layout.simple_list_item_1,
                     aList);
 
-            spinnerTo.setAdapter(arrayAdapter);
-            spinnerTo.setThreshold(0);
+            autoCompleteTextViewTo.setAdapter(arrayAdapter);
+            autoCompleteTextViewTo.setThreshold(0);
         }
     }
 

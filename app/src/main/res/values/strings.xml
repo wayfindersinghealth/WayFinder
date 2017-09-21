@@ -17,12 +17,13 @@
 
     <!-- Controls in layout > fragment_learn.xml Page -->
     <string name="textViewInput">Please Input Your Current Location.</string>
-    <string name="editTextLearn">Enter Location Name</string>
+    <string name="editTextLearn">Enter Your Location</string>
     <string name="buttonLearn">LEARN</string>
     <string name="textViewDetails">Existing Locations In Database.</string>
 
-    <!-- Controls in layout > fragment_find_way -->
+    <!-- Controls in layout > fragment_find_your_way.xml Page -->
     <string name="textViewTo">To:</string>
+    <string name="autoCompleteTextViewTo">Enter Your Destination</string>
     <string name="access_token">pk.eyJ1IjoiZnlwcm9qZWN0MTk5NyIsImEiOiJjajN5N3d0eXkwMDdmMzNxbWgxOGprb3BjIn0.wnvIyS6cTSGYJE_nkXZr7w</string>
     <string name="mapbox_url">mapbox://styles/fyproject1997/cj4nveqvt6t3c2sp8vdqbvypg</string>
 

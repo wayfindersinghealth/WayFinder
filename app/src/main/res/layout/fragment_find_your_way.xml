@@ -44,9 +44,10 @@
 
 
         <AutoCompleteTextView
-            android:id="@+id/spinnerTo"
+            android:id="@+id/autoCompleteTextViewTo"
             android:layout_width="317dp"
-            android:layout_height="wrap_content" />
+            android:layout_height="wrap_content"
+            android:hint="@string/autoCompleteTextViewTo"/>
 
     </LinearLayout>
 
