@@ -1,7 +1,9 @@
 package sg.com.singhealth.wayfinder;
 
 /**
- * Created by L31106 on 9/18/2017.
+ * File Name: LocationDetail.java
+ * Created By: AY17 P3 FYPJ NYP SIT
+ * Description: -
  */
 
 public class LocationDetail {

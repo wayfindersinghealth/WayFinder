@@ -8,6 +8,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/colorPrimaryDark"
     app:layout_behavior="@string/appbar_scrolling_view_behavior"
     tools:context="sg.com.singhealth.wayfinder.MainActivity"
     tools:layout_editor_absoluteY="81dp"
@@ -15,9 +16,11 @@
 
     <ImageButton
         android:id="@+id/imageButtonLearn"
+        android:background="@null"
         android:layout_width="0dp"
         android:layout_height="0dp"
-        app:srcCompat="@mipmap/ic_launcher_round"
+        app:srcCompat="@drawable/ic_wifi_scan_menu"
+        android:scaleType="centerCrop"
         tools:layout_constraintTop_creator="1"
         tools:layout_constraintRight_creator="1"
         tools:layout_constraintBottom_creator="1"
@@ -31,9 +34,11 @@
 
     <ImageButton
         android:id="@+id/imageButtonFindYourWay"
+        android:background="@null"
+        android:scaleType="centerCrop"
         android:layout_width="0dp"
         android:layout_height="170dp"
-        app:srcCompat="@mipmap/ic_launcher_round"
+        app:srcCompat="@drawable/ic_direction_menu"
         tools:layout_constraintTop_creator="1"
         tools:layout_constraintRight_creator="1"
         tools:layout_constraintBottom_creator="1"
@@ -47,9 +52,11 @@
 
     <ImageButton
         android:id="@+id/imageButtonHelp"
+        android:background="@null"
         android:layout_width="0dp"
         android:layout_height="0dp"
-        app:srcCompat="@drawable/ic_menu_help"
+        app:srcCompat="@drawable/ic_help_menu"
+        android:scaleType="centerCrop"
         tools:layout_constraintTop_creator="1"
         tools:layout_constraintRight_creator="1"
         tools:layout_constraintBottom_creator="1"

@@ -1,7 +1,6 @@
 package sg.com.singhealth.wayfinder;
 
 import android.app.Activity;
-import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.AsyncTask;

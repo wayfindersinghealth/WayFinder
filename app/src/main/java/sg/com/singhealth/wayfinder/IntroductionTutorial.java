@@ -2,13 +2,10 @@ package sg.com.singhealth.wayfinder;
 
 import android.content.Intent;
 import android.graphics.Color;
-import android.media.Image;
 import android.os.Bundle;
 
 import com.github.paolorotolo.appintro.AppIntro2;
 import com.github.paolorotolo.appintro.AppIntroFragment;
-
-import static sg.com.singhealth.wayfinder.R.drawable.ic_wifi_scan;
 
 /**
  * File Name: IntroductionTutorial.java

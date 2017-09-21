@@ -93,7 +93,7 @@ public class MainFragment extends Fragment {
         imageButtonFindYourWay.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                //-- Call Access Find Your Way Page Method from MainAvtivity.java --
+                //-- Call Access Find Your Way Page Method from MainActivity.java --
                 ((MainActivity) getActivity()).navigationFindYourWay();
             }
         });
