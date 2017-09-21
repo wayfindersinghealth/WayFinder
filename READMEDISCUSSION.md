@@ -1,4 +1,4 @@
-# WayFinder
+# WayFinder Discussions
 
 AY17 P3 FYPJ  - W@rkz
 
