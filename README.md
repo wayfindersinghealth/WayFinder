@@ -40,7 +40,7 @@ https://github.com/apl-devs/AppIntro
 
 - Locking of Map in a specific location
 
-- Getting Current Locations Using POST/Track and Network Provider
+- Getting Current Locations Using POST/Track and Network Provider (Latitude and Longtitude)
 
 - MarkerView to Mark Current Location
 
