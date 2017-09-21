@@ -6,7 +6,7 @@
 
 # Features
 
-**1. ---- Splash Screen ----**
+## 1\. Splash Screen
 
 - Circular Progress View (OpenSource)
 
@@ -14,13 +14,13 @@ https://github.com/rahatarmanahmed/CircularProgressView
 
 - Fade in Animation
 
-**2. ---- Introduction ----**
+## 2\. Introduction
 
 - Application Introduction
 
 https://github.com/apl-devs/AppIntro
 
-**3. ---- Learn ----**
+## 3\. Learn
 
 - EditText Input Location
 
@@ -32,7 +32,7 @@ https://github.com/apl-devs/AppIntro
 
 - Learning Locations Using POST/Learn, GET/Calculate, GET/Locations
 
-**4. ---- Find Your Way ----**
+## 4\. Find Your Way
 
 - AutoCompleteTextView To
 
@@ -46,15 +46,15 @@ https://github.com/apl-devs/AppIntro
 
 - MarkerView to Mark Current Location
 
-**5. ---- Help ----**
+## 5\. Help
 
-**6. ---- Language Preference ----**
+## 6\. Language Preference
 
 - Alert Dialog
 
 - Spinner 
 
-**7. ---- About Way Finder ----**
+## 7\. About Way Finder
 
 
 
