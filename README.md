@@ -1,6 +1,6 @@
 # WayFinder Features
 
-# AY17 P3 FYPJ  - W@rkz Logs
+## AY17 P3 FYPJ  - W@rkz Logs
 
 ### -------- FEATURES  --------
 
