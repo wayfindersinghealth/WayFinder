@@ -28,13 +28,21 @@ https://github.com/apl-devs/AppIntro
 
 - ListView Locations From Database
 
-- Learning Using POST/Learn, GET/Calculate, GET/Locations
+- Learning Locations Using POST/Learn, GET/Calculate, GET/Locations
 
 **4. ---- Find Your Way ----**
 
 - AutoCompleteTextView To
 
-- MapBox
+- Retrieve Destination Locations using GET/Locations to store in AutoCompleteTextView To
+
+- MapBox map from previous semester
+
+- Locking of Map in a specific location
+
+- Getting Current Locations Using POST/Track and Network Provider
+
+- MarkerView to Mark Current Location
 
 **5. ---- Help ----**
 
