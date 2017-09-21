@@ -2,15 +2,21 @@
 
 # About
 
+About Way Finder
+
+About SingHealth
+
+SingHealth provides tertiary medical care across a comprehensive spectrum of over 40 specialties with the in-depth expertise of 150 sub-specialties. Supported by a faculty of over 1,000 internationally-qualified medical specialists and well-equipped with advanced medical diagnostic and treatment technology, the group is recognised in the region for charting new breakthroughs in treatments.
+
+As an Academic Medical Centre, we seek to transform patient care by integrating clinical services, teaching and research. Patients at SingHealth enjoy the benefit of leading-edge treatments with a focus on quality and holistic care, in an integrated and multidisciplinary setting.
+
 **Keywords**: indoor GPS, WiFi positioning, indoor mapping, indoor navigation, indoor positioning
 
 # Features
 
 ## 1\. Splash Screen
 
-- Circular Progress View (OpenSource)
-
-https://github.com/rahatarmanahmed/CircularProgressView
+- Circular Progress View 
 
 - Fade in Animation
 
@@ -18,7 +24,7 @@ https://github.com/rahatarmanahmed/CircularProgressView
 
 - Application Introduction
 
-https://github.com/apl-devs/AppIntro
+
 
 ## 3\. Learn
 
@@ -54,15 +60,8 @@ https://github.com/apl-devs/AppIntro
 
 - Spinner 
 
-## 7\. About
+# References
 
-About Way Finder
-
-About SingHealth
-
-SingHealth provides tertiary medical care across a comprehensive spectrum of over 40 specialties with the in-depth expertise of 150 sub-specialties. Supported by a faculty of over 1,000 internationally-qualified medical specialists and well-equipped with advanced medical diagnostic and treatment technology, the group is recognised in the region for charting new breakthroughs in treatments.
-
-As an Academic Medical Centre, we seek to transform patient care by integrating clinical services, teaching and research. Patients at SingHealth enjoy the benefit of leading-edge treatments with a focus on quality and holistic care, in an integrated and multidisciplinary setting.
-
+Thanks to [Circular Progress View](https://github.com/rahatarmanahmed/CircularProgressView), [Application Introduction](https://github.com/apl-devs/AppIntro) for awesome open source features.
 
 
