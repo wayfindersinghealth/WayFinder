@@ -1,8 +1,6 @@
 ![](https://raw.githubusercontent.com/wayfindersinghealth/WayFinder/master/singhealth_logo.jpg) 
 # WayFinder
 
-# About
-
 About Way Finder
 
 About SingHealth
