@@ -63,6 +63,6 @@ As an Academic Medical Centre, we seek to transform patient care by integrating 
 
 # References
 
-Thanks to [Circular Progress View](https://github.com/rahatarmanahmed/CircularProgressView), [Application Introduction](https://github.com/apl-devs/AppIntro) for awesome open source features.
+Thanks to [Circular Progress View](https://github.com/rahatarmanahmed/CircularProgressView), [Application Introduction](https://github.com/apl-devs/AppIntro), [MapBox](https://www.mapbox.com/), [FireBase](https://firebase.google.com/) for awesome open source features, maps and database.
 
 
