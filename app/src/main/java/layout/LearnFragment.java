@@ -9,6 +9,7 @@ import android.net.wifi.WifiInfo;
 import android.net.wifi.WifiManager;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 import android.text.TextUtils;
 import android.util.Log;
@@ -20,8 +21,22 @@ import android.widget.Button;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
+import com.mapbox.mapboxsdk.Mapbox;
+import com.mapbox.mapboxsdk.annotations.MarkerView;
+import com.mapbox.mapboxsdk.annotations.MarkerViewOptions;
+import com.mapbox.mapboxsdk.camera.CameraPosition;
+import com.mapbox.mapboxsdk.camera.CameraUpdateFactory;
+import com.mapbox.mapboxsdk.geometry.LatLng;
+import com.mapbox.mapboxsdk.geometry.LatLngBounds;
+import com.mapbox.mapboxsdk.maps.MapView;
+import com.mapbox.mapboxsdk.maps.MapboxMap;
+import com.mapbox.mapboxsdk.maps.OnMapReadyCallback;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -34,6 +49,7 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
+import java.lang.reflect.Array;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
@@ -67,6 +83,15 @@ public class LearnFragment extends Fragment {
     private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";
 
+
+    // Mapbox Variable
+    private static final LatLngBounds NYPBLKL_BOUNDS = new LatLngBounds.Builder()
+            .include(new LatLng(1.3792949602146791, 103.84983998176449))
+            .include(new LatLng(1.3792949602146791, 103.84983998176449))
+            .build();
+    MapView mapView;
+    private static MarkerView markerView;
+
     // TODO: Rename and change types of parameters
     private String mParam1;
     private String mParam2;
@@ -76,7 +101,6 @@ public class LearnFragment extends Fragment {
     WifiManager wmgr;
     TextView locText;
     Button buttonLearn;
-    ListView listViewLearn;
     String loc;
     double lat, lon;
 
@@ -86,8 +110,10 @@ public class LearnFragment extends Fragment {
     double longitude;
     boolean isNetworkEnabled = false;
     boolean canGetLocation = false;
+    ArrayList<String> locationList = new ArrayList<String>();
 
     DatabaseReference databaseLocation;
+
 
     public LearnFragment() {
         // Required empty public constructor
@@ -103,6 +129,7 @@ public class LearnFragment extends Fragment {
      */
     // TODO: Rename and change types and number of parameters
     public static LearnFragment newInstance(String param1, String param2) {
+
         LearnFragment fragment = new LearnFragment();
         Bundle args = new Bundle();
         args.putString(ARG_PARAM1, param1);
@@ -114,6 +141,8 @@ public class LearnFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        Mapbox.getInstance(getActivity(), getString(R.string.access_token));
+
         if (getArguments() != null) {
             mParam1 = getArguments().getString(ARG_PARAM1);
             mParam2 = getArguments().getString(ARG_PARAM2);
@@ -129,9 +158,6 @@ public class LearnFragment extends Fragment {
         //-- View --
         final View rootView = inflater.inflate(R.layout.fragment_learn, container, false);
 
-        //-- JSON Get Locations --
-        new GetLocations().execute("https://ml.internalpositioning.com/locations?group=wayFindp3");
-
         //-- WifiManager --
         wmgr = (WifiManager) getActivity().getApplicationContext().getSystemService(Context.WIFI_SERVICE);
 
@@ -140,6 +166,75 @@ public class LearnFragment extends Fragment {
 
         //-- Connecting to DB --
         databaseLocation = FirebaseDatabase.getInstance().getReference("locations");
+
+        //-- Retrieving from DB --
+        databaseLocation.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                for(DataSnapshot locationSnapshot : dataSnapshot.getChildren()){
+                    String locName =  locationSnapshot.child("id").getValue().toString();
+                    Log.d("LocName", locName);
+                    locationList.add(locName);
+                    Log.d("Success tada", locationList.toString());
+                }
+               /*
+                for(int i = 0; i < locationList.size(); i++){
+                    Log.d("ArrayList item", locationList.get(i).toString());
+                }
+                */
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
+
+
+        //-- MapBox MapView --
+        mapView = (MapView) rootView.findViewById(R.id.mapViewLearn);
+        mapView.onCreate(savedInstanceState);
+
+        mapView.getMapAsync(new OnMapReadyCallback() {
+
+            @Override
+            public void onMapReady(final MapboxMap mapboxMap) {
+                mapboxMap.setOnMapLongClickListener(new MapboxMap.OnMapLongClickListener() {
+
+                    @Override
+                    public void onMapLongClick(@NonNull LatLng point) {
+                        if(markerView != null) {
+                            markerView.remove();
+                            LatLng pos = new LatLng(point.getLatitude(), point.getLongitude());
+                            markerView = mapboxMap.addMarker(new MarkerViewOptions().position(pos));
+                        }else {
+                            LatLng pos = new LatLng(point.getLatitude(), point.getLongitude());
+                            markerView = mapboxMap.addMarker(new MarkerViewOptions().position(pos));
+                        }
+                    }
+                });
+
+                //-- Customize map with markers, polylines, etc. --
+
+                //-- MapBox URL --
+                mapboxMap.setStyleUrl(getString((R.string.mapbox_url)));
+
+                //-- MapBox Zoom On Location --
+                final LatLng zoomLocation = new LatLng(1.3792949602146791, 103.84943998176449);
+                CameraPosition position = new CameraPosition.Builder()
+                        .target(zoomLocation)
+                        .zoom(19) // Sets the zoom
+                        .build(); // Creates a CameraPosition from the builder
+                mapboxMap.setCameraPosition(position);
+                mapboxMap.animateCamera(CameraUpdateFactory.newCameraPosition(position), 2000);
+
+                //-- Set Camera LatLng Bounds --
+                mapboxMap.setLatLngBoundsForCameraTarget(NYPBLKL_BOUNDS);
+
+                mapboxMap.setMaxZoomPreference(20);
+                mapboxMap.setMinZoomPreference(19.2);
+            }
+        });
 
         //-- Button Learn Click --
         buttonLearn = (Button)rootView.findViewById(R.id.buttonLearn);
@@ -150,16 +245,19 @@ public class LearnFragment extends Fragment {
                     WifiInfo wifiInfo = wmgr.getConnectionInfo();
                     if(wifiInfo.getSupplicantState().toString().equals("COMPLETED")) {
                         if(!locText.getText().toString().matches("")) {
+                            if(markerView != null) {
+                                //new PostLearnAPI().execute("https://ml.internalpositioning.com/learn");
+                                //new GetCalculateAPI().execute("https://ml.internalpositioning.com/calculate?group=wayFindp3");
+                                addLocation(markerView.getPosition());
 
-                            //new PostLearnAPI().execute("https://ml.internalpositioning.com/learn");
-                            //new GetCalculateAPI().execute("https://ml.internalpositioning.com/calculate?group=wayFindp3");
-                            //new GetLocations().execute("https://ml.internalpositioning.com/locations?group=wayFindp3");
-
-                            //-- Get LatLng Coordinates ---
-                            getLocation();
-
-                            //Hide Keyboard After Pressing Button
-                            ((MainActivity) getActivity()).hideKeyboard(rootView);
+                                //Hide Keyboard After Pressing Button
+                                ((MainActivity) getActivity()).hideKeyboard(rootView);
+                                Toast.makeText(getActivity(), "Calculating, Please Wait" , Toast.LENGTH_LONG).show();
+                            }
+                            else{
+                               Toast.makeText(getActivity(), "Tap On Map To Add Geolocation." , Toast.LENGTH_SHORT).show();
+                                ((MainActivity) getActivity()).hideKeyboard(rootView);
+                            }
                         } else{
                             Toast.makeText(getActivity(), "Please Input Your Current Location." , Toast.LENGTH_SHORT).show();
                         }
@@ -170,8 +268,6 @@ public class LearnFragment extends Fragment {
             }
         });
 
-        //-- ListView Learn --
-        listViewLearn = (ListView)rootView.findViewById(R.id.listViewLearn);
         return rootView;
     }
 
@@ -216,6 +312,55 @@ public class LearnFragment extends Fragment {
 
     //-------- START OF METHODS --------
 
+    //---- MapBox onStart Method ----
+    @Override
+    public void onStart() {
+        super.onStart();
+        mapView.onStart();
+    }
+
+    //---- MapBox onResume Method ----
+    @Override
+    public void onResume() {
+        super.onResume();
+        mapView.onResume();
+    }
+
+    //---- MapBox onPause Method ----
+    @Override
+    public void onPause() {
+        super.onPause();
+        mapView.onPause();
+    }
+
+    //---- MapBox onStop Method ----
+    @Override
+    public void onStop() {
+        super.onStop();
+        mapView.onStop();
+    }
+
+    //---- MapBox onSaveInstanceState Method ----
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        mapView.onSaveInstanceState(outState);
+    }
+
+    //---- MapBox onLowMemory Method ----
+    @Override
+    public void onLowMemory() {
+        super.onLowMemory();
+        mapView.onLowMemory();
+    }
+
+    //---- MapBox onDestory Method ----
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        mapView.onDestroy();
+    }
+
     //---- Format Data As JSON Method ----
     private String formatDataAsJSON() {
         JSONObject root = new JSONObject();
@@ -253,42 +398,18 @@ public class LearnFragment extends Fragment {
 
     //---- Get Location Method ----
     public Location getLocation() {
-        try {
-            LocationManager locationManager = (LocationManager) getActivity().getApplicationContext().getSystemService(Context.LOCATION_SERVICE);
-            //-- Getting Network Status --
-            isNetworkEnabled = locationManager.isProviderEnabled(LocationManager.NETWORK_PROVIDER);
-            if (!isNetworkEnabled) {
-                Log.d("Network not Enabled", "GG");
-            } else {
-                this.canGetLocation = true;
-                //-- Get Location from Network Provider
-                if (isNetworkEnabled) {
-                    if (locationManager != null) {
-                        location = locationManager.getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
-                        if (location != null) {
-                            latitude = location.getLatitude();
-                            longitude = location.getLongitude();
-                            Log.d("LatLong", + latitude + ", " + longitude);
-                        }
-                    }
-                }
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-
-        return location;
+        return null;
     }
 
     //---- addLocation Methods ----
-    private void addLocation(){
+    private void addLocation(LatLng position){
         String locationName = locText.getText().toString();
-        double latitude = getLocation().getLatitude();
-        double longitude = getLocation().getLongitude();
+        double latitude = position.getLatitude();
+        double longitude = position.getLongitude();
 
         if(!TextUtils.isEmpty(locationName)){
-            String id = databaseLocation.push().getKey();
-            LocationDetail locDetail = new LocationDetail(id, locationName, latitude, longitude);
+            String id = locationName;
+            LocationDetail locDetail = new LocationDetail(id,latitude, longitude);
             databaseLocation.child(id).setValue(locDetail);
         }
     }
@@ -414,77 +535,5 @@ public class LearnFragment extends Fragment {
             Log.d("Calculate Result", result + " ");
         }
     }
-
-    //---- GetLocations Class ----
-    public class GetLocations extends AsyncTask<String, String, String > {
-        ArrayList<String> aList = new ArrayList<String>();
-
-        @Override
-        protected String doInBackground(String... params) {
-            HttpsURLConnection connection = null;
-            BufferedReader reader = null;
-
-            try{
-                //Connecting to API
-                URL link = new URL(params[0]);
-                connection = (HttpsURLConnection) link.openConnection();
-                connection.connect();
-
-                //Reading results of Post
-                InputStream stream = connection.getInputStream();
-                reader =  new BufferedReader(new InputStreamReader(stream));
-
-                StringBuffer sBuffer = new StringBuffer();
-                String line = "";
-
-                while((line = reader.readLine()) != null){
-                    sBuffer.append(line);
-                }
-
-                String finalJson = sBuffer.toString();
-                JSONObject parentObject = new JSONObject(finalJson);
-                JSONObject parentArray = parentObject.getJSONObject("locations");
-                Log.d("parentArray string",parentArray.toString());
-
-                Iterator<String> iterator = parentArray.keys();
-                while(iterator.hasNext()){
-                    aList.add(iterator.next().toUpperCase());
-                }
-
-                return aList.toString();
-
-            } catch (MalformedURLException e) {
-                e.printStackTrace();
-            } catch (IOException e) {
-                e.printStackTrace();
-            } catch (JSONException e) {
-                e.printStackTrace();
-            } finally {
-                if(connection != null) {
-                    connection.disconnect();
-                }
-                try {
-                    if(reader != null) {
-                        reader.close();
-                    }
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-            }
-
-            return null;
-        }
-
-        @Override
-        protected void onPostExecute(String result){
-            super.onPostExecute(result);
-            ArrayAdapter<String> arrayAdapter = new ArrayAdapter<String>(
-                    getActivity(),
-                    android.R.layout.simple_list_item_1,
-                    aList );
-            listViewLearn.setAdapter(arrayAdapter);
-        }
-    }
-
-    //-------- END OF CLASS ---------
+        //-------- END OF CLASS ---------
 }

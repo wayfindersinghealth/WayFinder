@@ -19,7 +19,7 @@
     <string name="textViewInput">Please Input Your Current Location.</string>
     <string name="editTextLearn">Enter Your Location</string>
     <string name="buttonLearn">LEARN</string>
-    <string name="textViewDetails">Existing Locations In Database.</string>
+    <string name="textViewDetails">Tap On Map To Place Point.</string>
 
     <!-- Controls in layout > fragment_find_your_way.xml Page -->
     <string name="textViewTo">To:</string>

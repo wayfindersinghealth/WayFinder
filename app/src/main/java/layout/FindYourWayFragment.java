@@ -8,6 +8,7 @@ import android.net.wifi.ScanResult;
 import android.net.wifi.WifiManager;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -157,6 +158,7 @@ public class FindYourWayFragment extends Fragment {
             @Override
             public void onMapReady(final MapboxMap mapboxMap) {
 
+
                 //-- Customize map with markers, polylines, etc. --
                 //-- MapBox URL --
                 mapboxMap.setStyleUrl(getString((R.string.mapbox_url)));
@@ -194,23 +196,11 @@ public class FindYourWayFragment extends Fragment {
                 },0,2500
                 );
 
-                //MarkerViewOptions markerViewOptions = new MarkerViewOptions().position(new LatLng(myLocation.getLatitude(), myLocation.getLongitude()));
-
                 mapboxMap.animateCamera(CameraUpdateFactory.newCameraPosition(position), 2000);
-
                 //-- Set Camera LatLng Bounds --
                 mapboxMap.setLatLngBoundsForCameraTarget(NYPBLKL_BOUNDS);
-
                 mapboxMap.setMaxZoomPreference(20);
                 mapboxMap.setMinZoomPreference(19.2);
-            /*
-            //mapboxMap.setMinZoom(19);
-            position = new CameraPosition.Builder()
-                .target(currentLatLng)
-                .zoom(20) // Sets the zoom
-                .tilt(60)
-                .build(); // Creates a CameraPosition from the builder
-            */
             }
         });
 
@@ -306,6 +296,7 @@ public class FindYourWayFragment extends Fragment {
         super.onDestroy();
         mapView.onDestroy();
     }
+
 
     //---- Get Location Method New ----
     public Location getLocation() {
