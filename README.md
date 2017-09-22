@@ -9,7 +9,7 @@ SingHealth provides tertiary medical care across a comprehensive spectrum of ove
 
 As an Academic Medical Centre, we seek to transform patient care by integrating clinical services, teaching and research. Patients at SingHealth enjoy the benefit of leading-edge treatments with a focus on quality and holistic care, in an integrated and multidisciplinary setting.
 
-**Keywords**: indoor GPS, WiFi positioning, indoor mapping, indoor navigation, indoor positioning
+**Keywords**: Indoor GPS, WiFi Positioning, Indoor Mapping, Indoor Navigation, Indoor Positioning
 
 # Features
 
