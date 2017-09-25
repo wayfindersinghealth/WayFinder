@@ -96,7 +96,7 @@ public class FindYourWayFragment extends Fragment {
     double longitude;
     boolean isNetworkEnabled = false;
     boolean canGetLocation = false;
-    private static MarkerView markerView;
+    private static MarkerView markerView = null;
     WifiManager wmgr;
     AutoCompleteTextView autoCompleteTextViewTo;
 
@@ -216,12 +216,15 @@ public class FindYourWayFragment extends Fragment {
                                          double locLongitude =  (double) locationSnapshot.child("longitude").getValue();
 
                                         Log.d("LatLng", locLatitude + ", " + locLongitude);
+
+
                                         LatLng latLng = new LatLng(locLatitude, locLongitude);
                                         if (markerView != null) {
                                             markerView.setPosition(latLng);
-                                        }else{
+                                        }else if(markerView == null){
                                             markerView = mapboxMap.addMarker(new MarkerViewOptions().position(new LatLng(locLatitude, locLongitude)));
                                         }
+
                                     }
                                 }
 
@@ -240,7 +243,7 @@ public class FindYourWayFragment extends Fragment {
 
 
                     }
-                },0,2500
+                },0,1500
                 );
 
                 mapboxMap.animateCamera(CameraUpdateFactory.newCameraPosition(position), 2000);

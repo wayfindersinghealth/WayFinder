@@ -252,7 +252,7 @@ public class LearnFragment extends Fragment {
                         if(!locText.getText().toString().matches("")) {
                             if(markerView != null) {
                                     formatDataAsJSON();
-                                CountDownTimer timeTimer = new CountDownTimer(6000,1000) {
+                                CountDownTimer timeTimer = new CountDownTimer(11000,1000) {
                                     @Override
                                     public void onTick(long l) {
                                         Toast.makeText(getActivity(), "Finding AP" , Toast.LENGTH_SHORT).show();
@@ -262,7 +262,7 @@ public class LearnFragment extends Fragment {
                                         new PostLearnAPI().execute("https://ml.internalpositioning.com/learn");
                                         new GetCalculateAPI().execute("https://ml.internalpositioning.com/calculate?group=wayfindp3");
                                        //--- Remove commend when done testing
-                                        // addLocation(markerView.getPosition());
+                                         addLocation(markerView.getPosition());
                                         Toast.makeText(getActivity(), "Inserted Into Repository" , Toast.LENGTH_SHORT).show();
                                     }
                                 };
@@ -379,7 +379,6 @@ public class LearnFragment extends Fragment {
     }
 
     //---- Format Data As JSON Method ----
-
     public void formatDataAsJSON() {
 
          final JSONArray wifiFingerprint = new JSONArray();
@@ -387,7 +386,7 @@ public class LearnFragment extends Fragment {
          final List<ScanResult> results = wmgr.getScanResults();
          final String timeStamp = TimeUnit.MILLISECONDS.toSeconds(System.currentTimeMillis()) + "";
 
-        CountDownTimer myTimer = new CountDownTimer(5000, 1000) {
+        CountDownTimer myTimer = new CountDownTimer(10000, 1000) {
             @Override
             public void onTick(long l) {
 
@@ -426,7 +425,7 @@ public class LearnFragment extends Fragment {
 
     //---- addLocation Methods ----
     private void addLocation(LatLng position){
-        String locationName = locText.getText().toString();
+        String locationName = locText.getText().toString().toUpperCase();
         double latitude = position.getLatitude();
         double longitude = position.getLongitude();
 
