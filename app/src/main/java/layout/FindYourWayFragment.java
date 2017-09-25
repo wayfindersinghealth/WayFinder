@@ -18,6 +18,12 @@ import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.Toast;
 
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.Query;
+import com.google.firebase.database.ValueEventListener;
 import com.mapbox.mapboxsdk.Mapbox;
 import com.mapbox.mapboxsdk.annotations.MarkerView;
 import com.mapbox.mapboxsdk.annotations.MarkerViewOptions;
@@ -94,6 +100,8 @@ public class FindYourWayFragment extends Fragment {
     WifiManager wmgr;
     AutoCompleteTextView autoCompleteTextViewTo;
 
+    DatabaseReference databaseLocation;
+
     private OnFragmentInteractionListener mListener;
 
     public FindYourWayFragment() {
@@ -141,7 +149,7 @@ public class FindYourWayFragment extends Fragment {
         final View rootView = inflater.inflate(R.layout.fragment_find_your_way, container, false);
 
         //-- JSON Get Locations --
-        new GetLocations().execute("https://ml.internalpositioning.com/locations?group=dummy01");
+        new GetLocations().execute("https://ml.internalpositioning.com/locations?group=wayfindp3");
 
         //-- Location AutoCompleteTextView --
         //https://gist.github.com/ruuhkis/d942330d97163d868ee7
@@ -153,6 +161,9 @@ public class FindYourWayFragment extends Fragment {
         //-- WifiManager --
         wmgr = (WifiManager) getActivity().getApplicationContext().getSystemService(Context.WIFI_SERVICE);
 
+        //-- Connecting to DB --
+        databaseLocation = FirebaseDatabase.getInstance().getReference("locations");
+
         //-- MapBox MapView --
         mapView = (MapView) rootView.findViewById(R.id.mapView);
         mapView.onCreate(savedInstanceState);
@@ -160,7 +171,6 @@ public class FindYourWayFragment extends Fragment {
         mapView.getMapAsync(new OnMapReadyCallback() {
             @Override
             public void onMapReady(final MapboxMap mapboxMap) {
-
 
                 //-- Customize map with markers, polylines, etc. --
                 //-- MapBox URL --
@@ -184,23 +194,53 @@ public class FindYourWayFragment extends Fragment {
                 t.scheduleAtFixedRate(new TimerTask() {
                     @Override
                     public void run() {
+                        String locations;
+
+
                         //-- Track Location --
-                        new PostTrackAPI().execute("https://ml.internalpositioning.com/track");
-                        if (markerView!= null){
+                        try {
 
-                          /*
-                           Log.d("Second GET", "Getting Location 2");
-                           final Location urLocation;
-                           urLocation = getLocation();
-                           LatLng latLng  = new LatLng(urLocation.getLatitude(), urLocation.getLongitude());
-                           markerView.setPosition(latLng);
-                        */
+                            locations = new PostTrackAPI().execute("https://ml.internalpositioning.com/track").get().toString();
+                            Log.d("Result of PostAPI", locations + " ");
+
+                            //-- Compare to DB --
+
+                            String loca = locations.toUpperCase();
+                            Query locationQuery = databaseLocation.orderByChild("id").equalTo(loca);
+                            locationQuery.addValueEventListener(new ValueEventListener() {
+                                @Override
+                                public void onDataChange(DataSnapshot dataSnapshot) {
+                                    for (DataSnapshot locationSnapshot : dataSnapshot.getChildren()) {
+                                        //-- Get Longitude and Latitude --
+                                         double locLatitude =  (double) locationSnapshot.child("latitude").getValue();
+                                         double locLongitude =  (double) locationSnapshot.child("longitude").getValue();
+
+                                        Log.d("LatLng", locLatitude + ", " + locLongitude);
+                                        LatLng latLng = new LatLng(locLatitude, locLongitude);
+                                        if (markerView != null) {
+                                            markerView.setPosition(latLng);
+                                        }else{
+                                            markerView = mapboxMap.addMarker(new MarkerViewOptions().position(new LatLng(locLatitude, locLongitude)));
+                                        }
+                                    }
+                                }
+
+                                @Override
+                                public void onCancelled(DatabaseError databaseError) {
+
+                                }
+                            });
+
+                        } catch (InterruptedException e) {
+                            e.printStackTrace();
+                        } catch (ExecutionException e) {
+                            e.printStackTrace();
                         }
+
+
+
                     }
-
-
                 },0,2500
-
                 );
 
                 mapboxMap.animateCamera(CameraUpdateFactory.newCameraPosition(position), 2000);
@@ -368,7 +408,7 @@ public class FindYourWayFragment extends Fragment {
         } catch (JSONException e) {
             e.printStackTrace();
         }
-        Log.d("JSON Value",root.toString());
+        Log.d("JSON Value", root.toString());
         return root.toString();
     }
 
@@ -441,7 +481,6 @@ public class FindYourWayFragment extends Fragment {
         @Override
         protected void onPostExecute(String result){
             super.onPostExecute(result);
-            Log.d("result of post", result + " ");
         }
     }
 
