@@ -16,6 +16,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
+import android.widget.Toast;
 
 import com.mapbox.mapboxsdk.Mapbox;
 import com.mapbox.mapboxsdk.annotations.MarkerView;
@@ -46,6 +47,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
+import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 
 import javax.net.ssl.HttpsURLConnection;
@@ -81,6 +83,7 @@ public class FindYourWayFragment extends Fragment {
     private String mParam1;
     private String mParam2;
     MapView mapView;
+    Timer t = null;
 
     Location location;
     double latitude;
@@ -138,7 +141,7 @@ public class FindYourWayFragment extends Fragment {
         final View rootView = inflater.inflate(R.layout.fragment_find_your_way, container, false);
 
         //-- JSON Get Locations --
-        new GetLocations().execute("https://ml.internalpositioning.com/locations?group=wayFindp3");
+        new GetLocations().execute("https://ml.internalpositioning.com/locations?group=dummy01");
 
         //-- Location AutoCompleteTextView --
         //https://gist.github.com/ruuhkis/d942330d97163d868ee7
@@ -171,29 +174,33 @@ public class FindYourWayFragment extends Fragment {
                         .build(); // Creates a CameraPosition from the builder
                 mapboxMap.setCameraPosition(position);
 
-                final Location myLocation;
+              /*  final Location myLocation;
                 myLocation = getLocation();
-                Log.d("First GET", "Getting Location 1");
                 markerView = mapboxMap.addMarker(new MarkerViewOptions().position(new LatLng(myLocation.getLatitude(), myLocation.getLongitude())));
+               */
 
                 //-- Timer to Loops Marker Change --
-                final Timer t = new Timer();
+                t = new Timer();
                 t.scheduleAtFixedRate(new TimerTask() {
                     @Override
                     public void run() {
                         //-- Track Location --
                         new PostTrackAPI().execute("https://ml.internalpositioning.com/track");
-
                         if (markerView!= null){
-                            Log.d("Second GET", "Getting Location 2");
 
+                          /*
+                           Log.d("Second GET", "Getting Location 2");
                            final Location urLocation;
                            urLocation = getLocation();
                            LatLng latLng  = new LatLng(urLocation.getLatitude(), urLocation.getLongitude());
                            markerView.setPosition(latLng);
+                        */
                         }
                     }
+
+
                 },0,2500
+
                 );
 
                 mapboxMap.animateCamera(CameraUpdateFactory.newCameraPosition(position), 2000);
@@ -274,6 +281,10 @@ public class FindYourWayFragment extends Fragment {
     public void onStop() {
         super.onStop();
         mapView.onStop();
+        if(t != null){
+            t.cancel();
+            t = null;
+        }
     }
 
     //---- MapBox onSaveInstanceState Method ----
@@ -339,7 +350,7 @@ public class FindYourWayFragment extends Fragment {
         wmgr.startScan();
 
         for (ScanResult R : results) {
-            if (!R.SSID.equals("NYP-Student")) {
+            if (R.SSID.equalsIgnoreCase("NYP-Student")) {
                 try {
                     fingerprint.put("mac", R.BSSID.toString());
                     fingerprint.put("rssi", R.level);
@@ -431,7 +442,6 @@ public class FindYourWayFragment extends Fragment {
         protected void onPostExecute(String result){
             super.onPostExecute(result);
             Log.d("result of post", result + " ");
-            //Toast.makeText(getActivity(), result + " " , Toast.LENGTH_SHORT).show();
         }
     }
 
@@ -467,7 +477,6 @@ public class FindYourWayFragment extends Fragment {
 
                 Iterator<String> iterator = parentArray.keys();
                 while(iterator.hasNext()){
-
                     aList.add(iterator.next().toUpperCase());
                 }
 

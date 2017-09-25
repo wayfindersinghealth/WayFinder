@@ -9,6 +9,7 @@ import android.net.wifi.WifiInfo;
 import android.net.wifi.WifiManager;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.CountDownTimer;
 import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 import android.text.TextUtils;
@@ -55,6 +56,8 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Timer;
+import java.util.TimerTask;
 import java.util.concurrent.TimeUnit;
 
 import javax.net.ssl.HttpsURLConnection;
@@ -103,6 +106,7 @@ public class LearnFragment extends Fragment {
     Button buttonLearn;
     String loc;
     double lat, lon;
+    final JSONObject root = new JSONObject();
 
     //-- Variables for Get Location Methods --
     Location location;
@@ -111,6 +115,7 @@ public class LearnFragment extends Fragment {
     boolean isNetworkEnabled = false;
     boolean canGetLocation = false;
     ArrayList<String> locationList = new ArrayList<String>();
+
 
     DatabaseReference databaseLocation;
 
@@ -152,6 +157,7 @@ public class LearnFragment extends Fragment {
     @Override
     public View onCreateView(final LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+
         //-- Change Action Bar Title --
         ((MainActivity) getActivity()).setActionBarTitle("Learn");
 
@@ -166,7 +172,6 @@ public class LearnFragment extends Fragment {
 
         //-- Connecting to DB --
         databaseLocation = FirebaseDatabase.getInstance().getReference("locations");
-
         //-- Retrieving from DB --
         databaseLocation.addValueEventListener(new ValueEventListener() {
             @Override
@@ -246,16 +251,28 @@ public class LearnFragment extends Fragment {
                     if(wifiInfo.getSupplicantState().toString().equals("COMPLETED")) {
                         if(!locText.getText().toString().matches("")) {
                             if(markerView != null) {
-                                //new PostLearnAPI().execute("https://ml.internalpositioning.com/learn");
-                                //new GetCalculateAPI().execute("https://ml.internalpositioning.com/calculate?group=wayFindp3");
-                                addLocation(markerView.getPosition());
+                                    formatDataAsJSON();
+                                CountDownTimer timeTimer = new CountDownTimer(6000,1000) {
+                                    @Override
+                                    public void onTick(long l) {
+                                        Toast.makeText(getActivity(), "Finding AP" , Toast.LENGTH_SHORT).show();
+                                    }
+                                    @Override
+                                    public void onFinish() {
+                                        new PostLearnAPI().execute("https://ml.internalpositioning.com/learn");
+                                        new GetCalculateAPI().execute("https://ml.internalpositioning.com/calculate?group=wayfindp3");
+                                       //--- Remove commend when done testing
+                                        // addLocation(markerView.getPosition());
+                                        Toast.makeText(getActivity(), "Inserted Into Repository" , Toast.LENGTH_SHORT).show();
+                                    }
+                                };
+                                timeTimer.start();
 
                                 //Hide Keyboard After Pressing Button
                                 ((MainActivity) getActivity()).hideKeyboard(rootView);
-                                Toast.makeText(getActivity(), "Calculating, Please Wait" , Toast.LENGTH_LONG).show();
                             }
                             else{
-                               Toast.makeText(getActivity(), "Tap On Map To Add Geolocation." , Toast.LENGTH_SHORT).show();
+                                Toast.makeText(getActivity(), "Tap On Map To Add Geolocation." , Toast.LENGTH_SHORT).show();
                                 ((MainActivity) getActivity()).hideKeyboard(rootView);
                             }
                         } else{
@@ -362,44 +379,50 @@ public class LearnFragment extends Fragment {
     }
 
     //---- Format Data As JSON Method ----
-    private String formatDataAsJSON() {
-        JSONObject root = new JSONObject();
-        JSONArray wifiFingerprint = new JSONArray();
-        JSONObject fingerprint = new JSONObject();
 
-        List<ScanResult> results = wmgr.getScanResults();
-        String timeStamp = TimeUnit.MILLISECONDS.toSeconds(System.currentTimeMillis()) + "";
-        wmgr.startScan();
+    public void formatDataAsJSON() {
 
-        for (ScanResult R : results) {
-            if (!R.SSID.equals("NYP-Student")) {
+         final JSONArray wifiFingerprint = new JSONArray();
+         final JSONObject fingerprint = new JSONObject();
+         final List<ScanResult> results = wmgr.getScanResults();
+         final String timeStamp = TimeUnit.MILLISECONDS.toSeconds(System.currentTimeMillis()) + "";
+
+        CountDownTimer myTimer = new CountDownTimer(5000, 1000) {
+            @Override
+            public void onTick(long l) {
+
+                wmgr.startScan();
+                loc = locText.getText().toString();
+                for (ScanResult R : results) {
+                    if (R.SSID.equalsIgnoreCase("NYP-Student")) {
+                                try {
+                                    fingerprint.put("mac", R.BSSID.toString());
+                                    fingerprint.put("rssi", R.level);
+                                    wifiFingerprint.put(fingerprint);
+                                } catch (JSONException e) {
+                                    e.printStackTrace();
+                        }
+                    }
+                }
+            }
+
+            @Override
+            public void onFinish() {
                 try {
-                    fingerprint.put("mac", R.BSSID.toString());
-                    fingerprint.put("rssi", R.level);
-                    wifiFingerprint.put(fingerprint);
-                    loc = locText.getText().toString();
+                    root.put("group", "wayfindp3");
+                    root.put("username", "p3");
+                    root.put("location", loc);
+                    root.put("time", timeStamp);
+                    root.put("wifi-fingerprint", wifiFingerprint);
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
             }
-        }
-        try {
-            root.put("group", "wayfindp3");
-            root.put("username", "p3");
-            root.put("location", loc);
-            root.put("time", timeStamp);
-            root.put("wifi-fingerprint", wifiFingerprint);
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-        Log.d("JSON Value",root.toString());
-        return root.toString();
+        };
+        myTimer.start();
     }
 
-    //---- Get Location Method ----
-    public Location getLocation() {
-        return null;
-    }
+
 
     //---- addLocation Methods ----
     private void addLocation(LatLng position){
@@ -420,65 +443,69 @@ public class LearnFragment extends Fragment {
 
     //---- PostLearnAPI Task Class ----
     public class PostLearnAPI extends AsyncTask<String, String, String>{
-
         @Override
         protected String doInBackground(String... params) {
             HttpsURLConnection connection = null;
             BufferedReader reader = null;
             BufferedWriter writer = null;
             String result;
+            String jsonResult = null;
 
             try{
-                //Connecting to API
-                URL link = new URL(params[0]);
-                connection = (HttpsURLConnection) link.openConnection();
-                connection.setDoOutput(true);
-                connection.setRequestProperty("Content-Type", "application/json");
-                connection.setRequestProperty("Accept", "application/json");
-                connection.setRequestMethod("POST");
-                connection.connect();
+                jsonResult = root.toString();
+            }finally {
+                try{
+                    //Connecting to API
+                    URL link = new URL(params[0]);
+                    connection = (HttpsURLConnection) link.openConnection();
+                    connection.setDoOutput(true);
+                    connection.setRequestProperty("Content-Type", "application/json");
+                    connection.setRequestProperty("Accept", "application/json");
+                    connection.setRequestMethod("POST");
+                    connection.connect();
 
-                //Writing to API
-                OutputStream outputStream =  connection.getOutputStream();
-                writer = new BufferedWriter(new OutputStreamWriter(outputStream, "UTF-8"));
-                writer.write(formatDataAsJSON());
-                writer.close();
-                outputStream.close();
+                    //Writing to API
+                    OutputStream outputStream =  connection.getOutputStream();
+                    writer = new BufferedWriter(new OutputStreamWriter(outputStream, "UTF-8"));
+                    writer.write(jsonResult);
+                    writer.close();
+                    outputStream.close();
 
-                //Reading results of Post
-                reader = new BufferedReader(new InputStreamReader(connection.getInputStream(), "UTF-8"));
-                String line = null;
-                StringBuilder sb = new StringBuilder();
+                    //Reading results of Post
+                    reader = new BufferedReader(new InputStreamReader(connection.getInputStream(), "UTF-8"));
+                    String line = null;
+                    StringBuilder sb = new StringBuilder();
 
-                while((line = reader.readLine())!= null){
-                    sb.append(line);
-                }
-                result = sb.toString();
-                return result;
-
-            } catch (MalformedURLException e) {
-                e.printStackTrace();
-            } catch (IOException e) {
-                e.printStackTrace();
-            } finally{
-                if(connection != null){
-                    connection.disconnect();
-                } try{
-                    if(reader != null){
-                        reader.close();
+                    while((line = reader.readLine())!= null){
+                        sb.append(line);
                     }
+                    result = sb.toString();
+                    return result;
+
+                } catch (MalformedURLException e) {
+                    e.printStackTrace();
                 } catch (IOException e) {
                     e.printStackTrace();
+                } finally{
+                    if(connection != null){
+                        connection.disconnect();
+                    } try{
+                        if(reader != null){
+                            reader.close();
+                        }
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
                 }
             }
+
             return null;
         }
 
         @Override
         protected void onPostExecute(String result){
             super.onPostExecute(result);
-            Log.d("result of post", result + " ");
-            Toast.makeText(getActivity(), "Learning Your Location" , Toast.LENGTH_SHORT).show();
+            Log.d("Result of Post", result + " ");
         }
     }
 
@@ -532,8 +559,7 @@ public class LearnFragment extends Fragment {
         @Override
         protected void onPostExecute(String result){
             super.onPostExecute(result);
-            Log.d("Calculate Result", result + " ");
         }
     }
-        //-------- END OF CLASS ---------
+    //-------- END OF CLASS ---------
 }
