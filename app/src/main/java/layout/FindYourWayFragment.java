@@ -1,6 +1,9 @@
 package layout;
 
 import android.content.Context;
+import android.graphics.BitmapFactory;
+import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.Drawable;
 import android.location.Location;
 import android.location.LocationManager;
 import android.net.Uri;
@@ -9,7 +12,10 @@ import android.net.wifi.WifiManager;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.design.widget.FloatingActionButton;
+import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
+import android.support.v4.content.ContextCompat;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -25,6 +31,8 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 import com.mapbox.mapboxsdk.Mapbox;
+import com.mapbox.mapboxsdk.annotations.Icon;
+import com.mapbox.mapboxsdk.annotations.IconFactory;
 import com.mapbox.mapboxsdk.annotations.MarkerView;
 import com.mapbox.mapboxsdk.annotations.MarkerViewOptions;
 import com.mapbox.mapboxsdk.camera.CameraPosition;
@@ -84,6 +92,8 @@ public class FindYourWayFragment extends Fragment {
             .include(new LatLng(1.3792949602146791, 103.84983998176449))
             .include(new LatLng(1.3792949602146791, 103.84983998176449))
             .build();
+
+    LatLng currentLocation;
 
     // TODO: Rename and change types of parameters
     private String mParam1;
@@ -177,17 +187,12 @@ public class FindYourWayFragment extends Fragment {
                 mapboxMap.setStyleUrl(getString((R.string.mapbox_url)));
 
                 //-- MapBox Zoom On Location --
-                final LatLng zoomLocation = new LatLng(1.3792949602146791, 103.84943998176449);
+                final LatLng zoomLocation = new LatLng(1.3792949602146791, 103.84983998176449);
                 CameraPosition position = new CameraPosition.Builder()
                         .target(zoomLocation)
-                        .zoom(19) // Sets the zoom
+                        .zoom(18) // Sets the zoom
                         .build(); // Creates a CameraPosition from the builder
                 mapboxMap.setCameraPosition(position);
-
-              /*  final Location myLocation;
-                myLocation = getLocation();
-                markerView = mapboxMap.addMarker(new MarkerViewOptions().position(new LatLng(myLocation.getLatitude(), myLocation.getLongitude())));
-               */
 
                 //-- Timer to Loops Marker Change --
                 t = new Timer();
@@ -196,15 +201,12 @@ public class FindYourWayFragment extends Fragment {
                     public void run() {
                         String locations;
 
-
                         //-- Track Location --
                         try {
-
                             locations = new PostTrackAPI().execute("https://ml.internalpositioning.com/track").get().toString();
                             Log.d("Result of PostAPI", locations + " ");
 
                             //-- Compare to DB --
-
                             String loca = locations.toUpperCase();
                             Query locationQuery = databaseLocation.orderByChild("id").equalTo(loca);
                             locationQuery.addValueEventListener(new ValueEventListener() {
@@ -212,19 +214,23 @@ public class FindYourWayFragment extends Fragment {
                                 public void onDataChange(DataSnapshot dataSnapshot) {
                                     for (DataSnapshot locationSnapshot : dataSnapshot.getChildren()) {
                                         //-- Get Longitude and Latitude --
-                                         double locLatitude =  (double) locationSnapshot.child("latitude").getValue();
-                                         double locLongitude =  (double) locationSnapshot.child("longitude").getValue();
+                                        double locLatitude = (double) locationSnapshot.child("latitude").getValue();
+                                        double locLongitude = (double) locationSnapshot.child("longitude").getValue();
+
+                                        currentLocation = new LatLng(locLatitude, locLongitude);
 
                                         Log.d("LatLng", locLatitude + ", " + locLongitude);
 
-
+                                        IconFactory iconFactory = IconFactory.getInstance(getActivity());
+                                        Icon icon = iconFactory.fromResource(R.drawable.mapbox_mylocation_icon_bearing);
+                                        //-- Set Marker on Map --
                                         LatLng latLng = new LatLng(locLatitude, locLongitude);
                                         if (markerView != null) {
                                             markerView.setPosition(latLng);
-                                        }else if(markerView == null){
+                                            markerView.setIcon(icon);
+                                        } else if(markerView == null){
                                             markerView = mapboxMap.addMarker(new MarkerViewOptions().position(new LatLng(locLatitude, locLongitude)));
                                         }
-
                                     }
                                 }
 
@@ -233,24 +239,33 @@ public class FindYourWayFragment extends Fragment {
 
                                 }
                             });
-
                         } catch (InterruptedException e) {
                             e.printStackTrace();
                         } catch (ExecutionException e) {
                             e.printStackTrace();
                         }
-
-
-
                     }
-                },0,1500
-                );
+                },0,1500);
 
-                mapboxMap.animateCamera(CameraUpdateFactory.newCameraPosition(position), 2000);
+                //-- Floating Action Button Click to go to Current Location--
+                FloatingActionButton fab = (FloatingActionButton) rootView.findViewById(R.id.fab);
+                fab.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        LatLng zoomLocation = new LatLng(currentLocation);
+                        CameraPosition position = new CameraPosition.Builder()
+                                .target(zoomLocation)
+                                .zoom(20) // Sets the zoom
+                                .build(); // Creates a CameraPosition from the builder
+                        mapboxMap.setCameraPosition(position);
+                    }
+                });
+
+              //  mapboxMap.animateCamera(CameraUpdateFactory.newCameraPosition(position), 2000);
                 //-- Set Camera LatLng Bounds --
-                mapboxMap.setLatLngBoundsForCameraTarget(NYPBLKL_BOUNDS);
-                mapboxMap.setMaxZoomPreference(20);
-                mapboxMap.setMinZoomPreference(19.2);
+                //  mapboxMap.setLatLngBoundsForCameraTarget(NYPBLKL_BOUNDS);
+                // mapboxMap.setMaxZoomPreference(20);
+                // mapboxMap.setMinZoomPreference(19.2);
             }
         });
 
