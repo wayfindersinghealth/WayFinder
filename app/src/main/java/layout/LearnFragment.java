@@ -1,6 +1,7 @@
 package layout;
 
 import android.content.Context;
+import android.graphics.drawable.Drawable;
 import android.location.Location;
 import android.location.LocationManager;
 import android.net.Uri;
@@ -12,6 +13,8 @@ import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
+import android.support.v4.content.ContextCompat;
+import android.support.v4.graphics.drawable.DrawableCompat;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -29,6 +32,8 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.mapbox.mapboxsdk.Mapbox;
+import com.mapbox.mapboxsdk.annotations.Icon;
+import com.mapbox.mapboxsdk.annotations.IconFactory;
 import com.mapbox.mapboxsdk.annotations.MarkerView;
 import com.mapbox.mapboxsdk.annotations.MarkerViewOptions;
 import com.mapbox.mapboxsdk.camera.CameraPosition;
@@ -200,10 +205,15 @@ public class LearnFragment extends Fragment {
         mapView = (MapView) rootView.findViewById(R.id.mapViewLearn);
         mapView.onCreate(savedInstanceState);
 
+        IconFactory iconFactory = IconFactory.getInstance(getActivity());
+        final Icon icon = iconFactory.fromResource(R.drawable.ic_blue_pin);
+
         mapView.getMapAsync(new OnMapReadyCallback() {
 
             @Override
             public void onMapReady(final MapboxMap mapboxMap) {
+
+
                 mapboxMap.setOnMapLongClickListener(new MapboxMap.OnMapLongClickListener() {
 
                     @Override
@@ -211,10 +221,11 @@ public class LearnFragment extends Fragment {
                         if(markerView != null) {
                             markerView.remove();
                             LatLng pos = new LatLng(point.getLatitude(), point.getLongitude());
-                            markerView = mapboxMap.addMarker(new MarkerViewOptions().position(pos));
+                            markerView = mapboxMap.addMarker(new MarkerViewOptions().position(pos).icon(icon));
+
                         }else {
                             LatLng pos = new LatLng(point.getLatitude(), point.getLongitude());
-                            markerView = mapboxMap.addMarker(new MarkerViewOptions().position(pos));
+                            markerView = mapboxMap.addMarker(new MarkerViewOptions().position(pos).icon(icon));
                         }
                     }
                 });

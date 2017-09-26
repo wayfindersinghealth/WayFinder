@@ -78,6 +78,7 @@ public class MainFragment extends Fragment {
         //-- View --
         View rootView = inflater.inflate(R.layout.fragment_main, container, false);
 
+
         //-- ImageButton Learn Click--
         ImageButton imageButtonLearn = (ImageButton) rootView.findViewById(R.id.imageButtonLearn);
         imageButtonLearn.setOnClickListener(new View.OnClickListener() {
