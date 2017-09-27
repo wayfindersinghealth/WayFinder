@@ -121,6 +121,9 @@ public class LearnFragment extends Fragment {
     boolean isNetworkEnabled = false;
     boolean canGetLocation = false;
     ArrayList<String> locationList = new ArrayList<String>();
+    final JSONArray wifiFingerprint = new JSONArray();
+
+
 
 
     DatabaseReference databaseLocation;
@@ -267,10 +270,10 @@ public class LearnFragment extends Fragment {
                                     formatDataAsJSON();
                                     Toast.makeText(getActivity(), "Finding AP", Toast.LENGTH_SHORT).show();
                                     }finally {
-                                       new PostLearnAPI().execute("https://ml.internalpositioning.com/learn");
-                                       new GetCalculateAPI().execute("https://ml.internalpositioning.com/calculate?group=wayfindp3");
-                                       addLocation(markerView.getPosition());
-                                    Toast.makeText(getActivity(), "Inserted Into Repository" , Toast.LENGTH_SHORT).show();
+                                     //  new PostLearnAPI().execute("https://ml.internalpositioning.com/learn");
+                                     //  new GetCalculateAPI().execute("https://ml.internalpositioning.com/calculate?group=wayfindp3");
+                                     // addLocation(markerView.getPosition());
+                                     // Toast.makeText(getActivity(), "Inserted Into Repository" , Toast.LENGTH_SHORT).show();
                                 }
                                 //Hide Keyboard After Pressing Button
                                 ((MainActivity) getActivity()).hideKeyboard(rootView);
@@ -384,38 +387,85 @@ public class LearnFragment extends Fragment {
 
     //---- Format Data As JSON Method ----
     public void formatDataAsJSON() {
+        CountDownTimer timer = new CountDownTimer(5000, 1000) {
+            ArrayList<ScanResult> results = (ArrayList<ScanResult>) wmgr.getScanResults();
+            String timeStamp = TimeUnit.MILLISECONDS.toSeconds(System.currentTimeMillis()) + "";
+            ArrayList<JSONObject> fpArray = new ArrayList<>();
 
-         JSONArray wifiFingerprint = new JSONArray();
-         List<ScanResult> results = wmgr.getScanResults();
-         String timeStamp = TimeUnit.MILLISECONDS.toSeconds(System.currentTimeMillis()) + "";
-         JSONObject fingerprint = new JSONObject();
+            @Override
+            public void onTick(long l) {
 
-                    wmgr.startScan();
-                    for (ScanResult R : results) {
-                        if (R.SSID.equalsIgnoreCase("NYP-Student")) {
-                             try {
+                wmgr.startScan();
+
+                if(fpArray.size() == 0){
+                    for (int i=0; i <results.size(); i++) {
+                        if (results.get(i).SSID.equalsIgnoreCase("NYP-Student")) {
+                            try {
+                                JSONObject fingerprint = new JSONObject();
+                                fingerprint.put("mac", results.get(i).BSSID);
+                                fingerprint.put("rssi", results.get(i).level);
+                                fpArray.add(fingerprint);
+                                Log.d("FP value", fingerprint.get("mac") + ", " + fingerprint.get("rssi"));
+                            } catch (JSONException e) {
+                                e.printStackTrace();
+                            }
+
+                        }
+
+                    }
+                    Log.d("fpArray", fpArray.toString());
+
+                }
+                /*else if(fpArray.size() > 0){
+                    //Conduct check to prevent duplicate AP
+
+                    for(ScanResult R : results){
+                        if (R.SSID.equalsIgnoreCase("NYP-STUDENT")){
+                            try {
                                 fingerprint.put("mac", R.BSSID);
                                 fingerprint.put("rssi", R.level);
-                                wifiFingerprint.put(fingerprint);
                             } catch (JSONException e) {
-                                 e.printStackTrace();
-                }
-            }
-                try {
-                    loc = locText.getText().toString();
+                                e.printStackTrace();
+                            }
 
-                    root.put("group", "dummy02");
+                                for (int i=0; i<fpArray.size(); i++){
+                                    try {
+                                        if (fpArray.get(i).get("mac").equals(fingerprint.get("mac"))){
+                                                Log.d("Value", "Found same MAC value " + fpArray.get(i).get("mac") + ", " + fingerprint.get("mac"));
+                                        }else{
+                                            Log.d("Value", "Different Value: " + fpArray.get(i).get("mac") + ", adding to wifiFingerprint");
+                                        }
+
+                                    } catch (JSONException e) {
+                                        e.printStackTrace();
+                                    }
+
+                                }
+                            Log.d("-", "---------------");
+                            }
+
+                        }
+                    }
+                    */
+            }
+
+            @Override
+            public void onFinish() {
+             /*   try {
+                    loc = locText.getText().toString();
+                    root.put("group", "dummy04");
                     root.put("username", "p3");
                     root.put("location", loc);
                     root.put("time", timeStamp);
                     root.put("wifi-fingerprint", wifiFingerprint);
-
                     Log.d("wifi Detail", wifiFingerprint.toString());
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
-
+                */
+            }
         };
+        timer.start();
     }
 
 

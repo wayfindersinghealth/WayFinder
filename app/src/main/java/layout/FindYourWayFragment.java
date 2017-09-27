@@ -152,6 +152,8 @@ public class FindYourWayFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+
+
         //-- Change Action Bar Title --
         ((MainActivity) getActivity()).setActionBarTitle("Find Your Way");
 
@@ -224,7 +226,7 @@ public class FindYourWayFragment extends Fragment {
 
 
                                         IconFactory iconFactory = IconFactory.getInstance(getActivity());
-                                        Icon icon = iconFactory.fromResource(R.drawable.mapbox_compass_icon);
+                                        Icon icon = iconFactory.fromResource(R.drawable.ic_black_marker);
 
                                         //-- Set Marker on Map --
                                         LatLng latLng = new LatLng(locLatitude, locLongitude);
@@ -343,6 +345,7 @@ public class FindYourWayFragment extends Fragment {
         if(t != null){
             t.cancel();
             t = null;
+            markerView = null;
         }
     }
 
@@ -420,7 +423,7 @@ public class FindYourWayFragment extends Fragment {
             }
         }
         try {
-            root.put("group", "dummy02");
+            root.put("group", "dummy04");
             root.put("username", "p3");
             root.put("time", timeStamp);
             root.put("wifi-fingerprint", wifiFingerprint);
