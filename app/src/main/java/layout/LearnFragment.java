@@ -387,17 +387,16 @@ public class LearnFragment extends Fragment {
 
     //---- Format Data As JSON Method ----
     public void formatDataAsJSON() {
-        CountDownTimer timer = new CountDownTimer(5000, 1000) {
-            ArrayList<ScanResult> results = (ArrayList<ScanResult>) wmgr.getScanResults();
+        CountDownTimer timer = new CountDownTimer(3000, 1000) {
             String timeStamp = TimeUnit.MILLISECONDS.toSeconds(System.currentTimeMillis()) + "";
             ArrayList<JSONObject> fpArray = new ArrayList<>();
 
             @Override
             public void onTick(long l) {
-
                 wmgr.startScan();
 
                 if(fpArray.size() == 0){
+                    ArrayList<ScanResult> results = (ArrayList<ScanResult>) wmgr.getScanResults();
                     for (int i=0; i <results.size(); i++) {
                         if (results.get(i).SSID.equalsIgnoreCase("NYP-Student")) {
                             try {
@@ -405,48 +404,46 @@ public class LearnFragment extends Fragment {
                                 fingerprint.put("mac", results.get(i).BSSID);
                                 fingerprint.put("rssi", results.get(i).level);
                                 fpArray.add(fingerprint);
-                                Log.d("FP value", fingerprint.get("mac") + ", " + fingerprint.get("rssi"));
+                                Log.d("First scan result", fingerprint.toString());
                             } catch (JSONException e) {
                                 e.printStackTrace();
                             }
-
                         }
-
                     }
                     Log.d("fpArray", fpArray.toString());
 
-                }
-                /*else if(fpArray.size() > 0){
-                    //Conduct check to prevent duplicate AP
+                }else {
+                    if (fpArray.size() > 0) {
+                        ArrayList<ScanResult> results = (ArrayList<ScanResult>) wmgr.getScanResults();
+                        for (int i = 0; i < results.size(); i++) {
+                            if (results.get(i).SSID.equalsIgnoreCase("NYP-Student")) {
+                                boolean test = true;
+                                try {
+                                    JSONObject fingerprint = new JSONObject();
+                                    fingerprint.put("mac", results.get(i).BSSID);
+                                    fingerprint.put("rssi", results.get(i).level);
+                                    Log.d("Second scan result", fingerprint.toString());
 
-                    for(ScanResult R : results){
-                        if (R.SSID.equalsIgnoreCase("NYP-STUDENT")){
-                            try {
-                                fingerprint.put("mac", R.BSSID);
-                                fingerprint.put("rssi", R.level);
-                            } catch (JSONException e) {
-                                e.printStackTrace();
-                            }
-
-                                for (int i=0; i<fpArray.size(); i++){
-                                    try {
-                                        if (fpArray.get(i).get("mac").equals(fingerprint.get("mac"))){
-                                                Log.d("Value", "Found same MAC value " + fpArray.get(i).get("mac") + ", " + fingerprint.get("mac"));
-                                        }else{
-                                            Log.d("Value", "Different Value: " + fpArray.get(i).get("mac") + ", adding to wifiFingerprint");
+                                    for (int j = 0; j < fpArray.size(); j++) {
+                                        if (fpArray.get(j).get("mac").toString().equalsIgnoreCase(fingerprint.get("mac").toString())) {
+                                            test = true;
+                                            break;
+                                        } else {
+                                            test = false;
                                         }
-
-                                    } catch (JSONException e) {
-                                        e.printStackTrace();
                                     }
-
+                                    Log.d("Status", test + " ");
+                                    if(!test){
+                                        fpArray.add(fingerprint);
+                                    }
+                                } catch (JSONException e) {
+                                    e.printStackTrace();
                                 }
-                            Log.d("-", "---------------");
                             }
-
                         }
+                        Log.d("fpArray", fpArray.toString());
                     }
-                    */
+                }
             }
 
             @Override
