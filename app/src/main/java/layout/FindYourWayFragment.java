@@ -206,6 +206,7 @@ public class FindYourWayFragment extends Fragment {
                             locations = new PostTrackAPI().execute("https://ml.internalpositioning.com/track").get().toString();
                             Log.d("Result of PostAPI", locations + " ");
 
+                            //-- check null --
                             //-- Compare to DB --
                             String loca = locations.toUpperCase();
                             Query locationQuery = databaseLocation.orderByChild("id").equalTo(loca);
@@ -221,15 +222,21 @@ public class FindYourWayFragment extends Fragment {
 
                                         Log.d("LatLng", locLatitude + ", " + locLongitude);
 
+
                                         IconFactory iconFactory = IconFactory.getInstance(getActivity());
-                                        Icon icon = iconFactory.fromResource(R.drawable.mapbox_mylocation_icon_bearing);
+                                        Icon icon = iconFactory.fromResource(R.drawable.mapbox_compass_icon);
+
                                         //-- Set Marker on Map --
                                         LatLng latLng = new LatLng(locLatitude, locLongitude);
                                         if (markerView != null) {
                                             markerView.setPosition(latLng);
                                             markerView.setIcon(icon);
+                                            //markerView.setTitle(locations);
+
                                         } else if(markerView == null){
                                             markerView = mapboxMap.addMarker(new MarkerViewOptions().position(new LatLng(locLatitude, locLongitude)));
+                                            markerView.setIcon(icon);
+                                            //markerView.setTitle(locations);
                                         }
                                     }
                                 }
