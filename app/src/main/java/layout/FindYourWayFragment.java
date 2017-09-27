@@ -260,12 +260,6 @@ public class FindYourWayFragment extends Fragment {
                         mapboxMap.setCameraPosition(position);
                     }
                 });
-
-              //  mapboxMap.animateCamera(CameraUpdateFactory.newCameraPosition(position), 2000);
-                //-- Set Camera LatLng Bounds --
-                //  mapboxMap.setLatLngBoundsForCameraTarget(NYPBLKL_BOUNDS);
-                // mapboxMap.setMaxZoomPreference(20);
-                // mapboxMap.setMinZoomPreference(19.2);
             }
         });
 
@@ -419,14 +413,14 @@ public class FindYourWayFragment extends Fragment {
             }
         }
         try {
-            root.put("group", "wayfindp3");
+            root.put("group", "dummy02");
             root.put("username", "p3");
             root.put("time", timeStamp);
             root.put("wifi-fingerprint", wifiFingerprint);
         } catch (JSONException e) {
             e.printStackTrace();
         }
-        Log.d("JSON Value", root.toString());
+       // Log.d("JSON Value", root.toString());
         return root.toString();
     }
 
@@ -468,13 +462,20 @@ public class FindYourWayFragment extends Fragment {
                 String finalJSON;
 
                 while((line = reader.readLine())!= null){
+                    Log.d("line value", line + "  ");
                     sb.append(line);
+                    Log.d("StringBuffer value", sb.toString() + "  ");
                 }
+
+
                 finalJSON = sb.toString();
+                Log.d("finalJSON value", finalJSON.toString() + "  ");
 
                 JSONObject jsonObject = new JSONObject(finalJSON);
                 result =  jsonObject.getString("location");
+                Log.d("result value", result + "  ");
                 return result;
+
 
             } catch (MalformedURLException e) {
                 e.printStackTrace();
@@ -530,7 +531,7 @@ public class FindYourWayFragment extends Fragment {
                 String finalJson = sBuffer.toString();
                 JSONObject parentObject = new JSONObject(finalJson);
                 JSONObject parentArray = parentObject.getJSONObject("locations");
-                Log.d("parentArray string",parentArray.toString());
+               // Log.d("parentArray string",parentArray.toString());
 
                 Iterator<String> iterator = parentArray.keys();
                 while(iterator.hasNext()){

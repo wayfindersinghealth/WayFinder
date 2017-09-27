@@ -61,6 +61,7 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Objects;
 import java.util.Timer;
 import java.util.TimerTask;
 import java.util.concurrent.TimeUnit;
@@ -262,23 +263,15 @@ public class LearnFragment extends Fragment {
                     if(wifiInfo.getSupplicantState().toString().equals("COMPLETED")) {
                         if(!locText.getText().toString().matches("")) {
                             if(markerView != null) {
+                                try {
                                     formatDataAsJSON();
-                                CountDownTimer timeTimer = new CountDownTimer(11000,1000) {
-                                    @Override
-                                    public void onTick(long l) {
-                                        Toast.makeText(getActivity(), "Finding AP" , Toast.LENGTH_SHORT).show();
-                                    }
-                                    @Override
-                                    public void onFinish() {
-                                        new PostLearnAPI().execute("https://ml.internalpositioning.com/learn");
-                                        new GetCalculateAPI().execute("https://ml.internalpositioning.com/calculate?group=wayfindp3");
-                                       //--- Remove commend when done testing
-                                         addLocation(markerView.getPosition());
-                                        Toast.makeText(getActivity(), "Inserted Into Repository" , Toast.LENGTH_SHORT).show();
-                                    }
-                                };
-                                timeTimer.start();
-
+                                    Toast.makeText(getActivity(), "Finding AP", Toast.LENGTH_SHORT).show();
+                                    }finally {
+                                       new PostLearnAPI().execute("https://ml.internalpositioning.com/learn");
+                                       new GetCalculateAPI().execute("https://ml.internalpositioning.com/calculate?group=wayfindp3");
+                                       addLocation(markerView.getPosition());
+                                    Toast.makeText(getActivity(), "Inserted Into Repository" , Toast.LENGTH_SHORT).show();
+                                }
                                 //Hide Keyboard After Pressing Button
                                 ((MainActivity) getActivity()).hideKeyboard(rootView);
                             }
@@ -392,44 +385,37 @@ public class LearnFragment extends Fragment {
     //---- Format Data As JSON Method ----
     public void formatDataAsJSON() {
 
-         final JSONArray wifiFingerprint = new JSONArray();
-         final JSONObject fingerprint = new JSONObject();
-         final List<ScanResult> results = wmgr.getScanResults();
-         final String timeStamp = TimeUnit.MILLISECONDS.toSeconds(System.currentTimeMillis()) + "";
+         JSONArray wifiFingerprint = new JSONArray();
+         List<ScanResult> results = wmgr.getScanResults();
+         String timeStamp = TimeUnit.MILLISECONDS.toSeconds(System.currentTimeMillis()) + "";
+         JSONObject fingerprint = new JSONObject();
 
-        CountDownTimer myTimer = new CountDownTimer(10000, 1000) {
-            @Override
-            public void onTick(long l) {
-
-                wmgr.startScan();
-                loc = locText.getText().toString();
-                for (ScanResult R : results) {
-                    if (R.SSID.equalsIgnoreCase("NYP-Student")) {
-                                try {
-                                    fingerprint.put("mac", R.BSSID.toString());
-                                    fingerprint.put("rssi", R.level);
-                                    wifiFingerprint.put(fingerprint);
-                                } catch (JSONException e) {
-                                    e.printStackTrace();
-                        }
-                    }
+                    wmgr.startScan();
+                    for (ScanResult R : results) {
+                        if (R.SSID.equalsIgnoreCase("NYP-Student")) {
+                             try {
+                                fingerprint.put("mac", R.BSSID);
+                                fingerprint.put("rssi", R.level);
+                                wifiFingerprint.put(fingerprint);
+                            } catch (JSONException e) {
+                                 e.printStackTrace();
                 }
             }
-
-            @Override
-            public void onFinish() {
                 try {
-                    root.put("group", "wayfindp3");
+                    loc = locText.getText().toString();
+
+                    root.put("group", "dummy02");
                     root.put("username", "p3");
                     root.put("location", loc);
                     root.put("time", timeStamp);
                     root.put("wifi-fingerprint", wifiFingerprint);
+
+                    Log.d("wifi Detail", wifiFingerprint.toString());
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
-            }
+
         };
-        myTimer.start();
     }
 
 
