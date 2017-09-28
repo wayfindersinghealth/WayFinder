@@ -13,6 +13,8 @@ import android.view.animation.AnimationUtils;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import layout.LoginActivity;
+
 /**
  * File Name: SplashScreen.java
  * Created By: AY17 P3 FYPJ NYP SIT
@@ -77,7 +79,7 @@ public class SplashScreen extends Activity {
                 e.apply();
             } else {
                 //-- Application Layout --
-                i = new Intent(SplashScreen.this, MainActivity.class);
+                i = new Intent(SplashScreen.this, LoginActivity.class);
             }
 
             startActivity(i);
