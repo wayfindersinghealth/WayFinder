@@ -7,6 +7,8 @@ import android.os.Bundle;
 import com.github.paolorotolo.appintro.AppIntro2;
 import com.github.paolorotolo.appintro.AppIntroFragment;
 
+import layout.LoginActivity;
+
 /**
  * File Name: IntroductionTutorial.java
  * Created By: AY17 P3 FYPJ NYP SIT
@@ -40,7 +42,7 @@ public class IntroductionTutorial extends AppIntro2 {
 
     @Override
     public void onDonePressed() {
-        Intent i = new Intent(this, MainActivity.class);
+        Intent i = new Intent(this, LoginActivity.class);
         startActivity(i);
         finish();
     }
