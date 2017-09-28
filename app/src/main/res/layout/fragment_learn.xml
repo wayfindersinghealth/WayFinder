@@ -49,13 +49,14 @@
         android:id="@+id/buttonLearn"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/buttonLearn"
-        android:background="@color/colorSplashScreenBackground"
         android:layout_marginEnd="16dp"
-        tools:layout_constraintRight_creator="1"
-        app:layout_constraintRight_toRightOf="parent"
+        android:background="@color/colorSplashScreenBackground"
+        android:elevation="2dp"
+        android:text="@string/buttonLearn"
         app:layout_constraintBaseline_toBaselineOf="@+id/locationText"
-        tools:layout_constraintBaseline_creator="1" />
+        app:layout_constraintRight_toRightOf="parent"
+        tools:layout_constraintBaseline_creator="1"
+        tools:layout_constraintRight_creator="1" />
 
     <ImageView xmlns:android="http://schemas.android.com/apk/res/android"
         android:src="@android:drawable/divider_horizontal_dark"

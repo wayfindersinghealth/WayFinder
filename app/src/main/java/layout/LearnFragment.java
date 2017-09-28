@@ -95,8 +95,8 @@ public class LearnFragment extends Fragment {
 
     // Mapbox Variable
     private static final LatLngBounds NYPBLKL_BOUNDS = new LatLngBounds.Builder()
-            .include(new LatLng(1.3792949602146791, 103.84983998176449))
-            .include(new LatLng(1.3792949602146791, 103.84983998176449))
+            .include(new LatLng(1.378921, 103.849596))
+            .include(new LatLng(1.379427, 103.849945))
             .build();
     MapView mapView;
     private static MarkerView markerView;
@@ -112,7 +112,7 @@ public class LearnFragment extends Fragment {
     Button buttonLearn;
     String loc;
     double lat, lon;
-    final JSONObject root = new JSONObject();
+    JSONObject root = new JSONObject();
 
     //-- Variables for Get Location Methods --
     Location location;
@@ -122,9 +122,6 @@ public class LearnFragment extends Fragment {
     boolean canGetLocation = false;
     ArrayList<String> locationList = new ArrayList<String>();
     final JSONArray wifiFingerprint = new JSONArray();
-
-
-
 
     DatabaseReference databaseLocation;
 
@@ -240,7 +237,7 @@ public class LearnFragment extends Fragment {
                 mapboxMap.setStyleUrl(getString((R.string.mapbox_url)));
 
                 //-- MapBox Zoom On Location --
-                final LatLng zoomLocation = new LatLng(1.3792949602146791, 103.84943998176449);
+                final LatLng zoomLocation = new LatLng(1.3792949602146791, 103.84983998176449);
                 CameraPosition position = new CameraPosition.Builder()
                         .target(zoomLocation)
                         .zoom(19) // Sets the zoom
@@ -252,7 +249,7 @@ public class LearnFragment extends Fragment {
                 mapboxMap.setLatLngBoundsForCameraTarget(NYPBLKL_BOUNDS);
 
                 mapboxMap.setMaxZoomPreference(20);
-                mapboxMap.setMinZoomPreference(19.2);
+                mapboxMap.setMinZoomPreference(18.5);
             }
         });
 
@@ -268,12 +265,8 @@ public class LearnFragment extends Fragment {
                             if(markerView != null) {
                                 try {
                                     formatDataAsJSON();
-                                    Toast.makeText(getActivity(), "Finding AP", Toast.LENGTH_SHORT).show();
-                                    }finally {
-                                     //  new PostLearnAPI().execute("https://ml.internalpositioning.com/learn");
-                                     //  new GetCalculateAPI().execute("https://ml.internalpositioning.com/calculate?group=wayfindp3");
-                                     // addLocation(markerView.getPosition());
-                                     // Toast.makeText(getActivity(), "Inserted Into Repository" , Toast.LENGTH_SHORT).show();
+                                }finally {
+                                    addLocation(markerView.getPosition());
                                 }
                                 //Hide Keyboard After Pressing Button
                                 ((MainActivity) getActivity()).hideKeyboard(rootView);
@@ -387,7 +380,7 @@ public class LearnFragment extends Fragment {
 
     //---- Format Data As JSON Method ----
     public void formatDataAsJSON() {
-        CountDownTimer timer = new CountDownTimer(3000, 1000) {
+        CountDownTimer timer = new CountDownTimer(60000, 1000) {
             String timeStamp = TimeUnit.MILLISECONDS.toSeconds(System.currentTimeMillis()) + "";
             ArrayList<JSONObject> fpArray = new ArrayList<>();
 
@@ -404,7 +397,7 @@ public class LearnFragment extends Fragment {
                                 fingerprint.put("mac", results.get(i).BSSID);
                                 fingerprint.put("rssi", results.get(i).level);
                                 fpArray.add(fingerprint);
-                                Log.d("First scan result", fingerprint.toString());
+
                             } catch (JSONException e) {
                                 e.printStackTrace();
                             }
@@ -422,8 +415,6 @@ public class LearnFragment extends Fragment {
                                     JSONObject fingerprint = new JSONObject();
                                     fingerprint.put("mac", results.get(i).BSSID);
                                     fingerprint.put("rssi", results.get(i).level);
-                                    Log.d("Second scan result", fingerprint.toString());
-
                                     for (int j = 0; j < fpArray.size(); j++) {
                                         if (fpArray.get(j).get("mac").toString().equalsIgnoreCase(fingerprint.get("mac").toString())) {
                                             test = true;
@@ -444,27 +435,43 @@ public class LearnFragment extends Fragment {
                         Log.d("fpArray", fpArray.toString());
                     }
                 }
+
+                buttonLearn.setEnabled(false);
+                Toast.makeText(getActivity(), "Finding AP", Toast.LENGTH_SHORT).show();
             }
 
             @Override
             public void onFinish() {
-             /*   try {
+                try {
+                    buttonLearn.setEnabled(false);
                     loc = locText.getText().toString();
                     root.put("group", "dummy04");
                     root.put("username", "p3");
                     root.put("location", loc);
                     root.put("time", timeStamp);
+                    for (int i =0; i<fpArray.size(); i++){
+                        JSONObject fingerprint = new JSONObject();
+                        fingerprint.put("mac", fpArray.get(i).get("mac"));
+                        fingerprint.put("rssi", fpArray.get(i).get("rssi"));
+                        wifiFingerprint.put(fingerprint);
+                    }
+                    Log.d("wifiFingerprint", wifiFingerprint + " ");
                     root.put("wifi-fingerprint", wifiFingerprint);
-                    Log.d("wifi Detail", wifiFingerprint.toString());
+                    Log.d("wifi Detail3", root.toString());
+
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
-                */
+
+                new PostLearnAPI().execute("https://ml.internalpositioning.com/learn");
+                new GetCalculateAPI().execute("https://ml.internalpositioning.com/calculate?group=dummy04");
+                Toast.makeText(getActivity(), "Inserted Into Repository" , Toast.LENGTH_SHORT).show();
+                buttonLearn.setEnabled(true);
             }
         };
         timer.start();
-    }
 
+    }
 
 
     //---- addLocation Methods ----
@@ -496,6 +503,7 @@ public class LearnFragment extends Fragment {
 
             try{
                 jsonResult = root.toString();
+                Log.d("JSON Result" , jsonResult + " ");
             }finally {
                 try{
                     //Connecting to API
@@ -549,6 +557,14 @@ public class LearnFragment extends Fragment {
         protected void onPostExecute(String result){
             super.onPostExecute(result);
             Log.d("Result of Post", result + " ");
+            while(wifiFingerprint.length() > 0){
+                for (int m=0; m<wifiFingerprint.length(); m++){
+                    wifiFingerprint.remove(m);
+                }
+            }
+
+            Log.d("wifiFingerprint Removed", wifiFingerprint + " ");
+
         }
     }
 

@@ -254,7 +254,7 @@ public class FindYourWayFragment extends Fragment {
                             e.printStackTrace();
                         }
                     }
-                },0,1500);
+                },0,1000);
 
                 //-- Floating Action Button Click to go to Current Location--
                 FloatingActionButton fab = (FloatingActionButton) rootView.findViewById(R.id.fab);
