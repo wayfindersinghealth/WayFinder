@@ -568,7 +568,7 @@ public class LearnFragment extends Fragment {
         }
     }
 
-    //---- GetCalculateAPI Class ----
+    //---- GetCalculateAPI Class -----
     public class GetCalculateAPI extends AsyncTask<String, String, String> {
 
         @Override
