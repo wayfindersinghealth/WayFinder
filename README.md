@@ -1,4 +1,4 @@
-![](https://raw.githubusercontent.com/wayfindersinghealth/WayFinder/master/singhealth_logo.jpg) 
+![]() 
 # WayFinder
 
 About Way Finder
