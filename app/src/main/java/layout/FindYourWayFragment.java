@@ -102,14 +102,10 @@ public class FindYourWayFragment extends Fragment {
     MapView mapView;
     Timer t = null;
 
-    Location location;
-    double latitude;
-    double longitude;
-    boolean isNetworkEnabled = false;
-    boolean canGetLocation = false;
     private static MarkerView markerView = null;
     WifiManager wmgr;
     AutoCompleteTextView autoCompleteTextViewTo;
+    ArrayList<String> aList = new ArrayList<String>();
 
     DatabaseReference databaseLocation;
 
@@ -161,32 +157,43 @@ public class FindYourWayFragment extends Fragment {
         final View rootView = inflater.inflate(R.layout.fragment_find_your_way, container, false);
 
         //-- JSON Get Locations --
-        new GetLocations().execute("https://ml.internalpositioning.com/locations?group=wayfindp3");
+     //   new GetLocations().execute("https://ml.internalpositioning.com/locations?group=dummy04");
+
+        //-- Connecting to DB --
+        databaseLocation = FirebaseDatabase.getInstance().getReference("locations");
 
         //-- Location AutoCompleteTextView --
         //https://gist.github.com/ruuhkis/d942330d97163d868ee7
         autoCompleteTextViewTo = (AutoCompleteTextView) rootView.findViewById(R.id.autoCompleteTextViewTo);
 
-        autoCompleteTextViewTo.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+        //-- Get From DB --
+        databaseLocation.addValueEventListener(new ValueEventListener() {
             @Override
-            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                String selectedItem = (String) adapterView.getItemAtPosition(i);
-                Log.d("Selected Item", selectedItem);
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                for (DataSnapshot locationSnapshot : dataSnapshot.getChildren()) {
+                    String locName = locationSnapshot.child("id").getValue().toString();
+                    aList.add(locName);
 
-                //-- Marker Icon --
-                IconFactory iconFactory = IconFactory.getInstance(getActivity());
-          //      Icon icon = iconFactory.fromResource(R.drawable.)
+                    //-- AutoCompleteTextView --
+                    ArrayAdapter<String> arrayAdapter = new ArrayAdapter<String>(
+                            getActivity(),
+                            android.R.layout.simple_list_item_1,
+                            aList);
+                    Log.d("Alist", aList.toString());
+
+                    autoCompleteTextViewTo.setAdapter(arrayAdapter);
+                    autoCompleteTextViewTo.setThreshold(0);
+                }
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
             }
         });
 
-        //-- Location Spinner --
-        //spinnerTo = (Spinner) rootView.findViewById(R.id.spinnerTo);
-
         //-- WifiManager --
         wmgr = (WifiManager) getActivity().getApplicationContext().getSystemService(Context.WIFI_SERVICE);
-
-        //-- Connecting to DB --
-        databaseLocation = FirebaseDatabase.getInstance().getReference("locations");
 
         //-- MapBox MapView --
         mapView = (MapView) rootView.findViewById(R.id.mapView);
@@ -245,12 +252,10 @@ public class FindYourWayFragment extends Fragment {
                                         if (markerView != null) {
                                             markerView.setPosition(latLng);
                                             markerView.setIcon(icon);
-                                            //markerView.setTitle(locations);
 
                                         } else if(markerView == null){
                                             markerView = mapboxMap.addMarker(new MarkerViewOptions().position(new LatLng(locLatitude, locLongitude)));
                                             markerView.setIcon(icon);
-                                            //markerView.setTitle(locations);
                                         }
                                     }
                                 }
@@ -266,7 +271,7 @@ public class FindYourWayFragment extends Fragment {
                             e.printStackTrace();
                         }
                     }
-                },0,1000);
+                },0,5000);
 
                 //-- Floating Action Button Click to go to Current Location--
                 FloatingActionButton fab = (FloatingActionButton) rootView.findViewById(R.id.fab);
@@ -279,6 +284,53 @@ public class FindYourWayFragment extends Fragment {
                                 .zoom(20) // Sets the zoom
                                 .build(); // Creates a CameraPosition from the builder
                         mapboxMap.setCameraPosition(position);
+                    }
+                });
+
+                //-- AutoCompleteTextViewTo OnCLick --
+                autoCompleteTextViewTo.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                    @Override
+                    public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+                        String selectedItem = (String) adapterView.getItemAtPosition(i);
+                        Log.d("Selected Item", selectedItem);
+
+                        Query locationQuery = databaseLocation.orderByChild("id").equalTo(selectedItem);
+                        locationQuery.addValueEventListener(new ValueEventListener() {
+                            @Override
+                            public void onDataChange(DataSnapshot dataSnapshot) {
+                                for (DataSnapshot locationSnapshot : dataSnapshot.getChildren()) {
+                                    MarkerView locMarker = null;
+
+                                    //-- Get Longitude and Latitude --
+                                    double locLatitude = (double) locationSnapshot.child("latitude").getValue();
+                                    double locLongitude = (double) locationSnapshot.child("longitude").getValue();
+
+                                    currentLocation = new LatLng(locLatitude, locLongitude);
+
+                                    Log.d("LatLng", locLatitude + ", " + locLongitude);
+
+                                    //-- Marker Icon --
+                                    IconFactory iconFactory = IconFactory.getInstance(getActivity());
+                                    Icon icon = iconFactory.fromResource(R.drawable.ic_destination_flag);
+
+                                    //-- Set Marker on Map --
+                                    LatLng latLng = new LatLng(locLatitude, locLongitude);
+                                    if (locMarker != null) {
+                                        locMarker.setPosition(latLng);
+                                        locMarker.setIcon(icon);
+
+                                    } else if(locMarker == null){
+                                        locMarker = mapboxMap.addMarker(new MarkerViewOptions().position(new LatLng(locLatitude, locLongitude)));
+                                        locMarker.setIcon(icon);
+                                    }
+                                }
+                            }
+
+                            @Override
+                            public void onCancelled(DatabaseError databaseError) {
+
+                            }
+                        });
                     }
                 });
             }
@@ -489,85 +541,6 @@ public class FindYourWayFragment extends Fragment {
         @Override
         protected void onPostExecute(String result){
             super.onPostExecute(result);
-        }
-    }
-
-    //---- GetLocations Class ----
-    public class GetLocations extends AsyncTask<String, String, String > {
-        ArrayList<String> aList = new ArrayList<String>();
-
-        @Override
-        protected String doInBackground(String... params) {
-            HttpsURLConnection connection = null;
-            BufferedReader reader = null;
-
-            try{
-                //Connecting to API
-                URL link = new URL(params[0]);
-                connection = (HttpsURLConnection) link.openConnection();
-                connection.connect();
-
-                //Reading results of Post
-                InputStream stream = connection.getInputStream();
-                reader =  new BufferedReader(new InputStreamReader(stream));
-
-                StringBuffer sBuffer = new StringBuffer();
-                String line = "";
-
-                while((line = reader.readLine()) != null){
-                    sBuffer.append(line);
-                }
-                String finalJson = sBuffer.toString();
-                JSONObject parentObject = new JSONObject(finalJson);
-                JSONObject parentArray = parentObject.getJSONObject("locations");
-               // Log.d("parentArray string",parentArray.toString());
-
-                Iterator<String> iterator = parentArray.keys();
-                while(iterator.hasNext()){
-                    aList.add(iterator.next().toUpperCase());
-                }
-
-                return aList.toString();
-
-            } catch (MalformedURLException e) {
-                e.printStackTrace();
-            } catch (IOException e) {
-                e.printStackTrace();
-            } catch (JSONException e) {
-                e.printStackTrace();
-            } finally {
-                if(connection != null) {
-                    connection.disconnect();
-                }
-                try {
-                    if(reader != null) {
-                        reader.close();
-                    }
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-            }
-
-            return null;
-        }
-
-        @Override
-        protected void onPostExecute(String result){
-            super.onPostExecute(result);
-            //-- Spinner --
-           // ArrayAdapter<String> arrayAdapter = new ArrayAdapter<String>(
-            //        getActivity(),
-            //        android.R.layout.simple_spinner_item,
-             //       aList);
-           // arrayAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-            //-- AutoCompleteTextView --
-            ArrayAdapter<String> arrayAdapter = new ArrayAdapter<String>(
-                    getActivity(),
-                    android.R.layout.simple_list_item_1,
-                    aList);
-
-            autoCompleteTextViewTo.setAdapter(arrayAdapter);
-            autoCompleteTextViewTo.setThreshold(0);
         }
     }
 
