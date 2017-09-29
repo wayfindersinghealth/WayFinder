@@ -301,7 +301,7 @@ public class FindYourWayFragment extends Fragment {
                                 for (DataSnapshot locationSnapshot : dataSnapshot.getChildren()) {
                                     MarkerView locMarker = null;
 
-                                    //-- Get Longitude and Latitude --
+                                    //-- Get Longitude and Latitude ---
                                     double locLatitude = (double) locationSnapshot.child("latitude").getValue();
                                     double locLongitude = (double) locationSnapshot.child("longitude").getValue();
 
