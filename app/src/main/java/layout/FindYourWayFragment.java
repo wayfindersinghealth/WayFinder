@@ -20,6 +20,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.Toast;
@@ -153,7 +154,6 @@ public class FindYourWayFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
 
-
         //-- Change Action Bar Title --
         ((MainActivity) getActivity()).setActionBarTitle("Find Your Way");
 
@@ -166,6 +166,18 @@ public class FindYourWayFragment extends Fragment {
         //-- Location AutoCompleteTextView --
         //https://gist.github.com/ruuhkis/d942330d97163d868ee7
         autoCompleteTextViewTo = (AutoCompleteTextView) rootView.findViewById(R.id.autoCompleteTextViewTo);
+
+        autoCompleteTextViewTo.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+                String selectedItem = (String) adapterView.getItemAtPosition(i);
+                Log.d("Selected Item", selectedItem);
+
+                //-- Marker Icon --
+                IconFactory iconFactory = IconFactory.getInstance(getActivity());
+          //      Icon icon = iconFactory.fromResource(R.drawable.)
+            }
+        });
 
         //-- Location Spinner --
         //spinnerTo = (Spinner) rootView.findViewById(R.id.spinnerTo);
@@ -224,7 +236,7 @@ public class FindYourWayFragment extends Fragment {
 
                                         Log.d("LatLng", locLatitude + ", " + locLongitude);
 
-
+                                        //-- Marker Icon --
                                         IconFactory iconFactory = IconFactory.getInstance(getActivity());
                                         Icon icon = iconFactory.fromResource(R.drawable.ic_black_marker);
 
@@ -370,37 +382,6 @@ public class FindYourWayFragment extends Fragment {
         mapView.onDestroy();
     }
 
-
-    //---- Get Location Method New ----
-    public Location getLocation() {
-        try {
-            LocationManager locationManager = (LocationManager) getActivity().getApplicationContext().getSystemService(Context.LOCATION_SERVICE);
-            //-- Getting Network Status --
-            isNetworkEnabled = locationManager.isProviderEnabled(LocationManager.NETWORK_PROVIDER);
-            if (!isNetworkEnabled) {
-                Log.d("Network not Enabled", "GG");
-            } else {
-                this.canGetLocation = true;
-                //-- Get Location from Network Provider --
-                if (isNetworkEnabled) {
-
-                    if (locationManager != null) {
-                        location = locationManager.getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
-                        if (location != null) {
-                            latitude = location.getLatitude();
-                            longitude = location.getLongitude();
-                            Log.d("LatLong", +latitude + ", " + longitude);
-                        }
-                    }
-                }
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-
-        return location;
-    }
-
     //---- Format Data As JSON Method ----
     private String formatDataAsJSON() {
         JSONObject root = new JSONObject();
@@ -430,7 +411,7 @@ public class FindYourWayFragment extends Fragment {
         } catch (JSONException e) {
             e.printStackTrace();
         }
-       // Log.d("JSON Value", root.toString());
+
         return root.toString();
     }
 
@@ -477,7 +458,6 @@ public class FindYourWayFragment extends Fragment {
                     Log.d("StringBuffer value", sb.toString() + "  ");
                 }
 
-
                 finalJSON = sb.toString();
                 Log.d("finalJSON value", finalJSON.toString() + "  ");
 
@@ -485,7 +465,6 @@ public class FindYourWayFragment extends Fragment {
                 result =  jsonObject.getString("location");
                 Log.d("result value", result + "  ");
                 return result;
-
 
             } catch (MalformedURLException e) {
                 e.printStackTrace();

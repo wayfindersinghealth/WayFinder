@@ -403,7 +403,7 @@ public class LearnFragment extends Fragment {
                             }
                         }
                     }
-                    Log.d("fpArray", fpArray.toString());
+                    Log.d("fpArray1", fpArray.toString());
 
                 }else {
                     if (fpArray.size() > 0) {
@@ -414,25 +414,46 @@ public class LearnFragment extends Fragment {
                                 try {
                                     JSONObject fingerprint = new JSONObject();
                                     fingerprint.put("mac", results.get(i).BSSID);
-                                    fingerprint.put("rssi", results.get(i).level);
+
                                     for (int j = 0; j < fpArray.size(); j++) {
                                         if (fpArray.get(j).get("mac").toString().equalsIgnoreCase(fingerprint.get("mac").toString())) {
                                             test = true;
+
+                                            int fpArrayRssi = (int) fpArray.get(j).get("rssi");
+                                            int fingerprintRssi = results.get(i).level;
+                                            Log.d("Rssi", + fpArrayRssi + ", " + fingerprintRssi + "");
+
+                                            int averageRssi = (fpArrayRssi + fingerprintRssi) / 2;
+
+                                            Log.d("AverageRssi", averageRssi + "");
+
+                                            fingerprint.put("rssi", averageRssi);
                                             break;
                                         } else {
                                             test = false;
+
+                                            int fpArrayRssi = (int) fpArray.get(j).get("rssi");
+                                            int fingerprintRssi = results.get(i).level;
+                                            Log.d("Rssi", + fpArrayRssi + ", " + fingerprintRssi + "");
+
+                                            int averageRssi = (fpArrayRssi + fingerprintRssi) / 2;
+
+                                            Log.d("AverageRssi", averageRssi + "");
+
+                                            fingerprint.put("rssi", averageRssi);
+                                            break;
                                         }
                                     }
-                                    Log.d("Status", test + " ");
                                     if(!test){
                                         fpArray.add(fingerprint);
+                                        Log.d("Fingerprint", fingerprint + "");
                                     }
                                 } catch (JSONException e) {
                                     e.printStackTrace();
                                 }
                             }
                         }
-                        Log.d("fpArray", fpArray.toString());
+                        Log.d("fpArray2", fpArray.toString());
                     }
                 }
 
@@ -470,9 +491,7 @@ public class LearnFragment extends Fragment {
             }
         };
         timer.start();
-
     }
-
 
     //---- addLocation Methods ----
     private void addLocation(LatLng position){
