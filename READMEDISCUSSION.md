@@ -4,11 +4,11 @@ AY17 P3 FYPJ  - W@rkz
 
 Feel free to edit/add if theres anything missing. Thank You!
 
-## -------- 04/09/2017  --------
+## 04/09/2017
 
 -- Discussed  --
 
--Create Account for Phone, GitHub and FireBase
+### -Create Account for Phone, GitHub and FireBase
 
 GitHub Guides:
 
@@ -54,7 +54,7 @@ https://firebase.google.com/
 
 --------------------------------
 
-## -------- 05/09/2017 --------
+## 05/09/2017
 
 -- Discussed  --
 
@@ -108,7 +108,7 @@ Params > Header > Accept Coding  - Identity (To make sure its not in other langu
 
 --------------------------------
 
-## -------- 22/09/2017 --------
+## 22/09/2017 
 
 - Week 6 Presentation 
 
