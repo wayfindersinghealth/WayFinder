@@ -4,7 +4,7 @@ AY17 P3 FYPJ  - W@rkz
 
 Feel free to edit/add if theres anything missing. Thank You!
 
--------- 04/09/2017  --------
+##-------- 04/09/2017  --------
 
 -- Discussed  --
 
@@ -54,7 +54,7 @@ https://firebase.google.com/
 
 --------------------------------
 
--------- 09/05/2017 --------
+##-------- 05/09/2017 --------
 
 -- Discussed  --
 
@@ -107,3 +107,35 @@ Params > Header > Accept Coding  - Identity (To make sure its not in other langu
 -Use open source server
 
 --------------------------------
+
+##-------- 22/09/2017 --------
+
+- Week 6 Presentation 
+
+Background of Project
+
+Problems / Challenges Faced
+
+How to overcome those problems
+
+What we have Learned
+
+What we have Accomplished
+
+- Mapbox Map Soft Copy
+
+Either from School or previous semester student
+
+- Link up Hospital Services
+
+Appointment > Consultation(Specialist) > Treatment(X-Ray) > Checkout(Pharmacy)
+
+- Application
+
+Change logo of application.
+
+Scan for AP from L3 Entrance to Crosspoints to End of Innovation Centre Corridor.
+
+--------------------------------
+
+
