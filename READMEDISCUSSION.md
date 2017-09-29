@@ -50,7 +50,7 @@ FireBase
 
 https://firebase.google.com/
 
-== Notes ==
+### == Notes ==
 
 --------------------------------
 
@@ -96,7 +96,7 @@ https://www.getpostman.com/
 
 - Params > Header > Accept Coding  - Identity (To make sure its not in other language)
 
-== Notes ==
+### == Notes ==
 
 - Json
 
@@ -137,6 +137,8 @@ Application
 - Change logo of application.
 
 - Scan for AP from L3 Entrance to Crosspoints to End of Innovation Centre Corridor.
+
+### == Notes ==
 
 --------------------------------
 
