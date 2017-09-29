@@ -146,7 +146,6 @@ Sign In
 
 Steps | Doctor | Patients | Administrator
 ----|--------|----------|--------------
-Sign In
 1. | Set Appointment | Receive Appointment | Learn Location
 2. | | Track Location |
 3. | | Step By Step Routing |
@@ -161,7 +160,7 @@ Date | Name | id
 Time | Age | Latitude
 Name | Email | Longitude
 Locations | Password |
-| Confirm Password |
+ | Confirm Password |
 
 --------------------------------
 
