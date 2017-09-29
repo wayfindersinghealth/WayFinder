@@ -154,13 +154,13 @@ Steps | Doctor | Patients | Administrator
 
 Database Table
 
-Appointment | User | Location
-------------|------|---------
-Date | Name | id
-Time | Age | Latitude
-Name | Email | Longitude
-Locations | Password |
-- | Confirm Password |
+No. | Appointment | User | Location
+----|-------------|------|---------
+1 | Date | Name | id
+2 | Time | Age | Latitude
+3 | Name | Email | Longitude
+4 | Locations | Password |
+5 |  | Confirm Password |
 
 --------------------------------
 
