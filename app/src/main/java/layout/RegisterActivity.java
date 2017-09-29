@@ -7,13 +7,18 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.storage.StreamDownloadTask;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.json.JSONArray;
+
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import sg.com.singhealth.wayfinder.R;
 import sg.com.singhealth.wayfinder.User;
@@ -36,16 +41,57 @@ public class RegisterActivity extends AppCompatActivity {
         databaseUser = FirebaseDatabase.getInstance().getReference("Users");
 
 
+
+
+
         Button RegisterButton = (Button)findViewById(R.id.Register);
         RegisterButton.setOnClickListener(new View.OnClickListener() {
 
             @Override
             public void onClick(View view) {
-                AddData();
+
                 Intent intent = new Intent();
                 intent.setClass(RegisterActivity.this, LoginActivity.class);
-                startActivity(intent);
-                finish();
+                String eEmail = "^([a-zA-Z0-9]*[-_]?[a-zA-Z0-9]+)*@([a-zA-Z0-9]*[-_]?[a-zA-Z0-9]+)+[\\\\.][A-Za-z]{2,3}([\\\\.][A-Za-z]{2})?$";
+
+
+                if (email.getText().toString().equals("")){
+                    Toast.makeText(RegisterActivity.this,"Email isn't null",Toast.LENGTH_SHORT).show();
+                    return;
+                }else if(name.getText().toString().equals("")){
+                    Toast.makeText(RegisterActivity.this,"Username isn't null",Toast.LENGTH_SHORT).show();
+                    return;
+                }else if(age.getText().toString().equals("")){
+                    Toast.makeText(RegisterActivity.this,"Age isn't null",Toast.LENGTH_SHORT).show();
+                    return;
+                }else if(password.getText().toString().equals("")|| password.getText().toString().length()>6){
+                    Toast.makeText(RegisterActivity.this,"password isn't null",Toast.LENGTH_SHORT).show();
+                    return;
+                }else if(confirm.getText().toString().equals("")){
+                    Toast.makeText(RegisterActivity.this,"confirm isn't null",Toast.LENGTH_SHORT).show();
+                    return;
+                }else if(!confirm.getText().toString().equals(password.getText().toString())){
+                    Toast.makeText(RegisterActivity.this,"The password isn't match",Toast.LENGTH_SHORT).show();
+                    return;
+
+
+                }
+                else {
+                    if(password.getText().toString().length()<6){
+                        Toast.makeText(RegisterActivity.this,"This password is too short",Toast.LENGTH_SHORT).show();
+                        return;
+                    }
+                    else if(!email.getText().toString().matches(eEmail)){
+                        Toast.makeText(RegisterActivity.this,"This email address is invalid",Toast.LENGTH_SHORT).show();
+                        return;
+                    }
+
+                    else {
+                        AddData();
+                        startActivity(intent);
+                        finish();
+                    }
+                }
             }
         });
 

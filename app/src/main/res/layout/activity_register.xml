@@ -7,25 +7,26 @@
     >
 
 
-
     <LinearLayout
 
         android:layout_width="0dp"
         android:layout_height="0dp"
+        android:layout_marginBottom="8dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
         android:layout_weight="1"
         android:orientation="vertical"
-        tools:layout_constraintTop_creator="1"
-        tools:layout_constraintRight_creator="1"
-        tools:layout_constraintBottom_creator="1"
-        android:layout_marginStart="8dp"
         app:layout_constraintBottom_toBottomOf="parent"
-        android:layout_marginEnd="8dp"
-        app:layout_constraintRight_toRightOf="parent"
-        android:layout_marginTop="8dp"
-        tools:layout_constraintLeft_creator="1"
-        android:layout_marginBottom="8dp"
+        app:layout_constraintHorizontal_bias="0.454"
         app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.4"
+        tools:layout_constraintBottom_creator="1"
+        tools:layout_constraintLeft_creator="1"
+        tools:layout_constraintRight_creator="1"
+        tools:layout_constraintTop_creator="1">
 
         <EditText
             android:id="@+id/Email"
@@ -41,7 +42,8 @@
             android:layout_height="wrap_content"
             android:ems="10"
             android:hint="Name"
-            android:inputType="textPersonName" />
+            android:inputType="textPersonName"
+            android:maxLength="16" />
 
         <EditText
             android:id="@+id/Age"
@@ -49,7 +51,8 @@
             android:layout_height="wrap_content"
             android:ems="10"
             android:hint="Age"
-            android:inputType="number" />
+            android:inputType="number"
+            android:maxLength="3" />
 
         <EditText
             android:id="@+id/Password"
@@ -57,7 +60,8 @@
             android:layout_height="wrap_content"
             android:ems="10"
             android:hint="Password"
-            android:inputType="numberPassword" />
+            android:password="true"
+            android:maxLength="18" />
 
         <EditText
             android:id="@+id/confirm"
@@ -65,16 +69,15 @@
             android:layout_height="wrap_content"
             android:ems="10"
             android:hint="confirm"
-            android:inputType="numberPassword" />
+            android:password="true"
+            android:maxLength="18" />
 
         <Button
             android:id="@+id/Register"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Register"
-            />
+            android:text="Register" />
     </LinearLayout>
-
 
 
 </android.support.constraint.ConstraintLayout>
