@@ -418,27 +418,18 @@ public class LearnFragment extends Fragment {
                                     for (int j = 0; j < fpArray.size(); j++) {
                                         if (fpArray.get(j).get("mac").toString().equalsIgnoreCase(fingerprint.get("mac").toString())) {
                                             test = true;
-
                                             int fpArrayRssi = (int) fpArray.get(j).get("rssi");
                                             int fingerprintRssi = results.get(i).level;
-                                            Log.d("Rssi", + fpArrayRssi + ", " + fingerprintRssi + "");
-
                                             int averageRssi = (fpArrayRssi + fingerprintRssi) / 2;
 
-                                            Log.d("AverageRssi", averageRssi + "");
-
                                             fingerprint.put("rssi", averageRssi);
+
                                             break;
                                         } else {
                                             test = false;
-
                                             int fpArrayRssi = (int) fpArray.get(j).get("rssi");
                                             int fingerprintRssi = results.get(i).level;
-                                            Log.d("Rssi", + fpArrayRssi + ", " + fingerprintRssi + "");
-
                                             int averageRssi = (fpArrayRssi + fingerprintRssi) / 2;
-
-                                            Log.d("AverageRssi", averageRssi + "");
 
                                             fingerprint.put("rssi", averageRssi);
                                             break;
@@ -446,7 +437,6 @@ public class LearnFragment extends Fragment {
                                     }
                                     if(!test){
                                         fpArray.add(fingerprint);
-                                        Log.d("Fingerprint", fingerprint + "");
                                     }
                                 } catch (JSONException e) {
                                     e.printStackTrace();

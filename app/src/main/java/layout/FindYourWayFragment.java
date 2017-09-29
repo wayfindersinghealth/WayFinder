@@ -238,7 +238,7 @@ public class FindYourWayFragment extends Fragment {
 
                                         //-- Marker Icon --
                                         IconFactory iconFactory = IconFactory.getInstance(getActivity());
-                                        Icon icon = iconFactory.fromResource(R.drawable.ic_black_marker);
+                                        Icon icon = iconFactory.fromResource(R.drawable.ic_curr_location);
 
                                         //-- Set Marker on Map --
                                         LatLng latLng = new LatLng(locLatitude, locLongitude);
