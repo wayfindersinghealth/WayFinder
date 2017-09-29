@@ -156,7 +156,7 @@ Database Table
 
 No. | Appointment | User | Location
 ----|-------------|------|---------
-1 | Date | Name | id
+1 | Date | Name | Id
 2 | Time | Age | Latitude
 3 | Name | Email | Longitude
 4 | Locations | Password |
