@@ -6,9 +6,9 @@ Feel free to edit/add if theres anything missing. Thank You!
 
 ## 04/09/2017
 
--- Discussed  --
+### Discussed 
 
-### -Create Account for Phone, GitHub and FireBase
+-Create Account for Phone, GitHub and FireBase
 
 GitHub Guides:
 
@@ -28,11 +28,11 @@ https://developers.google.com/android/for-all/vocab-words/?hl=en
 
 -Navigation
 
--- Hardware Used  --
+### Hardware Used
 
 -Android Phone Nexus 5 Version 6.0.1
 
--- Software Used --
+### Software Used
 
 -Android Studio 2.3.3
 
@@ -56,7 +56,7 @@ https://firebase.google.com/
 
 ## 05/09/2017
 
--- Discussed  --
+### Discussed 
 
 -HTTP Get/Post
 
@@ -84,7 +84,7 @@ https://github.com/zordius/ssidLogger
 
 https://github.com/mapbox/mapbox-android-demo
 
--- Software Used  --
+### Software Used 
 
 -SmartSniff
 
@@ -110,31 +110,33 @@ Params > Header > Accept Coding  - Identity (To make sure its not in other langu
 
 ## 22/09/2017 
 
-- Week 6 Presentation 
+### Discussed
 
-Background of Project
+Week 6 Presentation 
 
-Problems / Challenges Faced
+- Background of Project
 
-How to overcome those problems
+- Problems / Challenges Faced
 
-What we have Learned
+- How to overcome those problems
 
-What we have Accomplished
+- What we have Learned
 
-- Mapbox Map Soft Copy
+- What we have Accomplished
 
-Either from School or previous semester student
+Mapbox Map Soft Copy
 
-- Link up Hospital Services
+- Either from School or previous semester student
 
-Appointment > Consultation(Specialist) > Treatment(X-Ray) > Checkout(Pharmacy)
+Link up Hospital Services
 
-- Application
+- Appointment > Consultation(Specialist) > Treatment(X-Ray) > Checkout(Pharmacy)
 
-Change logo of application.
+Application
 
-Scan for AP from L3 Entrance to Crosspoints to End of Innovation Centre Corridor.
+- Change logo of application.
+
+- Scan for AP from L3 Entrance to Crosspoints to End of Innovation Centre Corridor.
 
 --------------------------------
 
