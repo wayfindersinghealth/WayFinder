@@ -140,6 +140,29 @@ Application
 
 ### == Notes ==
 
+Tentative Plan
+
+Sign In
+
+Steps | Doctor | Patients | Administrator
+----|--------|----------|--------------
+Sign In
+1. | Set Appointment | Receive Appointment | Learn Location
+2. | | Track Location |
+3. | | Step By Step Routing |
+4. | Consultation, Set Next Appointment | Pharmacy |
+5. | Issue Medicine | Checkout |
+
+Database Table
+
+Appointment | User | Location
+------------|------|---------
+Date | Name | id
+Time | Age | Latitude
+Name | Email | Longitude
+Locations | Password |
+| Confirm Password |
+
 --------------------------------
 
 
