@@ -103,6 +103,7 @@ public class FindYourWayFragment extends Fragment {
     Timer t = null;
 
     private static MarkerView markerView = null;
+    MarkerView locMarker = null;
     WifiManager wmgr;
     AutoCompleteTextView autoCompleteTextViewTo;
     ArrayList<String> aList = new ArrayList<String>();
@@ -289,6 +290,8 @@ public class FindYourWayFragment extends Fragment {
 
                 //-- AutoCompleteTextViewTo OnCLick --
                 autoCompleteTextViewTo.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+
+
                     @Override
                     public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
                         String selectedItem = (String) adapterView.getItemAtPosition(i);
@@ -299,7 +302,7 @@ public class FindYourWayFragment extends Fragment {
                             @Override
                             public void onDataChange(DataSnapshot dataSnapshot) {
                                 for (DataSnapshot locationSnapshot : dataSnapshot.getChildren()) {
-                                    MarkerView locMarker = null;
+
 
                                     //-- Get Longitude and Latitude ---
                                     double locLatitude = (double) locationSnapshot.child("latitude").getValue();
