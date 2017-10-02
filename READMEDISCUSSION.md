@@ -163,4 +163,50 @@ No. | Appointment | User | Location
 
 --------------------------------
 
+## 05/09/2017
+
+### Discussed 
+
+### Poster
+
+### PowerPoint Slide
+
+# Introduction
+
+- Team Composition
+
+- What previous team achieved
+
+- Curent Project
+
+- Plan for full implementation
+
+Technologies Implemented
+
+- Diagram to showcase / explain different APIs (Mapbox, Find) 
+
+Functions, Screenshots
+
+- Login / Registar
+
+- Learn Location
+
+- Find Your Way
+
+- Language / Help
+
+1 Introduction to each functions
+
+2 Challenges Faced, How we go about solving the problem
+
+Demostration
+
+1 Explanation of each function
+
+What is Accomplished
+
+
+### == Notes ==
+
+--------------------------------
 
