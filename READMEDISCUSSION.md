@@ -209,5 +209,7 @@ No. | Appointment | User | Location
 
 ### == Notes ==
 
+- Install Vysor through Google Chrome Extension
+
 --------------------------------
 
