@@ -171,7 +171,7 @@ No. | Appointment | User | Location
 
 ### PowerPoint Slide
 
-# Introduction
+#### 1\. Introduction
 
 - Team Composition
 
@@ -181,11 +181,15 @@ No. | Appointment | User | Location
 
 - Plan for full implementation
 
-Technologies Implemented
+#### 2\. Technologies Implemented
 
 - Diagram to showcase / explain different APIs (Mapbox, Find) 
 
-Functions, Screenshots
+#### 3\. Functions, Screenshots
+
+1. Introduction to each functions
+
+2. Challenges Faced, How we go about solving the problem
 
 - Login / Registar
 
@@ -195,16 +199,15 @@ Functions, Screenshots
 
 - Language / Help
 
-1 Introduction to each functions
+#### 4\. Demostration
 
-2 Challenges Faced, How we go about solving the problem
+1. Explanation of each function
 
-Demostration
+2. Step by Step
 
-1 Explanation of each function
+#### 5\. What is Accomplished
 
-What is Accomplished
-
+1.
 
 ### == Notes ==
 
