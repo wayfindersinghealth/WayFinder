@@ -205,9 +205,7 @@ No. | Appointment | User | Location
 
 2. Step by Step
 
-#### 5\. What is Accomplished
-
-1.
+#### 5\. What is Accomplished / Effort put in
 
 ### == Notes ==
 
