@@ -193,6 +193,8 @@ No. | Appointment | User | Location
 
 - Login / Registar
 
+- Appointment
+
 - Learn Location
 
 - Find Your Way
