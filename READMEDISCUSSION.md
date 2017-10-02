@@ -183,7 +183,7 @@ No. | Appointment | User | Location
 
 #### 2\. Technologies Implemented
 
-- Diagram to showcase / explain different APIs (Mapbox, Find) 
+- Diagram to showcase / explain different APIs (Mapbox, Find, Firebase) 
 
 #### 3\. Functions, Screenshots
 
