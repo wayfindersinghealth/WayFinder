@@ -173,21 +173,19 @@ No. | Appointment | User | Location
 
 #### 1\. Introduction
 
-- Team Composition
-
 - What previous team achieved
 
-- Curent Project
+- Current Project
 
 - Plan for full implementation
 
-#### 2\. Technologies Implemented
+#### 2\. Technologies Incorprated
 
 - Diagram to showcase / explain different APIs (Mapbox, Find, Firebase) 
 
-#### 3\. Functions, Screenshots
+#### 3\. Features, Screenshots
 
-1. Introduction to each functions
+1. Introduction to each feature
 
 2. Challenges Faced, How we go about solving the problem
 
