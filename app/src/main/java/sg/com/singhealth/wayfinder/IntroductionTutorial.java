@@ -21,7 +21,7 @@ public class IntroductionTutorial extends AppIntro2 {
         super.onCreate(savedInstanceState);
 
         //-- Add Slide --
-        addSlide(AppIntroFragment.newInstance("Welcome To WayFinder", "Journey Simplified.", R.drawable.ic_singhealth_logo, Color.parseColor("#ed9107")));
+        addSlide(AppIntroFragment.newInstance("Welcome To WayFinder", "Journey Simplified.", R.mipmap.ic_launcher_wayfind, Color.parseColor("#ed9107")));
         addSlide(AppIntroFragment.newInstance("Learn Location", "Find where you are with a touch", R.drawable.ic_wifi_scan, Color.parseColor("#ed9107")));
         addSlide(AppIntroFragment.newInstance("Find Your Way", "Make your journey simple with pinpoint accuracy direction to your destination", R.drawable.ic_direction, Color.parseColor("#ed9107")));
         addSlide(AppIntroFragment.newInstance("You are all set. Enjoy WayFinder", "GET STARTED", R.drawable.ic_thumbs_up, Color.parseColor("#ed9107")));

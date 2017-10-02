@@ -414,25 +414,14 @@ public class LearnFragment extends Fragment {
                                 try {
                                     JSONObject fingerprint = new JSONObject();
                                     fingerprint.put("mac", results.get(i).BSSID);
+                                    fingerprint.put("rssi", results.get(i).level);
 
                                     for (int j = 0; j < fpArray.size(); j++) {
                                         if (fpArray.get(j).get("mac").toString().equalsIgnoreCase(fingerprint.get("mac").toString())) {
                                             test = true;
-                                            int fpArrayRssi = (int) fpArray.get(j).get("rssi");
-                                            int fingerprintRssi = results.get(i).level;
-                                            int averageRssi = (fpArrayRssi + fingerprintRssi) / 2;
-
-                                            fingerprint.put("rssi", averageRssi);
-
                                             break;
                                         } else {
                                             test = false;
-                                            int fpArrayRssi = (int) fpArray.get(j).get("rssi");
-                                            int fingerprintRssi = results.get(i).level;
-                                            int averageRssi = (fpArrayRssi + fingerprintRssi) / 2;
-
-                                            fingerprint.put("rssi", averageRssi);
-                                            break;
                                         }
                                     }
                                     if(!test){

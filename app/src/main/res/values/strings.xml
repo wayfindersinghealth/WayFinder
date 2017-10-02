@@ -12,8 +12,9 @@
     <string name="navigation_drawer_close">Close navigation drawer</string>
 
     <!-- Controls in layout > nav_header_main.xml Layout -->
-    <string name="textViewTitleWayFinder">Health Buddy Way Finder</string>
-    <string name="textViewAboutTitleWayFinder">Find your way through Woodlands Integrated Health Campus with Ease.</string>
+    <string name="textViewTitleWayFinder">WAYFINDER, a WIFI Internal Positioning system.
+</string>
+    <string name="textViewAboutTitleWayFinder">Find your way through Woodlands Integrated Health Campus with Ease via our app.</string>
 
     <!-- Controls in layout > fragment_learn.xml Page -->
     <string name="textViewInput">Please Input Your Current Location.</string>
