@@ -64,7 +64,7 @@ public class RegisterActivity extends AppCompatActivity {
                 }else if(age.getText().toString().equals("")){
                     Toast.makeText(RegisterActivity.this,"Age isn't null",Toast.LENGTH_SHORT).show();
                     return;
-                }else if(password.getText().toString().equals("")|| password.getText().toString().length()>6){
+                }else if(password.getText().toString().equals("")){
                     Toast.makeText(RegisterActivity.this,"password isn't null",Toast.LENGTH_SHORT).show();
                     return;
                 }else if(confirm.getText().toString().equals("")){
