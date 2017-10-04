@@ -28,6 +28,11 @@
             android:title="@string/navFindYourWay" />
 
         <item
+            android:id="@+id/nav_Appt"
+            android:icon="@drawable/ic_appointment"
+            android:title="@string/navAppt" />
+
+        <item
             android:id="@+id/nav_help"
             android:icon="@drawable/ic_menu_help"
             android:title="@string/navHelp" />

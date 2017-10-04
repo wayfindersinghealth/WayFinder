@@ -2,6 +2,8 @@ package sg.com.singhealth.wayfinder;
 
 import android.app.Activity;
 import android.content.DialogInterface;
+import android.content.Intent;
+import android.content.IntentFilter;
 import android.net.Uri;
 import android.os.Bundle;
 
@@ -26,6 +28,7 @@ import android.widget.Toast;
 import layout.AboutFragment;
 import layout.FindYourWayFragment;
 import layout.LearnFragment;
+import layout.LoginActivity;
 import layout.MainFragment;
 
 /**
@@ -144,6 +147,10 @@ public class MainActivity extends AppCompatActivity
         else if (id == R.id.nav_about) {
             navigationAbout();
         }
+
+        else if(id == R.id.nav_Appt){
+            navigationAppointment();
+        }
          else {
             //Else Home Fragment
             navigationHome();
@@ -213,6 +220,12 @@ public class MainActivity extends AppCompatActivity
         fragment = new FindYourWayFragment();
         FragmentManager fragmentManager = getSupportFragmentManager();
         fragmentManager.beginTransaction().replace(R.id.content, fragment).commit();
+    }
+
+    //---- Access Appointment Via Login
+    public void navigationAppointment(){
+        Intent intent = new Intent(MainActivity.this, LoginActivity.class);
+        startActivity(intent);
     }
 
     //---- Access Help Page ----

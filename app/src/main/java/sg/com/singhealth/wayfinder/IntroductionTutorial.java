@@ -42,7 +42,7 @@ public class IntroductionTutorial extends AppIntro2 {
 
     @Override
     public void onDonePressed() {
-        Intent i = new Intent(this, LoginActivity.class);
+        Intent i = new Intent(this, MainActivity.class);
         startActivity(i);
         finish();
     }

@@ -79,7 +79,7 @@ public class SplashScreen extends Activity {
                 e.apply();
             } else {
                 //-- Application Layout --
-                i = new Intent(SplashScreen.this, LoginActivity.class);
+                i = new Intent(SplashScreen.this, MainActivity.class);
             }
 
             startActivity(i);

@@ -13,94 +13,52 @@
     tools:layout_editor_absoluteY="81dp"
     tools:layout_editor_absoluteX="0dp">
 
-    <RelativeLayout
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        android:paddingLeft="20dp"
-        android:paddingRight="20dp"
-        tools:layout_constraintTop_creator="1"
-        tools:layout_constraintRight_creator="1"
-        tools:layout_constraintBottom_creator="1"
-        app:layout_constraintBottom_toTopOf="@+id/imageViewDivider"
-        app:layout_constraintRight_toRightOf="parent"
-        android:layout_marginTop="7dp"
-        tools:layout_constraintLeft_creator="1"
-        android:layout_marginBottom="9dp"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
-
-        <TextView
-            android:id="@+id/textViewAboutWayFinder"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="@string/aboutWayFinder"
-            android:textSize="15dp"
-            android:textStyle="bold"
-            android:layout_alignParentTop="true"
-            android:layout_alignParentStart="true" />
-
-        <TextView
-            android:id="@+id/textViewAboutWayFinderDetails"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="@string/aboutWayFinderDetails"
-            android:layout_below="@+id/textViewAboutWayFinder"
-            android:layout_alignParentStart="true"
-            android:layout_marginTop="12dp" />
-
-    </RelativeLayout>
-
-    <ImageView xmlns:android="http://schemas.android.com/apk/res/android"
-        android:src="@android:drawable/divider_horizontal_dark"
-        android:background="@color/colorPrimary"
+    <TextView
+        android:id="@+id/textViewAboutWayFinderDetails"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:scaleType="fitXY"
-        android:paddingLeft="5dp"
-        android:paddingRight="5dp"
-        android:paddingBottom="2dp"
-        android:paddingTop="2dp"
-        android:id="@+id/imageViewDivider"
+        android:layout_alignParentStart="true"
+        android:layout_below="@+id/textViewAboutWayFinder"
+        android:text="@string/aboutWayFinderDetails"
         tools:layout_constraintTop_creator="1"
         tools:layout_constraintRight_creator="1"
+        android:layout_marginStart="8dp"
+        android:layout_marginEnd="8dp"
         app:layout_constraintRight_toRightOf="parent"
-        android:layout_marginTop="181dp"
+        android:layout_marginTop="221dp"
+        tools:layout_constraintLeft_creator="1"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/textViewAboutWayFinder"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentTop="true"
+        android:text="@string/aboutWayFinder"
+        android:textSize="15dp"
+        android:textStyle="bold"
+        tools:layout_constraintTop_creator="1"
+        tools:layout_constraintRight_creator="1"
+        android:layout_marginStart="8dp"
+        android:layout_marginEnd="8dp"
+        app:layout_constraintRight_toRightOf="parent"
         tools:layout_constraintLeft_creator="1"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintHorizontal_bias="0.0" />
+        android:layout_marginTop="193dp" />
 
-    <RelativeLayout
-        android:layout_width="368dp"
-        android:layout_height="313dp"
-        android:layout_marginLeft="1dp"
-        android:layout_marginTop="10dp"
-        android:paddingLeft="20dp"
-        android:paddingRight="20dp"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/imageViewDivider"
-        tools:layout_constraintLeft_creator="1"
+    <ImageView
+        android:id="@+id/imageView2"
+        android:layout_width="158dp"
+        android:layout_height="157dp"
+        app:srcCompat="@mipmap/ic_launcher_wayfind"
         tools:layout_constraintTop_creator="1"
-        tools:layout_editor_absoluteY="194dp">
-
-        <TextView
-            android:id="@+id/textViewAboutSingHealth"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_alignParentStart="true"
-            android:layout_alignParentTop="true"
-            android:text="@string/aboutSingHealth"
-            android:textSize="15dp"
-            android:textStyle="bold" />
-
-        <TextView
-            android:id="@+id/textViewAboutSingHealthDetails"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="@string/aboutSingHealthDetails"
-            android:layout_centerVertical="true"
-            android:layout_alignParentStart="true" />
-
-    </RelativeLayout>
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="16dp"
+        tools:layout_constraintLeft_creator="1"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
 </android.support.constraint.ConstraintLayout>
