@@ -40,8 +40,9 @@
 
     <!-- Controls in layout > fragment_about.xml Page -->
     <string name="aboutWayFinder">About Way Finder</string>
-    <string name="aboutWayFinderDetails">WAYFINDER, an Internal Positioning system for indoor navigation. \n\n Our primary aim is to help patients and visitors alike navigate their way with ease. Also, to allow users to manage current existing geolocations or learn new ones.
+    <string name="aboutWayFinderDetails">WAYFINDER, an Internal Positioning system for indoor navigation. \n\nOur primary aim is to help patients and visitors alike navigate their way with ease. Also, to allow users to manage current existing geolocations or learn new ones.
 </string>
+
     <!-- Controls in layout > splash_screen.xml Layout -->
     <string name="textViewLoading">WAYFINDER</string>
 

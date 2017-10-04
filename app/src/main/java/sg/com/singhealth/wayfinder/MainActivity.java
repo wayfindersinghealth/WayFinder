@@ -3,19 +3,23 @@ package sg.com.singhealth.wayfinder;
 import android.app.Activity;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.IntentFilter;
+import android.content.SharedPreferences;
+import android.content.res.Configuration;
+import android.content.res.Resources;
 import android.net.Uri;
 import android.os.Bundle;
-
+import android.preference.PreferenceManager;
+import android.support.design.widget.NavigationView;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
-import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.DisplayMetrics;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -24,6 +28,8 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.ArrayAdapter;
 import android.widget.Spinner;
 import android.widget.Toast;
+
+import java.util.Locale;
 
 import layout.AboutFragment;
 import layout.FindYourWayFragment;
@@ -43,11 +49,39 @@ public class MainActivity extends AppCompatActivity
         MainFragment.OnFragmentInteractionListener,
         LearnFragment.OnFragmentInteractionListener,
         FindYourWayFragment.OnFragmentInteractionListener,
-        AboutFragment.OnFragmentInteractionListener{
+        AboutFragment.OnFragmentInteractionListener {
+    SharedPreferences spf;
+    SharedPreferences.Editor editor;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        spf = PreferenceManager.getDefaultSharedPreferences(MainActivity.this);
+        editor = spf.edit();
+        String getlanguagesetting = "";
+        getlanguagesetting = spf.getString("languagesetting", null);
+        if (getlanguagesetting != null && !getlanguagesetting.equals("")) {
+            if (getlanguagesetting.equals("English")) {
+                Resources res = getResources();
+                Configuration config = res.getConfiguration();
+                config.locale = Locale.ENGLISH;
+                DisplayMetrics dm = res.getDisplayMetrics();
+                res.updateConfiguration(config, dm);
+            } else {
+                Resources res = getResources();
+                Configuration config = res.getConfiguration();
+                config.locale = Locale.CHINA;
+                DisplayMetrics dm = res.getDisplayMetrics();
+                res.updateConfiguration(config, dm);
+            }
+
+        } else {
+            Resources res = getResources();
+            Configuration config = res.getConfiguration();
+            config.locale = Locale.ENGLISH;
+            DisplayMetrics dm = res.getDisplayMetrics();
+            res.updateConfiguration(config, dm);
+        }
         setContentView(R.layout.activity_main);
 
         //-------- DO NOT TOUCH START --------
@@ -143,15 +177,11 @@ public class MainActivity extends AppCompatActivity
 
         } /*else if (id == R.id.nav_help) {
 
-        } */
-        else if (id == R.id.nav_about) {
+        } */ else if (id == R.id.nav_about) {
             navigationAbout();
-        }
-
-        else if(id == R.id.nav_Appt){
+        } else if (id == R.id.nav_Appt) {
             navigationAppointment();
-        }
-         else {
+        } else {
             //Else Home Fragment
             navigationHome();
         }
@@ -168,7 +198,6 @@ public class MainActivity extends AppCompatActivity
 
     @Override
     public void onPause() {
-        onPause();
         super.onPause();
     }
 
@@ -223,7 +252,7 @@ public class MainActivity extends AppCompatActivity
     }
 
     //---- Access Appointment Via Login
-    public void navigationAppointment(){
+    public void navigationAppointment() {
         Intent intent = new Intent(MainActivity.this, LoginActivity.class);
         startActivity(intent);
     }
@@ -248,6 +277,28 @@ public class MainActivity extends AppCompatActivity
             @Override
             public void onClick(DialogInterface dialogInterface, int i) {
                 if (!mSpinner.getSelectedItem().toString().equalsIgnoreCase("Select Your Preferred Language")) {
+                    if (mSpinner.getSelectedItem().toString().equalsIgnoreCase("English") || mSpinner.getSelectedItem().toString().equals("英文")) {
+
+                        editor.putString("languagesetting", "English");
+                        editor.commit();
+                        Toast.makeText(MainActivity.this, "restarting the app!", Toast.LENGTH_SHORT).show();
+                        Intent intent = getBaseContext().getPackageManager()
+                                .getLaunchIntentForPackage(getBaseContext().getPackageName());
+                        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                        startActivity(intent);
+                        finish();
+                    } else if (mSpinner.getSelectedItem().toString().equalsIgnoreCase("Chinese") || mSpinner.getSelectedItem().toString().equals("中文")) {
+                        editor.putString("languagesetting", "Chinese");
+                        editor.commit();
+                        Toast.makeText(MainActivity.this, "正在重新启动您的应用程序！", Toast.LENGTH_SHORT).show();
+                        Intent intent = getBaseContext().getPackageManager()
+                                .getLaunchIntentForPackage(getBaseContext().getPackageName());
+                        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                        startActivity(intent);
+                        finish();
+                    }
+
+
                     Toast.makeText(MainActivity.this, "Changing....", Toast.LENGTH_SHORT).show();
                     dialogInterface.dismiss();
                 }
@@ -265,6 +316,7 @@ public class MainActivity extends AppCompatActivity
         AlertDialog dialog = mBuilder.create();
         dialog.show();
     }
+
 
     //---- Access About Page ----
     public void navigationAbout() {
