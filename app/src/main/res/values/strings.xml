@@ -40,10 +40,8 @@
 
     <!-- Controls in layout > fragment_about.xml Page -->
     <string name="aboutWayFinder">About Way Finder</string>
-    <string name="aboutWayFinderDetails">Hiiii</string>
-    <string name="aboutSingHealth">About SingHealth</string>
-    <string name="aboutSingHealthDetails">SingHealth provides tertiary medical care across a comprehensive spectrum of over 40 specialties with the in-depth expertise of 150 sub-specialties. Supported by a faculty of over 1,000 internationally-qualified medical specialists and well-equipped with advanced medical diagnostic and treatment technology, the group is recognised in the region for charting new breakthroughs in treatments. \n\nAs an Academic Medical Centre, we seek to transform patient care by integrating clinical services, teaching and research. Patients at SingHealth enjoy the benefit of leading-edge treatments with a focus on quality and holistic care, in an integrated and multidisciplinary setting.</string>
-
+    <string name="aboutWayFinderDetails">WAYFINDER, an Internal Positioning system for indoor navigation. \n\n Our primary aim is to help patients and visitors alike navigate their way with ease. Also, to allow users to manage current existing geolocations or learn new ones.
+</string>
     <!-- Controls in layout > splash_screen.xml Layout -->
     <string name="textViewLoading">WAYFINDER</string>
 
