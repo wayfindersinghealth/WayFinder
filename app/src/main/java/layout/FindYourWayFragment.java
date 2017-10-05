@@ -94,7 +94,7 @@ public class FindYourWayFragment extends Fragment {
             .include(new LatLng(1.3792949602146791, 103.84983998176449))
             .build();
 
-    LatLng currentLocation;
+    LatLng currentLocation = null;
 
     // TODO: Rename and change types of parameters
     private String mParam1;
@@ -279,12 +279,19 @@ public class FindYourWayFragment extends Fragment {
                 fab.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
-                        LatLng zoomLocation = new LatLng(currentLocation);
-                        CameraPosition position = new CameraPosition.Builder()
-                                .target(zoomLocation)
-                                .zoom(20) // Sets the zoom
-                                .build(); // Creates a CameraPosition from the builder
-                        mapboxMap.setCameraPosition(position);
+                       if (currentLocation == null) {
+                           Toast.makeText(getActivity(), "Locating Your Position...." , Toast.LENGTH_SHORT).show();
+                       } else {
+                           LatLng zoomLocation = new LatLng(currentLocation);
+                           CameraPosition position = new CameraPosition.Builder()
+                                   .target(zoomLocation)
+                                   .zoom(20) // Sets the zoom
+                                   .build(); // Creates a CameraPosition from the builder
+                           mapboxMap.setCameraPosition(position);
+                        }
+
+
+
                     }
                 });
 
