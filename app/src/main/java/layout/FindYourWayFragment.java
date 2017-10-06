@@ -253,10 +253,12 @@ public class FindYourWayFragment extends Fragment {
                                         if (markerView != null) {
                                             markerView.setPosition(latLng);
                                             markerView.setIcon(icon);
+                                            markerView.setTitle("You Are Here");
 
                                         } else if(markerView == null){
                                             markerView = mapboxMap.addMarker(new MarkerViewOptions().position(new LatLng(locLatitude, locLongitude)));
                                             markerView.setIcon(icon);
+                                            markerView.setTitle("You Are Here");
                                         }
                                     }
                                 }
