@@ -16,10 +16,7 @@ buildscript {
 allprojects {
     repositories {
         jcenter()
-        //---- Start Of Open Source Repositories ----
-        //-- Tutorial Start Page --
         maven { url 'https://jitpack.io'}
-        //---- End Of Open Source Repositories ----
     }
 }
 

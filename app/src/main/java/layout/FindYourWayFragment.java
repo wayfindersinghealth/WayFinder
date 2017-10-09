@@ -1,21 +1,13 @@
 package layout;
 
 import android.content.Context;
-import android.graphics.BitmapFactory;
-import android.graphics.drawable.BitmapDrawable;
-import android.graphics.drawable.Drawable;
-import android.location.Location;
-import android.location.LocationManager;
 import android.net.Uri;
 import android.net.wifi.ScanResult;
 import android.net.wifi.WifiManager;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
-import android.support.v4.content.ContextCompat;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -37,9 +29,7 @@ import com.mapbox.mapboxsdk.annotations.IconFactory;
 import com.mapbox.mapboxsdk.annotations.MarkerView;
 import com.mapbox.mapboxsdk.annotations.MarkerViewOptions;
 import com.mapbox.mapboxsdk.camera.CameraPosition;
-import com.mapbox.mapboxsdk.camera.CameraUpdateFactory;
 import com.mapbox.mapboxsdk.geometry.LatLng;
-import com.mapbox.mapboxsdk.geometry.LatLngBounds;
 import com.mapbox.mapboxsdk.maps.MapView;
 import com.mapbox.mapboxsdk.maps.MapboxMap;
 import com.mapbox.mapboxsdk.maps.OnMapReadyCallback;
@@ -51,14 +41,12 @@ import org.json.JSONObject;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
@@ -73,7 +61,9 @@ import sg.com.singhealth.wayfinder.R;
 /**
  * File Name: FindYourWayFragment.java
  * Created By: AY17 P3 FYPJ NYP SIT
- * Description: -
+ * Description: Before Starting Application
+ *              Change at Line 449, 450
+ *              Delete Firebase Data.
  */
 
 /**
@@ -89,12 +79,8 @@ public class FindYourWayFragment extends Fragment {
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";
-    private static final LatLngBounds NYPBLKL_BOUNDS = new LatLngBounds.Builder()
-            .include(new LatLng(1.3792949602146791, 103.84983998176449))
-            .include(new LatLng(1.3792949602146791, 103.84983998176449))
-            .build();
 
-    LatLng currentLocation;
+    LatLng currentLocation = null;
 
     // TODO: Rename and change types of parameters
     private String mParam1;
@@ -156,9 +142,6 @@ public class FindYourWayFragment extends Fragment {
 
         //-- View --
         final View rootView = inflater.inflate(R.layout.fragment_find_your_way, container, false);
-
-        //-- JSON Get Locations --
-     //   new GetLocations().execute("https://ml.internalpositioning.com/locations?group=dummy04");
 
         //-- Connecting to DB --
         databaseLocation = FirebaseDatabase.getInstance().getReference("locations");
@@ -228,7 +211,6 @@ public class FindYourWayFragment extends Fragment {
                             locations = new PostTrackAPI().execute("https://ml.internalpositioning.com/track").get().toString();
                             Log.d("Result of PostAPI", locations + " ");
 
-                            //-- check null --
                             //-- Compare to DB --
                             String loca = locations.toUpperCase();
                             Query locationQuery = databaseLocation.orderByChild("id").equalTo(loca);
@@ -253,10 +235,12 @@ public class FindYourWayFragment extends Fragment {
                                         if (markerView != null) {
                                             markerView.setPosition(latLng);
                                             markerView.setIcon(icon);
+                                            markerView.setTitle("You Are Here");
 
-                                        } else if(markerView == null){
+                                        } else if (markerView == null){
                                             markerView = mapboxMap.addMarker(new MarkerViewOptions().position(new LatLng(locLatitude, locLongitude)));
                                             markerView.setIcon(icon);
+                                            markerView.setTitle("You Are Here");
                                         }
                                     }
                                 }
@@ -279,12 +263,16 @@ public class FindYourWayFragment extends Fragment {
                 fab.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
-                        LatLng zoomLocation = new LatLng(currentLocation);
-                        CameraPosition position = new CameraPosition.Builder()
-                                .target(zoomLocation)
-                                .zoom(20) // Sets the zoom
-                                .build(); // Creates a CameraPosition from the builder
-                        mapboxMap.setCameraPosition(position);
+                       if (currentLocation == null) {
+                           Toast.makeText(getActivity(), "Locating Your Position...." , Toast.LENGTH_SHORT).show();
+                       } else {
+                           LatLng zoomLocation = new LatLng(currentLocation);
+                           CameraPosition position = new CameraPosition.Builder()
+                                   .target(zoomLocation)
+                                   .zoom(20) // Sets the zoom
+                                   .build(); // Creates a CameraPosition from the builder
+                           mapboxMap.setCameraPosition(position);
+                        }
                     }
                 });
 
@@ -302,7 +290,6 @@ public class FindYourWayFragment extends Fragment {
                             @Override
                             public void onDataChange(DataSnapshot dataSnapshot) {
                                 for (DataSnapshot locationSnapshot : dataSnapshot.getChildren()) {
-
 
                                     //-- Get Longitude and Latitude ---
                                     double locLatitude = (double) locationSnapshot.child("latitude").getValue();
@@ -507,7 +494,7 @@ public class FindYourWayFragment extends Fragment {
                 StringBuffer sb = new StringBuffer();
                 String finalJSON;
 
-                while((line = reader.readLine())!= null){
+                while ((line = reader.readLine())!= null){
                     Log.d("line value", line + "  ");
                     sb.append(line);
                     Log.d("StringBuffer value", sb.toString() + "  ");
@@ -527,10 +514,10 @@ public class FindYourWayFragment extends Fragment {
                 e.printStackTrace();
             } catch (JSONException e) {
                 e.printStackTrace();
-            } finally{
-                if(connection != null){
+            } finally {
+                if (connection != null){
                     connection.disconnect();
-                } try{
+                } try {
                     if(reader != null){
                         reader.close();
                     }

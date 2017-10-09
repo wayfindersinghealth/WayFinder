@@ -19,7 +19,6 @@ import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.DisplayMetrics;
-import android.util.Log;
 import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -281,7 +280,7 @@ public class MainActivity extends AppCompatActivity
 
                         editor.putString("languagesetting", "English");
                         editor.commit();
-                        Toast.makeText(MainActivity.this, "restarting the app!", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(MainActivity.this, "Restarting the WayFinder!", Toast.LENGTH_SHORT).show();
                         Intent intent = getBaseContext().getPackageManager()
                                 .getLaunchIntentForPackage(getBaseContext().getPackageName());
                         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
@@ -298,8 +297,7 @@ public class MainActivity extends AppCompatActivity
                         finish();
                     }
 
-
-                    Toast.makeText(MainActivity.this, "Changing....", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(MainActivity.this, "Changing Language....", Toast.LENGTH_SHORT).show();
                     dialogInterface.dismiss();
                 }
             }
@@ -316,7 +314,6 @@ public class MainActivity extends AppCompatActivity
         AlertDialog dialog = mBuilder.create();
         dialog.show();
     }
-
 
     //---- Access About Page ----
     public void navigationAbout() {

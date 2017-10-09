@@ -1,7 +1,9 @@
 package sg.com.singhealth.wayfinder;
 
 /**
- * Created by Bowen on 2017/9/27.
+ * File Name: User.java
+ * Created By: AY17 P3 FYPJ NYP SIT
+ * Description: -
  */
 
 public class User {
@@ -10,10 +12,6 @@ public class User {
     String age;
     String password;
     String confirm;
-
-
-
-
 
     public User( String name, String email, String age, String password, String confirm) {
         this.name = name;
@@ -62,7 +60,5 @@ public class User {
     public void setConfirm(String confirm) {
         this.confirm = confirm;
     }
-
-
 
 }

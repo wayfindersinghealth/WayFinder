@@ -35,6 +35,11 @@ import java.util.List;
 import sg.com.singhealth.wayfinder.MainActivity;
 import sg.com.singhealth.wayfinder.R;
 
+/**
+ * File Name: LoginActivity.java
+ * Created By: AY17 P3 FYPJ NYP SIT
+ * Description: -
+ */
 
 /**
  * A login screen that offers login via email/password.
@@ -74,7 +79,6 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
                 if (id == R.id.login || id == EditorInfo.IME_NULL) {
                     attemptLogin();
                     return true;
-
                 }
                 return false;
             }
