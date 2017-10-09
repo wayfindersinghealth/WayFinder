@@ -7,8 +7,6 @@ import android.os.Bundle;
 import com.github.paolorotolo.appintro.AppIntro2;
 import com.github.paolorotolo.appintro.AppIntroFragment;
 
-import layout.LoginActivity;
-
 /**
  * File Name: IntroductionTutorial.java
  * Created By: AY17 P3 FYPJ NYP SIT
