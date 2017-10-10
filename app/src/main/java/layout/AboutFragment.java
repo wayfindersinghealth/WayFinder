@@ -12,6 +12,12 @@ import sg.com.singhealth.wayfinder.MainActivity;
 import sg.com.singhealth.wayfinder.R;
 
 /**
+ * File Name: AboutFragment.java
+ * Created By: AY17 P3 FYPJ NYP SIT
+ * Description: -
+ */
+
+/**
  * A simple {@link Fragment} subclass.
  * Activities that contain this fragment must implement the
  * {@link AboutFragment.OnFragmentInteractionListener} interface
@@ -65,7 +71,6 @@ public class AboutFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-
         //-- Change Action Bar Title --
         ((MainActivity) getActivity()).setActionBarTitle("About");
 

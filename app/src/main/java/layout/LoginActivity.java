@@ -4,9 +4,6 @@ import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.annotation.TargetApi;
 import android.content.Intent;
-import android.support.design.widget.NavigationView;
-import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AppCompatActivity;
 import android.app.LoaderManager.LoaderCallbacks;
 
@@ -36,6 +33,11 @@ import java.util.List;
 import sg.com.singhealth.wayfinder.MainActivity;
 import sg.com.singhealth.wayfinder.R;
 
+/**
+ * File Name: LoginActivity.java
+ * Created By: AY17 P3 FYPJ NYP SIT
+ * Description: -
+ */
 
 /**
  * A login screen that offers login via email/password.
@@ -75,7 +77,6 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
                 if (id == R.id.login || id == EditorInfo.IME_NULL) {
                     attemptLogin();
                     return true;
-
                 }
                 return false;
             }

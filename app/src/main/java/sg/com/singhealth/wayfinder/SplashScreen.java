@@ -13,8 +13,6 @@ import android.view.animation.AnimationUtils;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import layout.LoginActivity;
-
 /**
  * File Name: SplashScreen.java
  * Created By: AY17 P3 FYPJ NYP SIT

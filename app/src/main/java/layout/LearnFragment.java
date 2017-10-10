@@ -1,9 +1,6 @@
 package layout;
 
 import android.content.Context;
-import android.graphics.drawable.Drawable;
-import android.location.Location;
-import android.location.LocationManager;
 import android.net.Uri;
 import android.net.wifi.ScanResult;
 import android.net.wifi.WifiInfo;
@@ -13,16 +10,12 @@ import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
-import android.support.v4.content.ContextCompat;
-import android.support.v4.graphics.drawable.DrawableCompat;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ArrayAdapter;
 import android.widget.Button;
-import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -55,15 +48,9 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
-import java.lang.reflect.Array;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Objects;
-import java.util.Timer;
-import java.util.TimerTask;
 import java.util.concurrent.TimeUnit;
 
 import javax.net.ssl.HttpsURLConnection;
@@ -75,7 +62,9 @@ import sg.com.singhealth.wayfinder.R;
 /**
  * File Name: LearnFragment.java
  * Created By: AY17 P3 FYPJ NYP SIT
- * Description: -
+ * Description: Before Starting Application
+ *              Requires Changes at line 425, 426, 444
+ *              Delete FireBase Data
  */
 
 /**
@@ -91,7 +80,6 @@ public class LearnFragment extends Fragment {
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";
-
 
     // Mapbox Variable
     private static final LatLngBounds NYPBLKL_BOUNDS = new LatLngBounds.Builder()
@@ -111,20 +99,11 @@ public class LearnFragment extends Fragment {
     TextView locText;
     Button buttonLearn;
     String loc;
-    double lat, lon;
     JSONObject root = new JSONObject();
-
-    //-- Variables for Get Location Methods --
-    Location location;
-    double latitude;
-    double longitude;
-    boolean isNetworkEnabled = false;
-    boolean canGetLocation = false;
     ArrayList<String> locationList = new ArrayList<String>();
     final JSONArray wifiFingerprint = new JSONArray();
 
     DatabaseReference databaseLocation;
-
 
     public LearnFragment() {
         // Required empty public constructor
@@ -178,6 +157,7 @@ public class LearnFragment extends Fragment {
 
         //-- Connecting to DB --
         databaseLocation = FirebaseDatabase.getInstance().getReference("locations");
+
         //-- Retrieving from DB --
         databaseLocation.addValueEventListener(new ValueEventListener() {
             @Override
@@ -186,7 +166,7 @@ public class LearnFragment extends Fragment {
                     String locName =  locationSnapshot.child("id").getValue().toString();
                     Log.d("LocName", locName);
                     locationList.add(locName);
-                    Log.d("Success tada", locationList.toString());
+                    Log.d("Retrieved from DB", locationList.toString());
                 }
                /*
                 for(int i = 0; i < locationList.size(); i++){
@@ -201,7 +181,6 @@ public class LearnFragment extends Fragment {
             }
         });
 
-
         //-- MapBox MapView --
         mapView = (MapView) rootView.findViewById(R.id.mapViewLearn);
         mapView.onCreate(savedInstanceState);
@@ -213,7 +192,6 @@ public class LearnFragment extends Fragment {
 
             @Override
             public void onMapReady(final MapboxMap mapboxMap) {
-
 
                 mapboxMap.setOnMapLongClickListener(new MapboxMap.OnMapLongClickListener() {
 
@@ -232,7 +210,6 @@ public class LearnFragment extends Fragment {
                 });
 
                 //-- Customize map with markers, polylines, etc. --
-
                 //-- MapBox URL --
                 mapboxMap.setStyleUrl(getString((R.string.mapbox_url)));
 
@@ -265,21 +242,21 @@ public class LearnFragment extends Fragment {
                             if(markerView != null) {
                                 try {
                                     formatDataAsJSON();
-                                }finally {
+                                } finally {
                                     addLocation(markerView.getPosition());
                                 }
                                 //Hide Keyboard After Pressing Button
                                 ((MainActivity) getActivity()).hideKeyboard(rootView);
                             }
-                            else{
+                            else {
                                 Toast.makeText(getActivity(), "Tap On Map To Add Geolocation." , Toast.LENGTH_SHORT).show();
                                 ((MainActivity) getActivity()).hideKeyboard(rootView);
                             }
-                        } else{
+                        } else {
                             Toast.makeText(getActivity(), "Please Input Your Current Location." , Toast.LENGTH_SHORT).show();
                         }
                     }
-                } else{
+                } else {
                     Toast.makeText(getActivity(), "Please Turn On Your WIFI Connection." , Toast.LENGTH_SHORT).show();
                 }
             }
@@ -405,7 +382,7 @@ public class LearnFragment extends Fragment {
                     }
                     Log.d("fpArray1", fpArray.toString());
 
-                }else {
+                } else {
                     if (fpArray.size() > 0) {
                         ArrayList<ScanResult> results = (ArrayList<ScanResult>) wmgr.getScanResults();
                         for (int i = 0; i < results.size(); i++) {
@@ -505,11 +482,11 @@ public class LearnFragment extends Fragment {
             String result;
             String jsonResult = null;
 
-            try{
+            try {
                 jsonResult = root.toString();
                 Log.d("JSON Result" , jsonResult + " ");
-            }finally {
-                try{
+            } finally {
+                try {
                     //Connecting to API
                     URL link = new URL(params[0]);
                     connection = (HttpsURLConnection) link.openConnection();
@@ -531,7 +508,7 @@ public class LearnFragment extends Fragment {
                     String line = null;
                     StringBuilder sb = new StringBuilder();
 
-                    while((line = reader.readLine())!= null){
+                    while ((line = reader.readLine())!= null){
                         sb.append(line);
                     }
                     result = sb.toString();
@@ -541,10 +518,10 @@ public class LearnFragment extends Fragment {
                     e.printStackTrace();
                 } catch (IOException e) {
                     e.printStackTrace();
-                } finally{
-                    if(connection != null){
+                } finally {
+                    if (connection != null){
                         connection.disconnect();
-                    } try{
+                    } try {
                         if(reader != null){
                             reader.close();
                         }
@@ -568,7 +545,6 @@ public class LearnFragment extends Fragment {
             }
 
             Log.d("wifiFingerprint Removed", wifiFingerprint + " ");
-
         }
     }
 
@@ -604,7 +580,7 @@ public class LearnFragment extends Fragment {
             } catch (IOException e) {
                 e.printStackTrace();
             } finally {
-                if(connection != null) {
+                if (connection != null) {
                     connection.disconnect();
                 }
                 try {

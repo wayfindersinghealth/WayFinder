@@ -1,5 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+<!--
+*File Name: strings.xml
+*Created By: AY17 P3 FYPJ NYP SIT
+*Description: -
+-->
     <string name="app_name">WayFinder</string>
     <string name="aboutSingHealth">关于SingHealth</string>
     <string name="aboutSingHealthDetails">SingHealth在超过40个专业的综合范围内提供三级医疗服务，拥有150个子专业的深度专业知识。该组织得到了超过1000名国际合格医学专家的支持，拥有先进的医疗诊断和治疗技术，在该地区获得了在治疗方面取得新突破的认可。作为一个学术医学中心，我们寻求通过整合临床服务、教学和研究来改变病人的护理。SingHealth的患者在综合和多学科的环境下，专注于质量和整体护理，享受尖端治疗的好处。</string>
