@@ -1,6 +1,7 @@
 package layout;
 
 import android.content.Context;
+import android.location.Location;
 import android.net.Uri;
 import android.net.wifi.ScanResult;
 import android.net.wifi.WifiInfo;
@@ -88,6 +89,8 @@ public class LearnFragment extends Fragment {
             .build();
     MapView mapView;
     private static MarkerView markerView;
+    private static MarkerView existingMarker;
+
 
     // TODO: Rename and change types of parameters
     private String mParam1;
@@ -100,7 +103,7 @@ public class LearnFragment extends Fragment {
     Button buttonLearn;
     String loc;
     JSONObject root = new JSONObject();
-    ArrayList<String> locationList = new ArrayList<String>();
+    ArrayList<LocationDetail> locationList = new ArrayList<LocationDetail>();
     final JSONArray wifiFingerprint = new JSONArray();
 
     DatabaseReference databaseLocation;
@@ -155,31 +158,7 @@ public class LearnFragment extends Fragment {
         //-- EditText Learn Input --
         locText = (TextView) rootView.findViewById(R.id.locationText);
 
-        //-- Connecting to DB --
-        databaseLocation = FirebaseDatabase.getInstance().getReference("locations");
 
-        //-- Retrieving from DB --
-        databaseLocation.addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                for(DataSnapshot locationSnapshot : dataSnapshot.getChildren()){
-                    String locName =  locationSnapshot.child("id").getValue().toString();
-                    Log.d("LocName", locName);
-                    locationList.add(locName);
-                    Log.d("Retrieved from DB", locationList.toString());
-                }
-               /*
-                for(int i = 0; i < locationList.size(); i++){
-                    Log.d("ArrayList item", locationList.get(i).toString());
-                }
-                */
-            }
-
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-
-            }
-        });
 
         //-- MapBox MapView --
         mapView = (MapView) rootView.findViewById(R.id.mapViewLearn);
@@ -187,6 +166,9 @@ public class LearnFragment extends Fragment {
 
         IconFactory iconFactory = IconFactory.getInstance(getActivity());
         final Icon icon = iconFactory.fromResource(R.drawable.ic_blue_pin);
+
+        IconFactory icFac = IconFactory.getInstance(getActivity());
+        final Icon existingLocationIcon = icFac.fromResource(R.drawable.ic_existing_location);
 
         mapView.getMapAsync(new OnMapReadyCallback() {
 
@@ -227,6 +209,36 @@ public class LearnFragment extends Fragment {
 
                 mapboxMap.setMaxZoomPreference(20);
                 mapboxMap.setMinZoomPreference(18.5);
+
+                //-- Connecting to DB --
+                databaseLocation = FirebaseDatabase.getInstance().getReference("locations");
+                //-- Retrieving from DB --
+                databaseLocation.addValueEventListener(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(DataSnapshot dataSnapshot) {
+                        for(DataSnapshot locationSnapshot : dataSnapshot.getChildren()){
+                            String locName =  locationSnapshot.child("id").getValue().toString();
+                            Double latitude = (Double) locationSnapshot.child("latitude").getValue();
+                            Double longitude = (Double) locationSnapshot.child("longitude").getValue();
+                            LocationDetail locDetail = new LocationDetail(locName, latitude, longitude);
+                            locationList.add(locDetail);
+                        }
+
+                        for (int m =0; m<locationList.size(); m++){
+                            LatLng pos1 = new LatLng(locationList.get(m).getLatitude(), locationList.get(m).getLongitude());
+                            existingMarker = mapboxMap.addMarker(new MarkerViewOptions().position(pos1).icon(existingLocationIcon));
+                            existingMarker.setTitle(locationList.get(m).getId());
+                        }
+                    }
+
+                    @Override
+                    public void onCancelled(DatabaseError databaseError) {
+
+                    }
+                });
+
+
+
             }
         });
 
@@ -422,8 +434,6 @@ public class LearnFragment extends Fragment {
 
             @Override
             public void onFinish() {
-                /*
-
                 try {
                     buttonLearn.setEnabled(false);
                     loc = locText.getText().toString();
@@ -449,7 +459,6 @@ public class LearnFragment extends Fragment {
                 new GetCalculateAPI().execute("https://ml.internalpositioning.com/calculate?group=interim01");
                 Toast.makeText(getActivity(), "Inserted Into Repository" , Toast.LENGTH_SHORT).show();
                 buttonLearn.setEnabled(true);
-*/
             }
         };
         timer.start();

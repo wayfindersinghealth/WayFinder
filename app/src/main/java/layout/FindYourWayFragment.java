@@ -199,13 +199,12 @@ public class FindYourWayFragment extends Fragment {
                         .build(); // Creates a CameraPosition from the builder
                 mapboxMap.setCameraPosition(position);
 
-                //-- Timer to Loops Marker Change --
+                //-- Timer to Loops Marker Change ---
                 t = new Timer();
                 t.scheduleAtFixedRate(new TimerTask() {
                     @Override
                     public void run() {
                         String locations;
-
                         //-- Track Location --
                         try {
                             locations = new PostTrackAPI().execute("https://ml.internalpositioning.com/track").get().toString();

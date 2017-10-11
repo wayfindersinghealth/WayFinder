@@ -181,9 +181,9 @@ public class MainActivity extends AppCompatActivity
 
         } */ else if (id == R.id.nav_about) {
             navigationAbout();
-        } /*else if (id == R.id.nav_Appt) {
-            navigationAppointment();
-        } */
+        } else if (id == R.id.nav_Appt) {
+            navigationLogin();
+        }
         else {
             //Else Home Fragment
             navigationHome();
@@ -241,7 +241,7 @@ public class MainActivity extends AppCompatActivity
     //---- Access Learn Page ----
     public void navigationLearn() {
         Fragment fragment;
-        fragment = new LoginFragment();
+        fragment = new LearnFragment();
         FragmentManager fragmentManager = getSupportFragmentManager();
         fragmentManager.beginTransaction().replace(R.id.content, fragment).commit();
     }
@@ -254,6 +254,13 @@ public class MainActivity extends AppCompatActivity
         fragmentManager.beginTransaction().replace(R.id.content, fragment).commit();
     }
 
+    //---- Access Login Page ----
+    public void navigationLogin() {
+        Fragment fragment;
+        fragment = new LoginFragment();
+        FragmentManager fragmentManager = getSupportFragmentManager();
+        fragmentManager.beginTransaction().replace(R.id.content, fragment).commit();
+    }
 
 
     //---- Access Help Page ----
