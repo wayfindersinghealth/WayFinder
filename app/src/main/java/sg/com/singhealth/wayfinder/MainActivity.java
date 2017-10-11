@@ -19,6 +19,7 @@ import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.DisplayMetrics;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -34,6 +35,7 @@ import layout.AboutFragment;
 import layout.FindYourWayFragment;
 import layout.LearnFragment;
 import layout.LoginActivity;
+import layout.LoginFragment;
 import layout.MainFragment;
 
 /**
@@ -58,6 +60,7 @@ public class MainActivity extends AppCompatActivity
         spf = PreferenceManager.getDefaultSharedPreferences(MainActivity.this);
         editor = spf.edit();
         String getlanguagesetting = "";
+
         getlanguagesetting = spf.getString("languagesetting", null);
         if (getlanguagesetting != null && !getlanguagesetting.equals("")) {
             if (getlanguagesetting.equals("English")) {
@@ -178,9 +181,10 @@ public class MainActivity extends AppCompatActivity
 
         } */ else if (id == R.id.nav_about) {
             navigationAbout();
-        } else if (id == R.id.nav_Appt) {
+        } /*else if (id == R.id.nav_Appt) {
             navigationAppointment();
-        } else {
+        } */
+        else {
             //Else Home Fragment
             navigationHome();
         }
@@ -237,7 +241,7 @@ public class MainActivity extends AppCompatActivity
     //---- Access Learn Page ----
     public void navigationLearn() {
         Fragment fragment;
-        fragment = new LearnFragment();
+        fragment = new LoginFragment();
         FragmentManager fragmentManager = getSupportFragmentManager();
         fragmentManager.beginTransaction().replace(R.id.content, fragment).commit();
     }
@@ -250,11 +254,7 @@ public class MainActivity extends AppCompatActivity
         fragmentManager.beginTransaction().replace(R.id.content, fragment).commit();
     }
 
-    //---- Access Appointment Via Login
-    public void navigationAppointment() {
-        Intent intent = new Intent(MainActivity.this, LoginActivity.class);
-        startActivity(intent);
-    }
+
 
     //---- Access Help Page ----
 

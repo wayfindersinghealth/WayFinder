@@ -3,7 +3,10 @@ package layout;
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.annotation.TargetApi;
+import android.app.FragmentTransaction;
 import android.content.Intent;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AppCompatActivity;
 import android.app.LoaderManager.LoaderCallbacks;
 
@@ -251,6 +254,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
     }
 
 
+
     private interface ProfileQuery {
         String[] PROJECTION = {
                 ContactsContract.CommonDataKinds.Email.ADDRESS,
@@ -307,8 +311,10 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
 
             if (success) {
                 Intent intent = new Intent();
-                intent.setClass(LoginActivity.this, LearnFragment.class);
+                intent.setClass(LoginActivity.this, MainActivity.class);
+                intent.putExtra("loginSuccess", true);
                 startActivity(intent);
+
             } else {
                 mPasswordView.setError(getString(R.string.error_incorrect_password));
                 mPasswordView.requestFocus();
