@@ -357,7 +357,7 @@ public class LearnFragment extends Fragment {
 
     //---- Format Data As JSON Method ----
     public void formatDataAsJSON() {
-        CountDownTimer timer = new CountDownTimer(60000, 1000) {
+        CountDownTimer timer = new CountDownTimer(10000, 1000) {
             String timeStamp = TimeUnit.MILLISECONDS.toSeconds(System.currentTimeMillis()) + "";
             ArrayList<JSONObject> fpArray = new ArrayList<>();
 
@@ -391,10 +391,12 @@ public class LearnFragment extends Fragment {
                                 try {
                                     JSONObject fingerprint = new JSONObject();
                                     fingerprint.put("mac", results.get(i).BSSID);
-                                    fingerprint.put("rssi", results.get(i).level);
 
                                     for (int j = 0; j < fpArray.size(); j++) {
                                         if (fpArray.get(j).get("mac").toString().equalsIgnoreCase(fingerprint.get("mac").toString())) {
+                                            int currLvl =  results.get(i).level;
+                                            int avgLvl = (currLvl + (int)fpArray.get(j).get("rssi"))/2 ;
+                                            fpArray.get(j).put("rssi", avgLvl);
                                             test = true;
                                             break;
                                         } else {
@@ -402,6 +404,7 @@ public class LearnFragment extends Fragment {
                                         }
                                     }
                                     if(!test){
+                                        fingerprint.put("rssi", results.get(i).level);
                                         fpArray.add(fingerprint);
                                     }
                                 } catch (JSONException e) {
@@ -419,10 +422,12 @@ public class LearnFragment extends Fragment {
 
             @Override
             public void onFinish() {
+                /*
+
                 try {
                     buttonLearn.setEnabled(false);
                     loc = locText.getText().toString();
-                    root.put("group", "dummy04");
+                    root.put("group", "interim01");
                     root.put("username", "p3");
                     root.put("location", loc);
                     root.put("time", timeStamp);
@@ -441,9 +446,10 @@ public class LearnFragment extends Fragment {
                 }
 
                 new PostLearnAPI().execute("https://ml.internalpositioning.com/learn");
-                new GetCalculateAPI().execute("https://ml.internalpositioning.com/calculate?group=dummy04");
+                new GetCalculateAPI().execute("https://ml.internalpositioning.com/calculate?group=interim01");
                 Toast.makeText(getActivity(), "Inserted Into Repository" , Toast.LENGTH_SHORT).show();
                 buttonLearn.setEnabled(true);
+*/
             }
         };
         timer.start();

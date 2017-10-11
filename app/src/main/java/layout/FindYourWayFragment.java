@@ -446,7 +446,7 @@ public class FindYourWayFragment extends Fragment {
             }
         }
         try {
-            root.put("group", "dummy04");
+            root.put("group", "interim01");
             root.put("username", "p3");
             root.put("time", timeStamp);
             root.put("wifi-fingerprint", wifiFingerprint);
