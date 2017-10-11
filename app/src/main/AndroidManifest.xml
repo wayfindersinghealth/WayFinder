@@ -39,13 +39,6 @@
             </intent-filter>
         </activity>
 
-        <activity
-            android:name="layout.LoginActivity"
-            android:label="@string/title_activity_login" />
-        <activity android:name="layout.RegisterActivity">
-
-        </activity>
-
         <!-- IntroductionTutorial -->
         <activity
             android:name=".IntroductionTutorial"
