@@ -26,7 +26,7 @@
     <string name="textViewTo">To:</string>
     <string name="autoCompleteTextViewTo">Enter Your Destination</string>
     <string name="access_token">pk.eyJ1Ijoid2F5ZmluZGVyc2luZ2hlYWx0aCIsImEiOiJjajdsYXJ0cWwwdzBwMnhsYXQzbzc3MDFuIn0.meR6XGTiU1tgb9UhyZ75qg</string>
-    <string name="mapbox_url">mapbox://styles/wayfindersinghealth/cj7lk3ril894r2qp3whkv8rke</string>
+    <string name="mapbox_url">mapbox://styles/wayfindersinghealth/cj7lk4pne88t42snt6moynl5m</string>
 
     <!-- Controls in layout > fragment_help.xml Page -->
 
