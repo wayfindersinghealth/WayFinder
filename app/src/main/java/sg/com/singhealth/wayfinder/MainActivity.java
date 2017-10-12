@@ -48,7 +48,8 @@ public class MainActivity extends AppCompatActivity
         MainFragment.OnFragmentInteractionListener,
         LearnFragment.OnFragmentInteractionListener,
         FindYourWayFragment.OnFragmentInteractionListener,
-        AboutFragment.OnFragmentInteractionListener {
+        AboutFragment.OnFragmentInteractionListener,
+        LoginFragment.OnFragmentInteractionListener{
     SharedPreferences spf;
     SharedPreferences.Editor editor;
 
