@@ -6,6 +6,7 @@ import android.net.wifi.ScanResult;
 import android.net.wifi.WifiManager;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.CountDownTimer;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
 import android.util.Log;
@@ -48,6 +49,7 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Timer;
 import java.util.TimerTask;
 import java.util.concurrent.ExecutionException;
@@ -204,56 +206,79 @@ public class FindYourWayFragment extends Fragment {
                 t.scheduleAtFixedRate(new TimerTask() {
                     @Override
                     public void run() {
-                        String locations;
-                        //-- Track Location --
-                        try {
-                            locations = new PostTrackAPI().execute("https://ml.internalpositioning.com/track").get().toString();
-                            Log.d("Result of PostAPI", locations + " ");
+/*
+                        CountDownTimer timer = new CountDownTimer(4000,100) {
+                            String locations;
+                            ArrayList<JSONObject> locationArray = new ArrayList<>();
 
-                            //-- Compare to DB --
-                            String loca = locations.toUpperCase();
-                            Query locationQuery = databaseLocation.orderByChild("id").equalTo(loca);
-                            locationQuery.addValueEventListener(new ValueEventListener() {
-                                @Override
-                                public void onDataChange(DataSnapshot dataSnapshot) {
-                                    for (DataSnapshot locationSnapshot : dataSnapshot.getChildren()) {
-                                        //-- Get Longitude and Latitude --
-                                        double locLatitude = (double) locationSnapshot.child("latitude").getValue();
-                                        double locLongitude = (double) locationSnapshot.child("longitude").getValue();
+                            @Override
+                            public void onTick(long l) {
+                                try {
 
-                                        currentLocation = new LatLng(locLatitude, locLongitude);
+                                    if (locationArray.size() == 0) {
+                                        //First Time
+                                //        locations = new PostTrackAPI().execute("https://ml.internalpositioning.com/track").get().toString();
+                                        Log.d("Result of PostAPI", locations + " ");
 
-                                        Log.d("LatLng", locLatitude + ", " + locLongitude);
+                                        JSONObject fingerprint = new JSONObject();
+                                        fingerprint.put("location", (JSONObject)locations);
+                                     //   fingerprint.put("rssi", results.get(i).level);
 
-                                        //-- Marker Icon --
-                                        IconFactory iconFactory = IconFactory.getInstance(getActivity());
-                                        Icon icon = iconFactory.fromResource(R.drawable.ic_curr_location);
+                                        locationArray.add(fingerprint);
+                                    } else {
+                                        //Subsequent
 
-                                        //-- Set Marker on Map --
-                                        LatLng latLng = new LatLng(locLatitude, locLongitude);
-                                        if (markerView != null) {
-                                            markerView.setPosition(latLng);
-                                            markerView.setIcon(icon);
-                                            markerView.setTitle("You Are Here");
+                                   //     locations = new PostTrackAPI().execute("https://ml.internalpositioning.com/track").get().toString();
 
-                                        } else if (markerView == null){
-                                            markerView = mapboxMap.addMarker(new MarkerViewOptions().position(new LatLng(locLatitude, locLongitude)));
-                                            markerView.setIcon(icon);
-                                            markerView.setTitle("You Are Here");
+
+
+                                    }
+
+
+
+                                //-- Compare to DB --
+                                String loca = locations.toUpperCase();
+                                Query locationQuery = databaseLocation.orderByChild("id").equalTo(loca);
+                                locationQuery.addValueEventListener(new ValueEventListener() {
+                                    @Override
+                                    public void onDataChange(DataSnapshot dataSnapshot) {
+                                        for (DataSnapshot locationSnapshot : dataSnapshot.getChildren()) {
+                                            //-- Get Longitude and Latitude --
+                                            double locLatitude = (double) locationSnapshot.child("latitude").getValue();
+                                            double locLongitude = (double) locationSnapshot.child("longitude").getValue();
+
+                                            currentLocation = new LatLng(locLatitude, locLongitude);
+
+                                            Log.d("LatLng", locLatitude + ", " + locLongitude);
+
+                                            //-- Marker Icon --
+                                            IconFactory iconFactory = IconFactory.getInstance(getActivity());
+                                            Icon icon = iconFactory.fromResource(R.drawable.ic_curr_location);
+
+                                            //-- Set Marker on Map --
+                                            LatLng latLng = new LatLng(locLatitude, locLongitude);
+                                            if (markerView != null) {
+                                                markerView.setPosition(latLng);
+                                                markerView.setIcon(icon);
+                                                markerView.setTitle("You Are Here");
+
+                                            } else if (markerView == null){
+                                                markerView = mapboxMap.addMarker(new MarkerViewOptions().position(new LatLng(locLatitude, locLongitude)));
+                                                markerView.setIcon(icon);
+                                                markerView.setTitle("You Are Here");
+                                            }
                                         }
                                     }
-                                }
 
-                                @Override
-                                public void onCancelled(DatabaseError databaseError) {
+                                    @Override
+                                    public void onCancelled(DatabaseError databaseError) {
 
-                                }
-                            });
-                        } catch (InterruptedException e) {
-                            e.printStackTrace();
-                        } catch (ExecutionException e) {
-                            e.printStackTrace();
-                        }
+                                    }
+                                });
+                            }
+                        };
+                        timer.start();
+*/
                     }
                 },0,5000);
 
