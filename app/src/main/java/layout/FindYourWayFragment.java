@@ -1,6 +1,7 @@
 package layout;
 
 import android.content.Context;
+import android.location.Location;
 import android.net.Uri;
 import android.net.wifi.ScanResult;
 import android.net.wifi.WifiManager;
@@ -24,6 +25,7 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
+import com.google.gson.JsonParser;
 import com.mapbox.mapboxsdk.Mapbox;
 import com.mapbox.mapboxsdk.annotations.Icon;
 import com.mapbox.mapboxsdk.annotations.IconFactory;
@@ -57,6 +59,7 @@ import java.util.concurrent.TimeUnit;
 
 import javax.net.ssl.HttpsURLConnection;
 
+import sg.com.singhealth.wayfinder.LocTracker;
 import sg.com.singhealth.wayfinder.MainActivity;
 import sg.com.singhealth.wayfinder.R;
 
@@ -204,41 +207,62 @@ public class FindYourWayFragment extends Fragment {
                 //-- Timer to Loops Marker Change ---
                 t = new Timer();
                 t.scheduleAtFixedRate(new TimerTask() {
+                    ArrayList<LocTracker> locationArray = new ArrayList<>();
                     @Override
                     public void run() {
-/*
-                        CountDownTimer timer = new CountDownTimer(4000,100) {
-                            String locations;
-                            ArrayList<JSONObject> locationArray = new ArrayList<>();
-
+                        //CountDownTimer in Timer
+                        CountDownTimer timer = new CountDownTimer(2500, 500) {
                             @Override
                             public void onTick(long l) {
+                                //Post to API
                                 try {
-
+                                  String locations = new PostTrackAPI().execute("https://ml.internalpositioning.com/track").get().toString();
                                     if (locationArray.size() == 0) {
-                                        //First Time
-                                //        locations = new PostTrackAPI().execute("https://ml.internalpositioning.com/track").get().toString();
-                                        Log.d("Result of PostAPI", locations + " ");
-
-                                        JSONObject fingerprint = new JSONObject();
-                                        fingerprint.put("location", (JSONObject)locations);
-                                     //   fingerprint.put("rssi", results.get(i).level);
-
-                                        locationArray.add(fingerprint);
+                                        if (locations != null) {
+                                            LocTracker loc = new LocTracker();
+                                            loc.setLocationName(locations);
+                                            loc.setCounter(1);
+                                            locationArray.add(loc);
+                                        }
                                     } else {
-                                        //Subsequent
+                                        for (int i=0; i<locationArray.size(); i++) {
+                                            if (locations!= null) {
+                                                if (locationArray.get(i).getLocationName().equalsIgnoreCase(locations)) {
+                                                    int count = locationArray.get(i).getCounter() + 1;
+                                                    locationArray.get(i).setCounter(count);
+                                                } else {
+                                                    LocTracker loc = new LocTracker();
+                                                    loc.setLocationName(locations);
+                                                    loc.setCounter(1);
+                                                    locationArray.add(loc);
 
-                                   //     locations = new PostTrackAPI().execute("https://ml.internalpositioning.com/track").get().toString();
-
-
-
+                                                }
+                                            }
+                                        }
                                     }
+                                } catch (InterruptedException e) {
+                                    e.printStackTrace();
+                                } catch (ExecutionException e) {
+                                    e.printStackTrace();
+                                }
+                            }
 
-
-
-                                //-- Compare to DB --
-                                String loca = locations.toUpperCase();
-                                Query locationQuery = databaseLocation.orderByChild("id").equalTo(loca);
+                            @Override
+                            public void onFinish() {
+                                //Check Array which Location is the most.
+                                int maxCount = locationArray.get(0).getCounter();
+                                String maxLocation = null;
+                                for (int i=0; i<locationArray.size(); i++){
+                                    if (locationArray.get(i).getCounter() < maxCount) {
+                                        maxLocation = locationArray.get(i).getLocationName();
+                                        maxCount = locationArray.get(i).getCounter();
+                                    }
+                                }
+                                Log.d("Max Location", maxLocation);
+                                /*
+                                //-- Compare to Database --
+                                String finalLocation = locations.toUpperCase();
+                                Query locationQuery = databaseLocation.orderByChild("id").equalTo(finalLocation);
                                 locationQuery.addValueEventListener(new ValueEventListener() {
                                     @Override
                                     public void onDataChange(DataSnapshot dataSnapshot) {
@@ -275,12 +299,12 @@ public class FindYourWayFragment extends Fragment {
 
                                     }
                                 });
+                                */
                             }
                         };
                         timer.start();
-*/
                     }
-                },0,5000);
+                },0,3000);
 
                 //-- Floating Action Button Click to go to Current Location--
                 FloatingActionButton fab = (FloatingActionButton) rootView.findViewById(R.id.fab);
