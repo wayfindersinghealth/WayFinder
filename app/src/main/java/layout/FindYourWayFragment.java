@@ -210,8 +210,28 @@ public class FindYourWayFragment extends Fragment {
                     ArrayList<LocTracker> locationArray = new ArrayList<>();
                     @Override
                     public void run() {
+
+                        /*
+                        CountDownTimer timer = new CountDownTimer(2000, 1000) {
+                            @Override
+                            public void onTick(long l) {
+
+
+
+                            }
+
+                            @Override
+                            public void onFinish() {
+
+                            }
+                        };
+                        timer.start();
+                        */
+
+
+                        /*
                         //CountDownTimer in Timer
-                        CountDownTimer timer = new CountDownTimer(2500, 500) {
+                        CountDownTimer timer = new CountDownTimer(4000, 1000) {
                             @Override
                             public void onTick(long l) {
                                 //Post to API
@@ -249,6 +269,7 @@ public class FindYourWayFragment extends Fragment {
 
                             @Override
                             public void onFinish() {
+                            //    Log.d("Location", locationArray.toString());
                                 //Check Array which Location is the most.
                                 int maxCount = locationArray.get(0).getCounter();
                                 String maxLocation = null;
@@ -258,7 +279,7 @@ public class FindYourWayFragment extends Fragment {
                                         maxCount = locationArray.get(i).getCounter();
                                     }
                                 }
-                                Log.d("Max Location", maxLocation);
+                              //  Log.d("Max Location", maxLocation);
                                 /*
                                 //-- Compare to Database --
                                 String finalLocation = locations.toUpperCase();
@@ -300,11 +321,11 @@ public class FindYourWayFragment extends Fragment {
                                     }
                                 });
                                 */
-                            }
-                        };
-                        timer.start();
+                     //       }
+                    //    };
+                     //   timer.start();
                     }
-                },0,3000);
+                },0,5000);
 
                 //-- Floating Action Button Click to go to Current Location--
                 FloatingActionButton fab = (FloatingActionButton) rootView.findViewById(R.id.fab);
