@@ -155,23 +155,16 @@ public class FindYourWayFragment extends Fragment {
         //https://gist.github.com/ruuhkis/d942330d97163d868ee7
         autoCompleteTextViewTo = (AutoCompleteTextView) rootView.findViewById(R.id.autoCompleteTextViewTo);
 
+
         //-- Get From DB --
         databaseLocation.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 for (DataSnapshot locationSnapshot : dataSnapshot.getChildren()) {
                     String locName = locationSnapshot.child("id").getValue().toString();
+                    Log.d("locName", locName);
                     aList.add(locName);
-
-                    //-- AutoCompleteTextView --
-                    ArrayAdapter<String> arrayAdapter = new ArrayAdapter<String>(
-                            getActivity(),
-                            android.R.layout.simple_list_item_1,
-                            aList);
-                    Log.d("Alist", aList.toString());
-
-                    autoCompleteTextViewTo.setAdapter(arrayAdapter);
-                    autoCompleteTextViewTo.setThreshold(0);
+                    Log.d("Alist", aList + " ");
                 }
             }
 
@@ -180,6 +173,15 @@ public class FindYourWayFragment extends Fragment {
 
             }
         });
+
+        //-- AutoCompleteTextView --
+        ArrayAdapter<String> arrayAdapter = new ArrayAdapter<String>(
+                getActivity(),
+                android.R.layout.simple_list_item_1,
+                aList);
+
+        autoCompleteTextViewTo.setAdapter(arrayAdapter);
+        autoCompleteTextViewTo.setThreshold(0);
 
         //-- WifiManager --
         wmgr = (WifiManager) getActivity().getApplicationContext().getSystemService(Context.WIFI_SERVICE);
