@@ -213,3 +213,40 @@ No. | Appointment | User | Location
 
 --------------------------------
 
+## 10/10/2017
+
+### Discussed 
+
+#### 1\. Presentation Comments
+
+1. Learn
+
+- Results vary as the signal strength is differs at different timing. (E.g Morning / Afternoon / Peak Hour)
+
+- Learn feature should only be used by Administrator or Staff.
+
+- TRY TO Learn access points without using Wifi.
+
+2. Track
+
+- Comparison of more values when doing tracking, use algorithm to filter the access points
+
+3. Appointment
+
+- On Hold
+
+4. Previous Comments from Alexandra Health
+
+- Usability of the Application
+
+5. Video Demonstration
+
+- Make a video demonstration for the final presentation
+
+- One side screen capture of Application, other side the walking 
+
+### == Notes ==
+
+- Floor Plan
+
+--------------------------------
