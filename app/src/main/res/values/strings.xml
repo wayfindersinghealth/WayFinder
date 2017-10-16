@@ -27,7 +27,7 @@
     <string name="autoCompleteTextViewTo">Enter Your Destination</string>
     <string name="access_token">pk.eyJ1Ijoid2F5ZmluZGVyc2luZ2hlYWx0aCIsImEiOiJjajdsYXJ0cWwwdzBwMnhsYXQzbzc3MDFuIn0.meR6XGTiU1tgb9UhyZ75qg</string>
     <!-- SIT Level 3 -->
-    <string name="mapbox_url">mapbox://styles/wayfindersinghealth/cj8o3zn1v8e9j2slblzw4rz5d</string>
+    <string name="mapbox_url">mapbox://styles/wayfindersinghealth/cj8titnyqdhlq2sk7gxv1imbo</string>
     <!-- SIT Level 4 -->
     <!--<string name="mapbox_url">mapbox://styles/sharptail/ciy291ia000f72sqkrweg5oeg</string>-->
 

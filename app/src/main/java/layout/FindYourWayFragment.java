@@ -200,7 +200,7 @@ public class FindYourWayFragment extends Fragment {
                 final LatLng zoomLocation = new LatLng(1.3792949602146791, 103.84983998176449);
                 CameraPosition position = new CameraPosition.Builder()
                         .target(zoomLocation)
-                        .zoom(18) // Sets the zoom
+                        .zoom(19.8) // Sets the zoom
                         .build(); // Creates a CameraPosition from the builder
                 mapboxMap.setCameraPosition(position);
 

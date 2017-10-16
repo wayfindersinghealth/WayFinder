@@ -165,7 +165,7 @@ public class LearnFragment extends Fragment {
         mapView.onCreate(savedInstanceState);
 
         IconFactory iconFactory = IconFactory.getInstance(getActivity());
-        final Icon icon = iconFactory.fromResource(R.drawable.ic_blue_pin);
+        final Icon icon = iconFactory.fromResource(R.drawable.ic_red_pin);
 
         IconFactory icFac = IconFactory.getInstance(getActivity());
         final Icon existingLocationIcon = icFac.fromResource(R.drawable.ic_existing_location);
@@ -199,7 +199,7 @@ public class LearnFragment extends Fragment {
                 final LatLng zoomLocation = new LatLng(1.3792949602146791, 103.84983998176449);
                 CameraPosition position = new CameraPosition.Builder()
                         .target(zoomLocation)
-                        .zoom(19) // Sets the zoom
+                        .zoom(19.8) // Sets the zoom
                         .build(); // Creates a CameraPosition from the builder
                 mapboxMap.setCameraPosition(position);
                 mapboxMap.animateCamera(CameraUpdateFactory.newCameraPosition(position), 2000);
