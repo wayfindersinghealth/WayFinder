@@ -212,7 +212,8 @@ public class FindYourWayFragment extends Fragment {
                 //-- Timer to Loops Marker Change ---
                 t = new Timer();
                 t.scheduleAtFixedRate(new TimerTask() {
-                    int times = 9;
+
+                    int times = 15;
                     boolean truth;
 
                     @Override
@@ -221,26 +222,34 @@ public class FindYourWayFragment extends Fragment {
 
                         try {
                             for (int t = 0; t <times; t++) {
-                                String locations = new PostTrackAPI().execute("https://ml.internalpositioning.com/track").get();
-                                Log.d("Loc Name", locations);
-                                if(locationArray.size() == 0 ){
+                                String locations;
+
+                             //   do {
+                                    locations = new PostTrackAPI().execute("https://ml.internalpositioning.com/track").get();
+                              //  } while (locations.isEmpty());
+
+
+                                Log.d("Location Name API", locations);
+
+
+                                if (locationArray.size() == 0 ) {
                                     LocTracker thisLoc = new LocTracker();
                                     thisLoc.setCounter(1);
                                     thisLoc.setLocationName(locations);
                                     locationArray.add(thisLoc);
 
-                                }else{
-                                    for(int i=0; i<locationArray.size(); i++){
-                                        if(locationArray.get(i).getLocationName().equalsIgnoreCase(locations)){
+                                } else {
+                                    for (int i=0; i<locationArray.size(); i++) {
+                                        if (locationArray.get(i).getLocationName().equalsIgnoreCase(locations)) {
                                             locationArray.get(i).setCounter(locationArray.get(i).getCounter() + 1);
                                             truth = true;
                                             break;
-                                        }else{
+                                        } else {
                                             truth = false;
                                         }
                                     }
 
-                                if(!truth){
+                                if (!truth) {
                                     LocTracker location = new LocTracker();
                                     location.setLocationName(locations);
                                     location.setCounter(1);
@@ -254,14 +263,39 @@ public class FindYourWayFragment extends Fragment {
                         e.printStackTrace();
                     }
 
-                    //-- Compare to Database --
-
-                    for(int i=0; i<locationArray.size(); i++){
+                    //Get Highest Counter Value
+                    int maxCounter;
+                    String maxLocation = null;
+                    for (int i=0; i < locationArray.size(); i++) {
                         Log.d("Location Detail", locationArray.get(i).getLocationName() + "," + locationArray.get(i).getCounter());
+                        int currentCounter = locationArray.get(i).getCounter();
+                        String currentLocation = locationArray.get(i).getLocationName();
+
+                        for (int j=0; j < locationArray.size(); j++) {
+                            if (currentCounter == locationArray.get(j).getCounter()) {
+
+                            } else {
+                                if (currentCounter > locationArray.get(j).getCounter()) {
+                                    maxCounter = currentCounter;
+                                    maxLocation = currentLocation;
+                                    Log.d("current > new", maxLocation + ", " + maxCounter);
+                                } else if (currentCounter < locationArray.get(j).getCounter()) {
+                                    maxCounter = locationArray.get(j).getCounter();
+                                    maxLocation = locationArray.get(j).getLocationName();
+                                    Log.d("current < new", maxLocation + ", " + maxCounter);
+                                } else {
+                                    Log.d("= Equals ", "=");
+                                    break;
+                                }
+                            }
+                        }
                     }
 
 
+                        //-- Compare to Database --
 
+                        String finalLocation = maxLocation.toUpperCase();
+                        Log.d("Final Location", finalLocation);
 
                             /*String finalLocation = thisLoc.toString().toUpperCase();
                             Query locationQuery = databaseLocation.orderByChild("id").equalTo(finalLocation);
@@ -305,7 +339,7 @@ public class FindYourWayFragment extends Fragment {
 
 
                     }
-                },0,5000);
+                },0,10000);
 
                 //-- Floating Action Button Click to go to Current Location--
                 FloatingActionButton fab = (FloatingActionButton) rootView.findViewById(R.id.fab);
@@ -553,8 +587,9 @@ public class FindYourWayFragment extends Fragment {
                // Log.d("finalJSON value", finalJSON.toString() + "  ");
 
                 JSONObject jsonObject = new JSONObject(finalJSON);
+                //Log.d("JSONObject" , jsonObject + "");
                 result =  jsonObject.getString("location");
-                Log.d("result value", result + "  ");
+                //Log.d("result value", result + "  ");
                 return result;
 
             } catch (MalformedURLException e) {
