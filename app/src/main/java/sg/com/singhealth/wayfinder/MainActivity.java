@@ -35,6 +35,8 @@ import layout.FindYourWayFragment;
 import layout.LearnFragment;
 import layout.LoginFragment;
 import layout.MainFragment;
+import layout.ProfileFragment;
+import layout.RegisterFragment;
 
 /**
  * File Name: MainActivity.java
@@ -49,7 +51,9 @@ public class MainActivity extends AppCompatActivity
         LearnFragment.OnFragmentInteractionListener,
         FindYourWayFragment.OnFragmentInteractionListener,
         AboutFragment.OnFragmentInteractionListener,
-        LoginFragment.OnFragmentInteractionListener{
+        LoginFragment.OnFragmentInteractionListener,
+        ProfileFragment.OnFragmentInteractionListener,
+        RegisterFragment.OnFragmentInteractionListener{
     SharedPreferences spf;
     SharedPreferences.Editor editor;
 

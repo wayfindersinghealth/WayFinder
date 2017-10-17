@@ -42,12 +42,11 @@
             android:inputType="textPassword" />
 
         <Button
-            android:layout_margin="15dp"
-            android:id="@+id/buttonSignup"
-            android:text="Signup"
+            android:id="@+id/buttonSignin"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            />
+            android:layout_margin="15dp"
+            android:text="Signin" />
 
         <TextView
             android:textAlignment="center"

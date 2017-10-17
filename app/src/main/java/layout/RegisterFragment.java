@@ -1,16 +1,33 @@
 package layout;
 
+import android.app.ProgressDialog;
 import android.content.Context;
+import android.content.Intent;
 import android.net.Uri;
+import android.net.wifi.WifiInfo;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.util.Preconditions;
+import android.text.TextUtils;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
+
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.AuthResult;
+import com.google.firebase.auth.FirebaseAuth;
+
+import sg.com.singhealth.wayfinder.MainActivity;
 import sg.com.singhealth.wayfinder.R;
 
 /**
@@ -38,6 +55,10 @@ public class RegisterFragment extends Fragment {
     private EditText editTextPassword;
     private TextView textViewSignin;
 
+    private ProgressDialog progressDiaglog;
+
+    private FirebaseAuth firebaseAuth;
+
 
     public RegisterFragment() {
         // Required empty public constructor
@@ -64,6 +85,7 @@ public class RegisterFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
         if (getArguments() != null) {
             mParam1 = getArguments().getString(ARG_PARAM1);
             mParam2 = getArguments().getString(ARG_PARAM2);
@@ -73,9 +95,91 @@ public class RegisterFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+        final View rootView = inflater.inflate(R.layout.fragment_register, container, false);
+
+        firebaseAuth = FirebaseAuth.getInstance();
+
+        /*
+        if(firebaseAuth.getCurrentUser() != null){
+            getActivity().finish();
+            startActivity(new Intent(getActivity().getApplicationContext(),ProfileFragment.class));
+        }
+        */
+
+        textViewSignin =(TextView)rootView.findViewById(R.id.textViewSignin);
+        buttonRegister = (Button)rootView.findViewById(R.id.buttonRegister);
+        editTextEmail = (EditText)rootView.findViewById(R.id.editTexEmail);
+        editTextPassword = (EditText)rootView.findViewById(R.id.editTexPassword);
+
+        progressDiaglog = new ProgressDialog(getActivity());
+
+        textViewSignin.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Fragment fragment;
+                fragment = new LoginFragment();
+                FragmentManager fragmentManager = getFragmentManager();
+                fragmentManager.beginTransaction().replace(R.id.content, fragment).commit();
+            }
+        });
+
+        buttonRegister.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if(view == buttonRegister){
+                    registerUser();
+                }
+                buttonRegister.setOnClickListener(this);
+
+            }
+            public void registerUser(){
+                String email = editTextEmail.getText().toString();
+                String password = editTextPassword.getText().toString();
+
+                if (TextUtils.isEmpty(email)){
+                    //email is empty
+                    Toast.makeText(getActivity(), "Plase enter Email" , Toast.LENGTH_SHORT).show();
+                    return;
+                }
+                if(TextUtils.isEmpty(password)){
+                    //password is empty
+                    Toast.makeText(getActivity(), "Plawse enter Password" , Toast.LENGTH_SHORT).show();
+                    return;
+                }
+
+                final ProgressDialog Dialog = new ProgressDialog(getActivity());
+                Dialog.setMessage("Registering User...");
+                Dialog.show();
+
+                firebaseAuth.createUserWithEmailAndPassword(email,password)
+                        .addOnCompleteListener(getActivity(), new OnCompleteListener<AuthResult>() {
+                            @Override
+                            public void onComplete(@NonNull Task<AuthResult> task) {
+                                if(task.isSuccessful()){
+                                    Toast.makeText(getActivity(),"Register Successfully,Please Login",Toast.LENGTH_LONG).show();
+                                    Dialog.dismiss();
+                                    Fragment fragment;
+                                    fragment = new LoginFragment();
+                                    FragmentManager fragmentManager = getFragmentManager();
+                                    fragmentManager.beginTransaction().replace(R.id.content, fragment).commit();
+
+                                }else {
+                                    Toast.makeText(getActivity(),"Counld not register , please try again",Toast.LENGTH_SHORT).show();
+                                    Dialog.dismiss();
+                                    return;
+                                }
+                            }
+                        });
+
+            }
+
+        });;
+
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_register, container, false);
+        return rootView;
     }
+
+
 
     // TODO: Rename method, update argument and hook method into UI event
     public void onButtonPressed(Uri uri) {
