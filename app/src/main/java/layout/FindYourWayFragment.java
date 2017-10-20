@@ -229,10 +229,12 @@ public class FindYourWayFragment extends Fragment {
 
                                 locations = new PostTrackAPI().execute("https://ml.internalpositioning.com/track").get();
 
-                                Log.d("Location Name API", locations);
-                                if (locations.isEmpty()) {
+                                if (locations == null) {
+                                    Log.d("Location: ", "NULL");
                                     break;
                                 } else {
+                                    Log.d("Location Name API", locations);
+
                                     if (locationArray.size() == 0 ) {
                                         LocTracker thisLoc = new LocTracker();
                                         thisLoc.setCounter(1);
@@ -266,6 +268,12 @@ public class FindYourWayFragment extends Fragment {
                             e.printStackTrace();
                         }
 
+                        //Before Sorting ArrayList
+                        for (int i=0; i < locationArray.size(); i++) {
+                            Log.d("Before Sort", locationArray.get(i).getLocationName() + ", " + locationArray.get(i).getCounter());
+                        }
+
+                        //Comparing and Sorting based on least counter to most counter
                         int maxCounter;
                         String maxLocation = null;
                         if (locationArray.size() == 1){
@@ -282,6 +290,8 @@ public class FindYourWayFragment extends Fragment {
                                 }
                             });
 
+
+                            //After Sorting ArrayList
                             for (int j=0; j < locationArray.size(); j++) {
                                 Log.d("After Sort", locationArray.get(j).getLocationName() + ", " + locationArray.get(j).getCounter());
                             }
@@ -290,47 +300,52 @@ public class FindYourWayFragment extends Fragment {
                         }
 
                         //-- Compare to Database --
-                        String finalLocation = maxLocation.toUpperCase();
-                        Log.d("Final Location", finalLocation);
-                        Log.d("-----------------------", "-----------------------");
+                        if (maxLocation == null) {
+                            Log.d("maxLocation: ", "NULL");
+                        } else {
+                            String finalLocation = maxLocation.toUpperCase();
+                            Log.d("Final Location", finalLocation);
+                            Log.d("-----------------------", "-----------------------");
 
-                        Query locationQuery = databaseLocation.orderByChild("id").equalTo(finalLocation);
-                        locationQuery.addValueEventListener(new ValueEventListener() {
-                            @Override
-                            public void onDataChange(DataSnapshot dataSnapshot) {
-                                for (DataSnapshot locationSnapshot : dataSnapshot.getChildren()) {
-                                    //-- Get Longitude and Latitude --
-                                    double locLatitude = (double) locationSnapshot.child("latitude").getValue();
-                                    double locLongitude = (double) locationSnapshot.child("longitude").getValue();
+                            Query locationQuery = databaseLocation.orderByChild("id").equalTo(finalLocation);
+                            locationQuery.addValueEventListener(new ValueEventListener() {
+                                @Override
+                                public void onDataChange(DataSnapshot dataSnapshot) {
+                                    for (DataSnapshot locationSnapshot : dataSnapshot.getChildren()) {
+                                        //-- Get Longitude and Latitude --
+                                        double locLatitude = (double) locationSnapshot.child("latitude").getValue();
+                                        double locLongitude = (double) locationSnapshot.child("longitude").getValue();
 
-                                    currentLocation = new LatLng(locLatitude, locLongitude);
+                                        currentLocation = new LatLng(locLatitude, locLongitude);
 
-                                    Log.d("LatLng", locLatitude + ", " + locLongitude);
+                                        Log.d("LatLng", locLatitude + ", " + locLongitude);
 
-                                    //-- Marker Icon --
-                                    IconFactory iconFactory = IconFactory.getInstance(getActivity());
-                                    Icon icon = iconFactory.fromResource(R.drawable.ic_curr_location);
+                                        //-- Marker Icon --
+                                        IconFactory iconFactory = IconFactory.getInstance(getActivity());
+                                        Icon icon = iconFactory.fromResource(R.drawable.ic_curr_location);
 
-                                    //-- Set Marker on Map --
-                                    LatLng latLng = new LatLng(locLatitude, locLongitude);
-                                    if (markerView != null) {
-                                        markerView.setPosition(latLng);
-                                        markerView.setIcon(icon);
-                                        markerView.setTitle("You Are Here");
+                                        //-- Set Marker on Map --
+                                        LatLng latLng = new LatLng(locLatitude, locLongitude);
 
-                                    } else if (markerView == null){
-                                        markerView = mapboxMap.addMarker(new MarkerViewOptions().position(new LatLng(locLatitude, locLongitude)));
-                                        markerView.setIcon(icon);
-                                        markerView.setTitle("You Are Here");
+                                        if (markerView == null) {
+                                            markerView = mapboxMap.addMarker(new MarkerViewOptions().position(new LatLng(locLatitude, locLongitude)));
+                                            markerView.setIcon(icon);
+                                            markerView.setTitle("You Are Here");
+                                        } else{
+                                            markerView.setPosition(latLng);
+                                            markerView.setIcon(icon);
+                                            markerView.setTitle("You Are Here");
+                                        }
                                     }
                                 }
-                            }
 
-                            @Override
-                            public void onCancelled(DatabaseError databaseError) {
+                                @Override
+                                public void onCancelled(DatabaseError databaseError) {
 
-                            }
-                        });
+                                }
+                            });
+                        }
+
                     }
                 },0,10000);
 
