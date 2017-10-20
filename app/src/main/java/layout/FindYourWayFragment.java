@@ -51,6 +51,7 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 import java.util.Timer;
@@ -64,6 +65,8 @@ import sg.com.singhealth.wayfinder.LocTracker;
 import sg.com.singhealth.wayfinder.LocationDetail;
 import sg.com.singhealth.wayfinder.MainActivity;
 import sg.com.singhealth.wayfinder.R;
+
+import static android.R.attr.max;
 
 /**
  * File Name: FindYourWayFragment.java
@@ -213,7 +216,7 @@ public class FindYourWayFragment extends Fragment {
                 t = new Timer();
                 t.scheduleAtFixedRate(new TimerTask() {
 
-                    int times = 15;
+                    int times = 30;
                     boolean truth;
 
                     @Override
@@ -224,120 +227,110 @@ public class FindYourWayFragment extends Fragment {
                             for (int t = 0; t <times; t++) {
                                 String locations;
 
-                             //   do {
-                                    locations = new PostTrackAPI().execute("https://ml.internalpositioning.com/track").get();
-                              //  } while (locations.isEmpty());
-
+                                locations = new PostTrackAPI().execute("https://ml.internalpositioning.com/track").get();
 
                                 Log.d("Location Name API", locations);
-
-
-                                if (locationArray.size() == 0 ) {
-                                    LocTracker thisLoc = new LocTracker();
-                                    thisLoc.setCounter(1);
-                                    thisLoc.setLocationName(locations);
-                                    locationArray.add(thisLoc);
-
-                                } else {
-                                    for (int i=0; i<locationArray.size(); i++) {
-                                        if (locationArray.get(i).getLocationName().equalsIgnoreCase(locations)) {
-                                            locationArray.get(i).setCounter(locationArray.get(i).getCounter() + 1);
-                                            truth = true;
-                                            break;
-                                        } else {
-                                            truth = false;
-                                        }
-                                    }
-
-                                if (!truth) {
-                                    LocTracker location = new LocTracker();
-                                    location.setLocationName(locations);
-                                    location.setCounter(1);
-                                    locationArray.add(location);
-                                }
-                            }
-                        }
-                    } catch (InterruptedException e) {
-                        e.printStackTrace();
-                    } catch (ExecutionException e) {
-                        e.printStackTrace();
-                    }
-
-                    //Get Highest Counter Value
-                    int maxCounter;
-                    String maxLocation = null;
-                    for (int i=0; i < locationArray.size(); i++) {
-                        Log.d("Location Detail", locationArray.get(i).getLocationName() + "," + locationArray.get(i).getCounter());
-                        int currentCounter = locationArray.get(i).getCounter();
-                        String currentLocation = locationArray.get(i).getLocationName();
-
-                        for (int j=0; j < locationArray.size(); j++) {
-                            if (currentCounter == locationArray.get(j).getCounter()) {
-
-                            } else {
-                                if (currentCounter > locationArray.get(j).getCounter()) {
-                                    maxCounter = currentCounter;
-                                    maxLocation = currentLocation;
-                                    Log.d("current > new", maxLocation + ", " + maxCounter);
-                                } else if (currentCounter < locationArray.get(j).getCounter()) {
-                                    maxCounter = locationArray.get(j).getCounter();
-                                    maxLocation = locationArray.get(j).getLocationName();
-                                    Log.d("current < new", maxLocation + ", " + maxCounter);
-                                } else {
-                                    Log.d("= Equals ", "=");
+                                if (locations.isEmpty()) {
                                     break;
-                                }
-                            }
-                        }
-                    }
+                                } else {
+                                    if (locationArray.size() == 0 ) {
+                                        LocTracker thisLoc = new LocTracker();
+                                        thisLoc.setCounter(1);
+                                        thisLoc.setLocationName(locations);
+                                        locationArray.add(thisLoc);
 
+                                    } else {
+                                        for (int i=0; i<locationArray.size(); i++) {
+                                            if (locationArray.get(i).getLocationName().equalsIgnoreCase(locations)) {
+                                                locationArray.get(i).setCounter(locationArray.get(i).getCounter() + 1);
+                                                truth = true;
+                                                break;
+                                            } else {
+                                                truth = false;
+                                            }
+                                        }
 
-                        //-- Compare to Database --
-
-                        String finalLocation = maxLocation.toUpperCase();
-                        Log.d("Final Location", finalLocation);
-
-                            /*String finalLocation = thisLoc.toString().toUpperCase();
-                            Query locationQuery = databaseLocation.orderByChild("id").equalTo(finalLocation);
-                            locationQuery.addValueEventListener(new ValueEventListener() {
-                                @Override
-                                public void onDataChange(DataSnapshot dataSnapshot) {
-                                    for (DataSnapshot locationSnapshot : dataSnapshot.getChildren()) {
-                                        //-- Get Longitude and Latitude --
-                                        double locLatitude = (double) locationSnapshot.child("latitude").getValue();
-                                        double locLongitude = (double) locationSnapshot.child("longitude").getValue();
-
-                                        currentLocation = new LatLng(locLatitude, locLongitude);
-
-                                        Log.d("LatLng", locLatitude + ", " + locLongitude);
-
-                                        //-- Marker Icon --
-                                        IconFactory iconFactory = IconFactory.getInstance(getActivity());
-                                        Icon icon = iconFactory.fromResource(R.drawable.ic_curr_location);
-
-                                        //-- Set Marker on Map --
-                                        LatLng latLng = new LatLng(locLatitude, locLongitude);
-                                        if (markerView != null) {
-                                            markerView.setPosition(latLng);
-                                            markerView.setIcon(icon);
-                                            markerView.setTitle("You Are Here");
-
-                                        } else if (markerView == null){
-                                            markerView = mapboxMap.addMarker(new MarkerViewOptions().position(new LatLng(locLatitude, locLongitude)));
-                                            markerView.setIcon(icon);
-                                            markerView.setTitle("You Are Here");
+                                        if (!truth) {
+                                            LocTracker location = new LocTracker();
+                                            location.setLocationName(locations);
+                                            location.setCounter(1);
+                                            locationArray.add(location);
                                         }
                                     }
+
                                 }
+                            }
+                        } catch (InterruptedException e) {
+                            e.printStackTrace();
+                        } catch (ExecutionException e) {
+                            e.printStackTrace();
+                        }
 
+                        int maxCounter;
+                        String maxLocation = null;
+                        if (locationArray.size() == 1){
+                            for (int h = 0; h < locationArray.size(); h++) {
+                                maxLocation = locationArray.get(h).getLocationName();
+                                maxCounter = locationArray.get(h).getCounter();
+                            }
+                        } else if (locationArray.size() > 0) {
+                            //Sorting arraylist according to Smallest to Largest Counter
+                            Collections.sort(locationArray, new Comparator<LocTracker>() {
                                 @Override
-                                public void onCancelled(DatabaseError databaseError) {
-
+                                public int compare(LocTracker locTracker, LocTracker t1) {
+                                    return Integer.compare(locTracker.getCounter(), t1.getCounter());
                                 }
                             });
-                            */
 
+                            for (int j=0; j < locationArray.size(); j++) {
+                                Log.d("After Sort", locationArray.get(j).getLocationName() + ", " + locationArray.get(j).getCounter());
+                            }
+                            Log.d("Last Item After Sort", locationArray.get(locationArray.size()-1).getLocationName() + ", " + locationArray.get(locationArray.size()-1).getCounter());
+                            maxLocation = locationArray.get(locationArray.size()-1).getLocationName();
+                        }
 
+                        //-- Compare to Database --
+                        String finalLocation = maxLocation.toUpperCase();
+                        Log.d("Final Location", finalLocation);
+                        Log.d("-----------------------", "-----------------------");
+
+                        Query locationQuery = databaseLocation.orderByChild("id").equalTo(finalLocation);
+                        locationQuery.addValueEventListener(new ValueEventListener() {
+                            @Override
+                            public void onDataChange(DataSnapshot dataSnapshot) {
+                                for (DataSnapshot locationSnapshot : dataSnapshot.getChildren()) {
+                                    //-- Get Longitude and Latitude --
+                                    double locLatitude = (double) locationSnapshot.child("latitude").getValue();
+                                    double locLongitude = (double) locationSnapshot.child("longitude").getValue();
+
+                                    currentLocation = new LatLng(locLatitude, locLongitude);
+
+                                    Log.d("LatLng", locLatitude + ", " + locLongitude);
+
+                                    //-- Marker Icon --
+                                    IconFactory iconFactory = IconFactory.getInstance(getActivity());
+                                    Icon icon = iconFactory.fromResource(R.drawable.ic_curr_location);
+
+                                    //-- Set Marker on Map --
+                                    LatLng latLng = new LatLng(locLatitude, locLongitude);
+                                    if (markerView != null) {
+                                        markerView.setPosition(latLng);
+                                        markerView.setIcon(icon);
+                                        markerView.setTitle("You Are Here");
+
+                                    } else if (markerView == null){
+                                        markerView = mapboxMap.addMarker(new MarkerViewOptions().position(new LatLng(locLatitude, locLongitude)));
+                                        markerView.setIcon(icon);
+                                        markerView.setTitle("You Are Here");
+                                    }
+                                }
+                            }
+
+                            @Override
+                            public void onCancelled(DatabaseError databaseError) {
+
+                            }
+                        });
                     }
                 },0,10000);
 
@@ -552,45 +545,48 @@ public class FindYourWayFragment extends Fragment {
             HttpsURLConnection connection = null;
             BufferedReader reader = null;
             BufferedWriter writer = null;
-            String result;
+            String result = null;
 
             try{
-                //Connecting to API
-                URL link = new URL(params[0]);
-                connection = (HttpsURLConnection) link.openConnection();
-                connection.setDoOutput(true);
-                connection.setRequestProperty("Content-Type", "application/json");
-                connection.setRequestProperty("Accept", "application/json");
-                connection.setRequestMethod("POST");
-                connection.connect();
+                do {
+                    //Connecting to API
+                    URL link = new URL(params[0]);
+                    connection = (HttpsURLConnection) link.openConnection();
+                    connection.setDoOutput(true);
+                    connection.setRequestProperty("Content-Type", "application/json");
+                    connection.setRequestProperty("Accept", "application/json");
+                    connection.setRequestMethod("POST");
+                    connection.connect();
 
-                //Writing to API
-                OutputStream outputStream =  connection.getOutputStream();
-                writer = new BufferedWriter(new OutputStreamWriter(outputStream, "UTF-8"));
-                writer.write(formatDataAsJSON());
-                writer.close();
-                outputStream.close();
+                    //Writing to API
+                    OutputStream outputStream =  connection.getOutputStream();
+                    writer = new BufferedWriter(new OutputStreamWriter(outputStream, "UTF-8"));
+                    writer.write(formatDataAsJSON());
+                    writer.close();
+                    outputStream.close();
 
-                //Reading results of Post
-                reader = new BufferedReader(new InputStreamReader(connection.getInputStream(), "UTF-8"));
-                String line = null;
-                StringBuffer sb = new StringBuffer();
-                String finalJSON;
+                    //Reading results of Post
+                    reader = new BufferedReader(new InputStreamReader(connection.getInputStream(), "UTF-8"));
+                    String line = null;
+                    StringBuffer sb = new StringBuffer();
+                    String finalJSON;
 
-                while ((line = reader.readLine())!= null){
-                   // Log.d("line value", line + "  ");
-                    sb.append(line);
-                   // Log.d("StringBuffer value", sb.toString() + "  ");
-                }
+                    while ((line = reader.readLine())!= null){
+                        // Log.d("line value", line + "  ");
+                        sb.append(line);
+                        // Log.d("StringBuffer value", sb.toString() + "  ");
+                    }
 
-                finalJSON = sb.toString();
-               // Log.d("finalJSON value", finalJSON.toString() + "  ");
+                    finalJSON = sb.toString();
+                    // Log.d("finalJSON value", finalJSON.toString() + "  ");
 
-                JSONObject jsonObject = new JSONObject(finalJSON);
-                //Log.d("JSONObject" , jsonObject + "");
-                result =  jsonObject.getString("location");
-                //Log.d("result value", result + "  ");
-                return result;
+                    JSONObject jsonObject = new JSONObject(finalJSON);
+                    //Log.d("JSONObject" , jsonObject + "");
+                    result =  jsonObject.getString("location");
+                    //Log.d("result value", result + "  ");
+                    return result;
+
+                } while (result == null);
 
             } catch (MalformedURLException e) {
                 e.printStackTrace();
