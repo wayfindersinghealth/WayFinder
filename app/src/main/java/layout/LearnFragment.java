@@ -345,7 +345,6 @@ public class LearnFragment extends Fragment {
     public void onStop() {
         super.onStop();
         mapView.onStop();
-        toastAp.cancel();
     }
 
     //---- MapBox onSaveInstanceState Method ----
@@ -430,7 +429,6 @@ public class LearnFragment extends Fragment {
                         Log.d("fpArray2", fpArray.toString());
                     }
                 }
-                toastAp.cancel();
                 buttonLearn.setEnabled(false);
                 toastAp = Toast.makeText(getActivity(), "Finding AP", Toast.LENGTH_SHORT);
                 toastAp.show();
