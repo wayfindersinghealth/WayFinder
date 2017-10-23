@@ -97,6 +97,7 @@ public class LearnFragment extends Fragment {
     private String mParam2;
 
     private OnFragmentInteractionListener mListener;
+    private Toast toastAp;
 
     WifiManager wmgr;
     TextView locText;
@@ -344,6 +345,7 @@ public class LearnFragment extends Fragment {
     public void onStop() {
         super.onStop();
         mapView.onStop();
+        toastAp.cancel();
     }
 
     //---- MapBox onSaveInstanceState Method ----
@@ -365,11 +367,12 @@ public class LearnFragment extends Fragment {
     public void onDestroy() {
         super.onDestroy();
         mapView.onDestroy();
+
     }
 
     //---- Format Data As JSON Method ----
     public void formatDataAsJSON() {
-        CountDownTimer timer = new CountDownTimer(300000, 1000) {
+        CountDownTimer timer = new CountDownTimer(120000, 1000) {
             String timeStamp = TimeUnit.MILLISECONDS.toSeconds(System.currentTimeMillis()) + "";
             ArrayList<JSONObject> fpArray = new ArrayList<>();
 
@@ -427,9 +430,11 @@ public class LearnFragment extends Fragment {
                         Log.d("fpArray2", fpArray.toString());
                     }
                 }
-
+                toastAp.cancel();
                 buttonLearn.setEnabled(false);
-                Toast.makeText(getActivity(), "Finding AP", Toast.LENGTH_SHORT).show();
+                toastAp = Toast.makeText(getActivity(), "Finding AP", Toast.LENGTH_SHORT);
+                toastAp.show();
+                //Toast.makeText(getActivity(), "Finding AP", Toast.LENGTH_SHORT).show();
             }
 
             @Override
@@ -454,11 +459,11 @@ public class LearnFragment extends Fragment {
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
-
                 new PostLearnAPI().execute("https://ml.internalpositioning.com/learn");
                 new GetCalculateAPI().execute("https://ml.internalpositioning.com/calculate?group=interim01");
                 Toast.makeText(getActivity(), "Inserted Into Repository" , Toast.LENGTH_SHORT).show();
                 buttonLearn.setEnabled(true);
+
             }
         };
         timer.start();
