@@ -25,14 +25,10 @@
     <!-- Controls in layout > fragment_find_your_way.xml Page -->
     <string name="textViewTo">To:</string>
     <string name="autoCompleteTextViewTo">Enter Your Destination</string>
-    <string name="access_token">pk.eyJ1Ijoic2hhcnB0YWlsIiwiYSI6ImNpdzVzM3ZydDAwNngyeXBkdGJ6cDZmc20ifQ.l6PaV2io7Ecld_MNT-rvwg</string>
+    <string name="access_token">pk.eyJ1Ijoid2F5ZmluZGVyc2luZ2hlYWx0aCIsImEiOiJjajdsYXJ0cWwwdzBwMnhsYXQzbzc3MDFuIn0.meR6XGTiU1tgb9UhyZ75qg</string>
     <!-- SIT Level 3 -->
-    <string name="mapbox_url">mapbox://styles/sharptail/cixh0hgjh00mr2pno23gnpfyc</string>
-    <!--<string name="access_token">pk.eyJ1Ijoid2F5ZmluZGVyc2luZ2hlYWx0aCIsImEiOiJjajdsYXJ0cWwwdzBwMnhsYXQzbzc3MDFuIn0.meR6XGTiU1tgb9UhyZ75qg</string>-->
-    <!--&lt;!&ndash; SIT Level 3 &ndash;&gt;-->
-    <!--<string name="mapbox_url">mapbox://styles/wayfindersinghealth/cj8titnyqdhlq2sk7gxv1imbo</string>-->
-    <!-- SIT Level 4 -->
-    <!--<string name="mapbox_url">mapbox://styles/sharptail/ciy291ia000f72sqkrweg5oeg</string>-->
+    <string name="mapbox_url">mapbox://styles/wayfindersinghealth/cj93j6b0d4h3g2so8i00uf1ox</string>
+
 
 
 

@@ -216,7 +216,7 @@ public class FindYourWayFragment extends Fragment {
                 t = new Timer();
                 t.scheduleAtFixedRate(new TimerTask() {
 
-                    int times = 30;
+                    int times = 10;
                     boolean truth;
 
                     @Override
@@ -347,7 +347,7 @@ public class FindYourWayFragment extends Fragment {
                         }
 
                     }
-                },0,10000);
+                },0,6500);
 
                 //-- Floating Action Button Click to go to Current Location--
                 FloatingActionButton fab = (FloatingActionButton) rootView.findViewById(R.id.fab);
@@ -466,6 +466,8 @@ public class FindYourWayFragment extends Fragment {
     public void onStart() {
         super.onStart();
         mapView.onStart();
+        Log.d("onStart", "On start method");
+        markerView = null;
     }
 
     //---- MapBox onResume Method ----
@@ -473,6 +475,8 @@ public class FindYourWayFragment extends Fragment {
     public void onResume() {
         super.onResume();
         mapView.onResume();
+        Log.d("onResume", "On resume method");
+        markerView = null;
     }
 
     //---- MapBox onPause Method ----
@@ -480,6 +484,13 @@ public class FindYourWayFragment extends Fragment {
     public void onPause() {
         super.onPause();
         mapView.onPause();
+        Log.d("onPause", "On pause method");
+        if(t != null){
+            t.cancel();
+            t = null;
+            markerView = null;
+        }
+
     }
 
     //---- MapBox onStop Method ----
@@ -487,6 +498,7 @@ public class FindYourWayFragment extends Fragment {
     public void onStop() {
         super.onStop();
         mapView.onStop();
+        Log.d("onStop", "On stop method");
         if(t != null){
             t.cancel();
             t = null;

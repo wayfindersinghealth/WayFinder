@@ -208,7 +208,7 @@ public class LearnFragment extends Fragment {
                 mapboxMap.setLatLngBoundsForCameraTarget(NYPBLKL_BOUNDS);
 
                 mapboxMap.setMaxZoomPreference(20);
-                mapboxMap.setMinZoomPreference(17);
+                mapboxMap.setMinZoomPreference(19);
 
                 //-- Connecting to DB --
                 databaseLocation = FirebaseDatabase.getInstance().getReference("locations");
