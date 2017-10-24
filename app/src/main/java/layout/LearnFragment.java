@@ -371,7 +371,7 @@ public class LearnFragment extends Fragment {
 
     //---- Format Data As JSON Method ----
     public void formatDataAsJSON() {
-        CountDownTimer timer = new CountDownTimer(300000, 1000) {
+        CountDownTimer timer = new CountDownTimer(240000, 1000) {
             String timeStamp = TimeUnit.MILLISECONDS.toSeconds(System.currentTimeMillis()) + "";
             ArrayList<JSONObject> fpArray = new ArrayList<>();
 
