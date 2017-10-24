@@ -1,5 +1,6 @@
 package layout;
 
+import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.location.Location;
 import android.net.Uri;
@@ -156,6 +157,7 @@ public class LearnFragment extends Fragment {
         //-- WifiManager --
         wmgr = (WifiManager) getActivity().getApplicationContext().getSystemService(Context.WIFI_SERVICE);
 
+
         //-- EditText Learn Input --
         locText = (TextView) rootView.findViewById(R.id.locationText);
 
@@ -255,6 +257,8 @@ public class LearnFragment extends Fragment {
                             if(markerView != null) {
                                 try {
                                     formatDataAsJSON();
+                                    toastAp = Toast.makeText(getActivity(), "Finding AP", Toast.LENGTH_LONG);
+                                    toastAp.show();
                                 } finally {
                                     addLocation(markerView.getPosition());
                                 }
@@ -274,6 +278,8 @@ public class LearnFragment extends Fragment {
                 }
             }
         });
+
+
 
         return rootView;
     }
@@ -430,8 +436,7 @@ public class LearnFragment extends Fragment {
                     }
                 }
                 buttonLearn.setEnabled(false);
-                toastAp = Toast.makeText(getActivity(), "Finding AP", Toast.LENGTH_SHORT);
-                toastAp.show();
+                locText.setEnabled(false);
                 //Toast.makeText(getActivity(), "Finding AP", Toast.LENGTH_SHORT).show();
             }
 
@@ -439,6 +444,7 @@ public class LearnFragment extends Fragment {
             public void onFinish() {
                 try {
                     buttonLearn.setEnabled(false);
+                    locText.setEnabled(false);
                     loc = locText.getText().toString();
                     root.put("group", "interim01");
                     root.put("username", "p3");
@@ -461,6 +467,7 @@ public class LearnFragment extends Fragment {
                 new GetCalculateAPI().execute("https://ml.internalpositioning.com/calculate?group=interim01");
                 Toast.makeText(getActivity(), "Inserted Into Repository" , Toast.LENGTH_SHORT).show();
                 buttonLearn.setEnabled(true);
+                locText.setEnabled(true);
 
             }
         };
