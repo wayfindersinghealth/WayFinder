@@ -11,6 +11,7 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.support.annotation.NonNull;
+import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.text.TextUtils;
 import android.util.Log;
@@ -98,7 +99,7 @@ public class LearnFragment extends Fragment {
     private String mParam2;
 
     private OnFragmentInteractionListener mListener;
-    private Toast toastAp;
+    View rootView = null;
 
     WifiManager wmgr;
     TextView locText;
@@ -107,6 +108,7 @@ public class LearnFragment extends Fragment {
     JSONObject root = new JSONObject();
     ArrayList<LocationDetail> locationList = new ArrayList<LocationDetail>();
     final JSONArray wifiFingerprint = new JSONArray();
+    Snackbar findApSnack;
 
     DatabaseReference databaseLocation;
 
@@ -152,16 +154,13 @@ public class LearnFragment extends Fragment {
         ((MainActivity) getActivity()).setActionBarTitle("Learn");
 
         //-- View --
-        final View rootView = inflater.inflate(R.layout.fragment_learn, container, false);
+        rootView = inflater.inflate(R.layout.fragment_learn, container, false);
 
         //-- WifiManager --
         wmgr = (WifiManager) getActivity().getApplicationContext().getSystemService(Context.WIFI_SERVICE);
 
-
         //-- EditText Learn Input --
         locText = (TextView) rootView.findViewById(R.id.locationText);
-
-
 
         //-- MapBox MapView --
         mapView = (MapView) rootView.findViewById(R.id.mapViewLearn);
@@ -239,9 +238,6 @@ public class LearnFragment extends Fragment {
 
                     }
                 });
-
-
-
             }
         });
 
@@ -257,8 +253,8 @@ public class LearnFragment extends Fragment {
                             if(markerView != null) {
                                 try {
                                     formatDataAsJSON();
-                                    toastAp = Toast.makeText(getActivity(), "Finding AP", Toast.LENGTH_LONG);
-                                    toastAp.show();
+                                    findApSnack = Snackbar.make(rootView, "Finding AP", Snackbar.LENGTH_INDEFINITE).setAction("Action", null);
+                                    findApSnack.show();
                                 } finally {
                                     addLocation(markerView.getPosition());
                                 }
@@ -278,8 +274,6 @@ public class LearnFragment extends Fragment {
                 }
             }
         });
-
-
 
         return rootView;
     }
@@ -377,7 +371,7 @@ public class LearnFragment extends Fragment {
 
     //---- Format Data As JSON Method ----
     public void formatDataAsJSON() {
-        CountDownTimer timer = new CountDownTimer(120000, 1000) {
+        CountDownTimer timer = new CountDownTimer(300000, 1000) {
             String timeStamp = TimeUnit.MILLISECONDS.toSeconds(System.currentTimeMillis()) + "";
             ArrayList<JSONObject> fpArray = new ArrayList<>();
 
@@ -436,6 +430,7 @@ public class LearnFragment extends Fragment {
                     }
                 }
                 buttonLearn.setEnabled(false);
+
                 locText.setEnabled(false);
                 //Toast.makeText(getActivity(), "Finding AP", Toast.LENGTH_SHORT).show();
             }
@@ -443,6 +438,7 @@ public class LearnFragment extends Fragment {
             @Override
             public void onFinish() {
                 try {
+                    findApSnack.dismiss();
                     buttonLearn.setEnabled(false);
                     locText.setEnabled(false);
                     loc = locText.getText().toString();

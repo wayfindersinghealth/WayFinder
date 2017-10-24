@@ -216,7 +216,7 @@ public class FindYourWayFragment extends Fragment {
                 t = new Timer();
                 t.scheduleAtFixedRate(new TimerTask() {
 
-                    int times = 10;
+                    int times = 30;
                     boolean truth;
 
                     @Override
@@ -464,19 +464,19 @@ public class FindYourWayFragment extends Fragment {
     //---- MapBox onStart Method ----
     @Override
     public void onStart() {
+        markerView = null;
         super.onStart();
         mapView.onStart();
         Log.d("onStart", "On start method");
-        markerView = null;
     }
 
     //---- MapBox onResume Method ----
     @Override
     public void onResume() {
+        markerView = null;
         super.onResume();
         mapView.onResume();
         Log.d("onResume", "On resume method");
-        markerView = null;
     }
 
     //---- MapBox onPause Method ----
@@ -490,7 +490,6 @@ public class FindYourWayFragment extends Fragment {
             t = null;
             markerView = null;
         }
-
     }
 
     //---- MapBox onStop Method ----
