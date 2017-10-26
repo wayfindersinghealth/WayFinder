@@ -81,6 +81,7 @@ public class LoginFragment extends Fragment {
         return fragment;
     }
 
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
 
@@ -138,19 +139,20 @@ public class LoginFragment extends Fragment {
             private void userLogin(){
                 String email = editTextEmail.getText().toString();
                 String password = editTextPassword.getText().toString();
+
                 if (TextUtils.isEmpty(email)){
                     //email is empty
-                    Toast.makeText(getActivity(), "Plase enter Email" , Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getActivity(), "Please enter Email" , Toast.LENGTH_SHORT).show();
                     return;
                 }
                 if(TextUtils.isEmpty(password)){
                     //password is empty
-                    Toast.makeText(getActivity(), "Plase enter Password" , Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getActivity(), "Please enter Password" , Toast.LENGTH_SHORT).show();
                     return;
                 }
 
                 final ProgressDialog Dialog = new ProgressDialog(getActivity());
-                Dialog.setMessage("Registering User...");
+                Dialog.setMessage("Login...");
                 Dialog.show();
 
                 firebaseAuth.signInWithEmailAndPassword(email,password)

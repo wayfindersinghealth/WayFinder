@@ -26,9 +26,12 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 
 import sg.com.singhealth.wayfinder.MainActivity;
 import sg.com.singhealth.wayfinder.R;
+
+import static android.content.ContentValues.TAG;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -133,31 +136,76 @@ public class RegisterFragment extends Fragment {
 
             }
             public void registerUser(){
-                String email = editTextEmail.getText().toString();
+                final String email = editTextEmail.getText().toString();
                 String password = editTextPassword.getText().toString();
+                if (email.matches("^([a-z0-9A-Z]+[-|\\.]?)+[a-z0-9A-Z]@([a-z0-9A-Z]+(-[a-z0-9A-Z]+)?\\.)+[a-zA-Z]{2,}$")){
 
+                }else {
+                    Toast.makeText(getActivity(), "Email Error" , Toast.LENGTH_SHORT).show();
+                    return;
+                }
+                if (password.length()<6){
+                    Toast.makeText(getActivity(), "Password is more of six" , Toast.LENGTH_SHORT).show();
+                    return;
+                }
                 if (TextUtils.isEmpty(email)){
                     //email is empty
-                    Toast.makeText(getActivity(), "Plase enter Email" , Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getActivity(), "Please enter Email" , Toast.LENGTH_SHORT).show();
                     return;
                 }
                 if(TextUtils.isEmpty(password)){
                     //password is empty
-                    Toast.makeText(getActivity(), "Plawse enter Password" , Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getActivity(), "Please enter Password" , Toast.LENGTH_SHORT).show();
                     return;
                 }
 
                 final ProgressDialog Dialog = new ProgressDialog(getActivity());
+                Dialog.setProgress(0);
+                Dialog.setTitle("Registering User...");
+                Dialog.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
+                Dialog.setMax(100);
+                Dialog.show();
+
+                new Thread(new Runnable() {
+                    @Override
+                    public void run() {
+                        int progress =0;
+                        while (progress<100){
+                            try {
+                                Thread.sleep(20);
+                                progress++;
+                                Dialog.setProgress(progress);
+                            }catch (InterruptedException e){
+                                e.printStackTrace();
+                                FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+                                user.sendEmailVerification()
+                                        .addOnCompleteListener(new OnCompleteListener<Void>() {
+                                            @Override
+                                            public void onComplete(@NonNull Task<Void> task) {
+                                                if(task.isSuccessful()){
+                                                    Log.d(TAG,"Email sent.");
+                                                }
+                                            }
+                                        });
+                            }
+                        }
+                        Dialog.cancel();
+                    }
+                }).start();
+
+                /*
                 Dialog.setMessage("Registering User...");
                 Dialog.show();
+                */
 
                 firebaseAuth.createUserWithEmailAndPassword(email,password)
                         .addOnCompleteListener(getActivity(), new OnCompleteListener<AuthResult>() {
                             @Override
                             public void onComplete(@NonNull Task<AuthResult> task) {
                                 if(task.isSuccessful()){
-                                    Toast.makeText(getActivity(),"Register Successfully,Please Login",Toast.LENGTH_LONG).show();
-                                    Dialog.dismiss();
+
+                                    Toast.makeText(getActivity(),"Register Successfully,Please enter you email to verification",Toast.LENGTH_LONG).show();
+
                                     Fragment fragment;
                                     fragment = new LoginFragment();
                                     FragmentManager fragmentManager = getFragmentManager();

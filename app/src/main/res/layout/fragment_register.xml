@@ -32,12 +32,12 @@
             android:visibility="gone" />
 
         <EditText
-            android:layout_margin="15dp"
-            android:inputType="textEmailAddress"
             android:id="@+id/editTexEmail"
-            android:hint="Enter your Email"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content" />
+            android:layout_height="wrap_content"
+            android:layout_margin="15dp"
+            android:hint="Enter you Email"
+            android:inputType="textEmailAddress" />
 
         <EditText
             android:layout_margin="15dp"

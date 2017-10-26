@@ -13,27 +13,33 @@
         android:orientation="vertical">
 
         <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textAppearance="?android:attr/textAppearanceLarge"
-            android:text="Large Text"
             android:id="@+id/textViewUserEmail"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
             android:layout_gravity="center"
-            />
+            android:text="Large Text"
+            android:textAppearance="?android:attr/textAppearanceLarge" />
 
         <Button
             android:id="@+id/buttonLogout"
-            android:layout_width="wrap_content"
+            android:layout_width="166dp"
             android:layout_height="wrap_content"
-            android:text="Logout"
-            android:layout_gravity="center"/>
+            android:layout_gravity="center"
+            android:text="Logout" />
 
         <Button
             android:id="@+id/buttonenter"
-            android:layout_width="wrap_content"
+            android:layout_width="166dp"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:text="Enter APP" />
+
+        <Button
+            android:id="@+id/buttonChangePassword"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:text="Change   Password" />
 
 
     </LinearLayout>

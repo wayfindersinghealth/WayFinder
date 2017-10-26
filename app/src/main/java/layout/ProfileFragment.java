@@ -28,6 +28,9 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 
 import sg.com.singhealth.wayfinder.R;
+
+import static android.content.ContentValues.TAG;
+
 /**
  * A simple {@link Fragment} subclass.
  * Activities that contain this fragment must implement the
@@ -50,7 +53,7 @@ public class ProfileFragment extends Fragment {
     private TextView textViewUserEmail;
     private Button buttonLogout;
     private Button buttonenter;
-
+    private Button buttonChangePassword;
 
     private OnFragmentInteractionListener mListener;
 
@@ -99,8 +102,9 @@ public class ProfileFragment extends Fragment {
             startActivity(new Intent(getActivity(),LoginFragment.class));
         }
 
-        FirebaseUser user = firebaseAuth.getCurrentUser();
+        final FirebaseUser user = firebaseAuth.getCurrentUser();
         buttonenter = (Button)rootView.findViewById(R.id.buttonenter);
+        buttonChangePassword = (Button)rootView.findViewById(R.id.buttonChangePassword);
         textViewUserEmail = (TextView)rootView.findViewById(R.id.textViewUserEmail);
         textViewUserEmail.setText("Welcome"+ "," + user.getEmail());
      //   textViewUserEmail.setText("Welcome");
@@ -115,7 +119,7 @@ public class ProfileFragment extends Fragment {
                     firebaseAuth.signOut();
 
                     Fragment fragment;
-                    fragment = new LoginFragment();
+                    fragment = new MainFragment();
                     FragmentManager fragmentManager = getFragmentManager();
                     fragmentManager.beginTransaction().replace(R.id.content, fragment).commit();
                 }
@@ -128,6 +132,33 @@ public class ProfileFragment extends Fragment {
                 fragment = new LearnFragment();
                 FragmentManager fragmentManager = getFragmentManager();
                 fragmentManager.beginTransaction().replace(R.id.content, fragment).commit();
+            }
+        });
+
+        buttonChangePassword.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                final FirebaseAuth firebaseAuth = FirebaseAuth.getInstance();
+                String emailAddress = user.getEmail().toString();
+                firebaseAuth.sendPasswordResetEmail(emailAddress)
+                        .addOnCompleteListener(new OnCompleteListener<Void>() {
+                            @Override
+                            public void onComplete(@NonNull Task<Void> task) {
+                                if (task.isSuccessful()){
+                                    Log.d(TAG,"Email sent.");
+                                    Toast.makeText(getActivity(),"Email sent successful",Toast.LENGTH_SHORT).show();
+                                    firebaseAuth.signOut();
+                                    Fragment fragment;
+                                    fragment = new LoginFragment();
+                                    FragmentManager fragmentManager = getFragmentManager();
+                                    fragmentManager.beginTransaction().replace(R.id.content, fragment).commit();
+
+                                }
+                                else {
+                                    Toast.makeText(getActivity(),"Email sent Error",Toast.LENGTH_SHORT).show();
+                                }
+                            }
+                        });
             }
         });
 
