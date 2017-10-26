@@ -408,12 +408,17 @@ public class LearnFragment extends Fragment {
 
                                     for (int j = 0; j < fpArray.size(); j++) {
                                         if (fpArray.get(j).get("mac").toString().equalsIgnoreCase(fingerprint.get("mac").toString())) {
-                                            int currLvl =  results.get(i).level;
-                                            int avgLvl = (currLvl + (int)fpArray.get(j).get("rssi"))/2 ;
-                                            fpArray.get(j).put("rssi", avgLvl);
-                                            test = true;
-                                            break;
-                                        } else {
+                                            int currLvl = results.get(i).level;
+                                            if((currLvl <= ((int)fpArray.get(j).get("rssi") +3)) && (currLvl >= ((int)fpArray.get(j).get("rssi") -3)) ){
+                                                int avgLvl = (currLvl + (int)fpArray.get(j).get("rssi"))/2 ;
+                                                fpArray.get(j).put("rssi", avgLvl);
+                                                test = true;
+                                                break;
+                                            }else{
+                                                test = true;
+                                                break;
+                                            }
+                                        }else{
                                             test = false;
                                         }
                                     }
@@ -430,9 +435,7 @@ public class LearnFragment extends Fragment {
                     }
                 }
                 buttonLearn.setEnabled(false);
-
                 locText.setEnabled(false);
-                //Toast.makeText(getActivity(), "Finding AP", Toast.LENGTH_SHORT).show();
             }
 
             @Override

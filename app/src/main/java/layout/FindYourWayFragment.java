@@ -216,7 +216,7 @@ public class FindYourWayFragment extends Fragment {
                 t = new Timer();
                 t.scheduleAtFixedRate(new TimerTask() {
 
-                    int times = 30;
+                    int times = 15;
                     boolean truth;
 
                     @Override
@@ -347,7 +347,7 @@ public class FindYourWayFragment extends Fragment {
                         }
 
                     }
-                },0,5000);
+                },0,4500);
 
                 //-- Floating Action Button Click to go to Current Location--
                 FloatingActionButton fab = (FloatingActionButton) rootView.findViewById(R.id.fab);
@@ -604,7 +604,7 @@ public class FindYourWayFragment extends Fragment {
                     }
 
                     finalJSON = sb.toString();
-                    // Log.d("finalJSON value", finalJSON.toString() + "  ");
+                     Log.d("finalJSON value", finalJSON.toString() + "  ");
 
                     JSONObject jsonObject = new JSONObject(finalJSON);
                     //Log.d("JSONObject" , jsonObject + "");
