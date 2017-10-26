@@ -409,7 +409,7 @@ public class LearnFragment extends Fragment {
                                     for (int j = 0; j < fpArray.size(); j++) {
                                         if (fpArray.get(j).get("mac").toString().equalsIgnoreCase(fingerprint.get("mac").toString())) {
                                             int currLvl = results.get(i).level;
-                                            if((currLvl <= ((int)fpArray.get(j).get("rssi") +3)) && (currLvl >= ((int)fpArray.get(j).get("rssi") -3)) ){
+                                            if((currLvl <= ((int)fpArray.get(j).get("rssi") +1)) && (currLvl >= ((int)fpArray.get(j).get("rssi") -1)) ){
                                                 int avgLvl = (currLvl + (int)fpArray.get(j).get("rssi"))/2 ;
                                                 fpArray.get(j).put("rssi", avgLvl);
                                                 test = true;
@@ -445,7 +445,7 @@ public class LearnFragment extends Fragment {
                     buttonLearn.setEnabled(false);
                     locText.setEnabled(false);
                     loc = locText.getText().toString();
-                    root.put("group", "interim01");
+                    root.put("group", "interim02");
                     root.put("username", "p3");
                     root.put("location", loc);
                     root.put("time", timeStamp);

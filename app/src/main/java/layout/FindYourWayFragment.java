@@ -211,6 +211,8 @@ public class FindYourWayFragment extends Fragment {
                         .zoom(19.8) // Sets the zoom
                         .build(); // Creates a CameraPosition from the builder
                 mapboxMap.setCameraPosition(position);
+                mapboxMap.setMaxZoomPreference(20);
+                mapboxMap.setMinZoomPreference(18.7);
 
                 //-- Timer to Loops Marker Change ---
                 t = new Timer();
@@ -229,7 +231,7 @@ public class FindYourWayFragment extends Fragment {
 
                                 locations = new PostTrackAPI().execute("https://ml.internalpositioning.com/track").get();
 
-                                if (locations == null) {
+                                if (locations == "") {
                                     Log.d("Location: ", "NULL");
                                     break;
                                 } else {
@@ -548,7 +550,7 @@ public class FindYourWayFragment extends Fragment {
             }
         }
         try {
-            root.put("group", "interim01");
+            root.put("group", "interim02");
             root.put("username", "p3");
             root.put("time", timeStamp);
             root.put("wifi-fingerprint", wifiFingerprint);
