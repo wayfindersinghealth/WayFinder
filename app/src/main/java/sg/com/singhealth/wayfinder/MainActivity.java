@@ -28,6 +28,9 @@ import android.widget.ArrayAdapter;
 import android.widget.Spinner;
 import android.widget.Toast;
 
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+
 import java.util.Locale;
 
 import layout.AboutFragment;
@@ -56,6 +59,7 @@ public class MainActivity extends AppCompatActivity
         RegisterFragment.OnFragmentInteractionListener{
     SharedPreferences spf;
     SharedPreferences.Editor editor;
+    private FirebaseAuth firebaseAuth;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -243,6 +247,7 @@ public class MainActivity extends AppCompatActivity
 
     //---- Access Learn Page ----
     public void navigationLearn() {
+
         Fragment fragment;
         fragment = new LearnFragment();
         FragmentManager fragmentManager = getSupportFragmentManager();
