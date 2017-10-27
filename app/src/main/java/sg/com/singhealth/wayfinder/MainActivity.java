@@ -61,7 +61,8 @@ public class MainActivity extends AppCompatActivity
     SharedPreferences spf;
     SharedPreferences.Editor editor;
     private FirebaseAuth firebaseAuth;
-
+    NavigationView navigationView;
+    Menu nav_Menu;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -138,6 +139,16 @@ public class MainActivity extends AppCompatActivity
         fragmentManager.beginTransaction().replace(R.id.content, fragment).commit();
 
         //-------- DO NOT TOUCH END --------
+
+        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+        nav_Menu = navigationView.getMenu();
+        if (user != null){
+            nav_Menu.findItem(R.id.nav_logout).setVisible(true);
+        }
+        else {
+            nav_Menu.findItem(R.id.nav_logout).setVisible(false);
+        }
+
     }
 
     @Override
@@ -352,14 +363,8 @@ public class MainActivity extends AppCompatActivity
 
     //---- Access Logout Function ----
     public void navigationLogout() {
-        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
-        if (user != null){
+        nav_Menu.findItem(R.id.nav_logout).setVisible(false);
 
-        }
-        else {
-            Button logoutButton = (Button) findViewById(R.id.nav_logout);
-
-        }
         FirebaseAuth.getInstance().signOut();
         Toast.makeText(MainActivity.this, "Logout...Success", Toast.LENGTH_SHORT).show();
         Fragment fragment;
