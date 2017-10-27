@@ -445,7 +445,7 @@ public class LearnFragment extends Fragment {
                     buttonLearn.setEnabled(false);
                     locText.setEnabled(false);
                     loc = locText.getText().toString();
-                    root.put("group", "interim02");
+                    root.put("group", "interim05");
                     root.put("username", "p3");
                     root.put("location", loc);
                     root.put("time", timeStamp);
@@ -463,7 +463,7 @@ public class LearnFragment extends Fragment {
                     e.printStackTrace();
                 }
                 new PostLearnAPI().execute("https://ml.internalpositioning.com/learn");
-                new GetCalculateAPI().execute("https://ml.internalpositioning.com/calculate?group=interim01");
+                new GetCalculateAPI().execute("https://ml.internalpositioning.com/calculate?group=interim05");
                 Toast.makeText(getActivity(), "Inserted Into Repository" , Toast.LENGTH_SHORT).show();
                 buttonLearn.setEnabled(true);
                 locText.setEnabled(true);
