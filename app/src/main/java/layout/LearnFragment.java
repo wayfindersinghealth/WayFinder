@@ -371,7 +371,7 @@ public class LearnFragment extends Fragment {
 
     //---- Format Data As JSON Method ----
     public void formatDataAsJSON() {
-        CountDownTimer timer = new CountDownTimer(240000, 1000) {
+        CountDownTimer timer = new CountDownTimer(240000, 2000) {
             String timeStamp = TimeUnit.MILLISECONDS.toSeconds(System.currentTimeMillis()) + "";
             ArrayList<JSONObject> fpArray = new ArrayList<>();
 
@@ -409,7 +409,7 @@ public class LearnFragment extends Fragment {
                                     for (int j = 0; j < fpArray.size(); j++) {
                                         if (fpArray.get(j).get("mac").toString().equalsIgnoreCase(fingerprint.get("mac").toString())) {
                                             int currLvl = results.get(i).level;
-                                            if((currLvl <= ((int)fpArray.get(j).get("rssi") +1)) && (currLvl >= ((int)fpArray.get(j).get("rssi") -1)) ){
+                                            if((currLvl <= ((int)fpArray.get(j).get("rssi") +2)) && (currLvl >= ((int)fpArray.get(j).get("rssi") -2)) ){
                                                 int avgLvl = (currLvl + (int)fpArray.get(j).get("rssi"))/2 ;
                                                 fpArray.get(j).put("rssi", avgLvl);
                                                 test = true;
@@ -445,7 +445,7 @@ public class LearnFragment extends Fragment {
                     buttonLearn.setEnabled(false);
                     locText.setEnabled(false);
                     loc = locText.getText().toString();
-                    root.put("group", "interim05");
+                    root.put("group", "interim06");
                     root.put("username", "p3");
                     root.put("location", loc);
                     root.put("time", timeStamp);
@@ -463,7 +463,7 @@ public class LearnFragment extends Fragment {
                     e.printStackTrace();
                 }
                 new PostLearnAPI().execute("https://ml.internalpositioning.com/learn");
-                new GetCalculateAPI().execute("https://ml.internalpositioning.com/calculate?group=interim05");
+                new GetCalculateAPI().execute("https://ml.internalpositioning.com/calculate?group=interim06");
                 Toast.makeText(getActivity(), "Inserted Into Repository" , Toast.LENGTH_SHORT).show();
                 buttonLearn.setEnabled(true);
                 locText.setEnabled(true);

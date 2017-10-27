@@ -26,7 +26,6 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 import com.google.gson.JsonParser;
-import com.mapbox.directions.service.models.Waypoint;
 import com.mapbox.mapboxsdk.Mapbox;
 import com.mapbox.mapboxsdk.annotations.Icon;
 import com.mapbox.mapboxsdk.annotations.IconFactory;
@@ -104,10 +103,6 @@ public class FindYourWayFragment extends Fragment {
     WifiManager wmgr;
     AutoCompleteTextView autoCompleteTextViewTo;
     ArrayList<String> aList = new ArrayList<String>();
-
-    Waypoint origin = null;
-    Waypoint destination = null;
-
     DatabaseReference databaseLocation;
 
     private OnFragmentInteractionListener mListener;
@@ -225,94 +220,85 @@ public class FindYourWayFragment extends Fragment {
 
                     @Override
                     public void run() {
-                        String maxLocation = null;
+                        int times = 15;
+                        boolean truth = true;
+                        ArrayList<LocTracker> locationArray = new ArrayList<>();
+
                         try {
-                            String locations;
-                            locations = new PostTrackAPI().execute("https://ml.internalpositioning.com/track").get();
-                            maxLocation = locations;
+                            for (int t = 0; t <times; t++) {
+                                String locations;
+
+                                locations = new PostTrackAPI().execute("https://ml.internalpositioning.com/track").get();
+
+                                if (locations.isEmpty()) {
+                                    Log.d("Location: ", "NULL");
+                                    break;
+                                } else {
+                                    Log.d("Location Name API", locations);
+
+                                    if (locationArray.size() == 0 ) {
+                                        LocTracker thisLoc = new LocTracker();
+                                        thisLoc.setCounter(1);
+                                        thisLoc.setLocationName(locations);
+                                        locationArray.add(thisLoc);
+
+                                    } else {
+                                        for (int i=0; i<locationArray.size(); i++) {
+                                            if (locationArray.get(i).getLocationName().equalsIgnoreCase(locations)) {
+                                                locationArray.get(i).setCounter(locationArray.get(i).getCounter() + 1);
+                                                truth = true;
+                                                break;
+                                            } else {
+                                                truth = false;
+                                            }
+                                        }
+
+                                        if (!truth) {
+                                            LocTracker location = new LocTracker();
+                                            location.setLocationName(locations);
+                                            location.setCounter(1);
+                                            locationArray.add(location);
+                                        }
+                                    }
+
+                                }
+                            }
                         } catch (InterruptedException e) {
                             e.printStackTrace();
                         } catch (ExecutionException e) {
                             e.printStackTrace();
                         }
 
-//                        ArrayList<LocTracker> locationArray = new ArrayList<>();
-//
-//                        try {
-//                            for (int t = 0; t <times; t++) {
-//                                String locations;
-//
-//                                locations = new PostTrackAPI().execute("https://ml.internalpositioning.com/track").get();
-//
-//                                if (locations == "") {
-//                                    Log.d("Location: ", "NULL");
-//                                    break;
-//                                } else {
-//                                    Log.d("Location Name API", locations);
-//
-//                                    if (locationArray.size() == 0 ) {
-//                                        LocTracker thisLoc = new LocTracker();
-//                                        thisLoc.setCounter(1);
-//                                        thisLoc.setLocationName(locations);
-//                                        locationArray.add(thisLoc);
-//
-//                                    } else {
-//                                        for (int i=0; i<locationArray.size(); i++) {
-//                                            if (locationArray.get(i).getLocationName().equalsIgnoreCase(locations)) {
-//                                                locationArray.get(i).setCounter(locationArray.get(i).getCounter() + 1);
-//                                                truth = true;
-//                                                break;
-//                                            } else {
-//                                                truth = false;
-//                                            }
-//                                        }
-//
-//                                        if (!truth) {
-//                                            LocTracker location = new LocTracker();
-//                                            location.setLocationName(locations);
-//                                            location.setCounter(1);
-//                                            locationArray.add(location);
-//                                        }
-//                                    }
-//
-//                                }
-//                            }
-//                        } catch (InterruptedException e) {
-//                            e.printStackTrace();
-//                        } catch (ExecutionException e) {
-//                            e.printStackTrace();
-//                        }
-//
-//                        //Before Sorting ArrayList
-//                        for (int i=0; i < locationArray.size(); i++) {
-//                            Log.d("Before Sort", locationArray.get(i).getLocationName() + ", " + locationArray.get(i).getCounter());
-//                        }
-//
-//                        //Comparing and Sorting based on least counter to most counter
-//                        int maxCounter;
-//                        String maxLocation = null;
-//                        if (locationArray.size() == 1){
-//                            for (int h = 0; h < locationArray.size(); h++) {
-//                                maxLocation = locationArray.get(h).getLocationName();
-//                                maxCounter = locationArray.get(h).getCounter();
-//                            }
-//                        } else if (locationArray.size() > 0) {
-//                            //Sorting arraylist according to Smallest to Largest Counter
-//                            Collections.sort(locationArray, new Comparator<LocTracker>() {
-//                                @Override
-//                                public int compare(LocTracker locTracker, LocTracker t1) {
-//                                    return Integer.compare(locTracker.getCounter(), t1.getCounter());
-//                                }
-//                            });
-//
-//
-//                            //After Sorting ArrayList
-//                            for (int j=0; j < locationArray.size(); j++) {
-//                                Log.d("After Sort", locationArray.get(j).getLocationName() + ", " + locationArray.get(j).getCounter());
-//                            }
-//                            Log.d("Last Item After Sort", locationArray.get(locationArray.size()-1).getLocationName() + ", " + locationArray.get(locationArray.size()-1).getCounter());
-//                            maxLocation = locationArray.get(locationArray.size()-1).getLocationName();
-//                        }
+                        //Before Sorting ArrayList
+                        for (int i=0; i < locationArray.size(); i++) {
+                            Log.d("Before Sort", locationArray.get(i).getLocationName() + ", " + locationArray.get(i).getCounter());
+                        }
+
+                        //Comparing and Sorting based on least counter to most counter
+                        int maxCounter;
+                        String maxLocation = null;
+                        if (locationArray.size() == 1){
+                            for (int h = 0; h < locationArray.size(); h++) {
+                                maxLocation = locationArray.get(h).getLocationName();
+                                maxCounter = locationArray.get(h).getCounter();
+                            }
+                        } else if (locationArray.size() > 0) {
+                            //Sorting arraylist according to Smallest to Largest Counter
+                            Collections.sort(locationArray, new Comparator<LocTracker>() {
+                                @Override
+                                public int compare(LocTracker locTracker, LocTracker t1) {
+                                    return Integer.compare(locTracker.getCounter(), t1.getCounter());
+                                }
+                            });
+
+
+                            //After Sorting ArrayList
+                            for (int j=0; j < locationArray.size(); j++) {
+                                Log.d("After Sort", locationArray.get(j).getLocationName() + ", " + locationArray.get(j).getCounter());
+                            }
+                            Log.d("Last Item After Sort", locationArray.get(locationArray.size()-1).getLocationName() + ", " + locationArray.get(locationArray.size()-1).getCounter());
+                            maxLocation = locationArray.get(locationArray.size()-1).getLocationName();
+                        }
 
                         //-- Compare to Database --
                         if (maxLocation == null) {
@@ -338,9 +324,6 @@ public class FindYourWayFragment extends Fragment {
                                         //-- Marker Icon --
                                         IconFactory iconFactory = IconFactory.getInstance(getActivity());
                                         Icon icon = iconFactory.fromResource(R.drawable.ic_curr_location);
-
-                                        //-- WayPoint Origin for Routing --
-                                        Waypoint origin = new Waypoint(locLatitude, locLongitude);
 
                                         //-- Set Marker on Map --
                                         LatLng latLng = new LatLng(locLatitude, locLongitude);
@@ -571,7 +554,7 @@ public class FindYourWayFragment extends Fragment {
             }
         }
         try {
-            root.put("group", "interim03");
+            root.put("group", "interim06");
             root.put("username", "p3");
             root.put("time", timeStamp);
             root.put("wifi-fingerprint", wifiFingerprint);
