@@ -55,6 +55,7 @@
     <string name="navPreference">Language Preference</string>
     <string name="navAbout">About</string>
     <string name="navAppt">Appointment</string>
+    <string name="navLogout">Logout</string>
 
     <!-- Controls in menu > main.xml Control-->
     <string name="action_refresh">Refresh</string>

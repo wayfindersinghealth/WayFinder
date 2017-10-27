@@ -19,6 +19,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -28,8 +29,11 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.storage.StorageReference;
 
 import sg.com.singhealth.wayfinder.R;
+
+import static android.content.ContentValues.TAG;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -51,8 +55,8 @@ public class LoginFragment extends Fragment {
 
     private OnFragmentInteractionListener mListener;
 
-    private Button buttonSignIn;
-    private TextView textViewSignUp;
+    private ImageButton buttonSignIn;
+    private TextView textViewForget;
     private EditText editTextEmail;
     private EditText editTextPassword;
     private ProgressDialog progressDialog;
@@ -112,18 +116,44 @@ public class LoginFragment extends Fragment {
 
         }
 
-        buttonSignIn = (Button) rootView.findViewById(R.id.buttonSignin);
-        textViewSignUp = (TextView)rootView.findViewById(R.id.textViewSignUp) ;
+        buttonSignIn = (ImageButton) rootView.findViewById(R.id.buttonSignin);
+        textViewForget = (TextView)rootView.findViewById(R.id.textViewForget) ;
         editTextEmail = (EditText)rootView.findViewById(R.id.editTexEmail);
         editTextPassword = (EditText)rootView.findViewById(R.id.editTexPassword);
 
-        textViewSignUp.setOnClickListener(new View.OnClickListener() {
+        textViewForget.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Fragment fragment;
-                fragment = new RegisterFragment();
-                FragmentManager fragmentManager = getFragmentManager();
-                fragmentManager.beginTransaction().replace(R.id.content, fragment).commit();
+
+                {
+                    final FirebaseUser user = firebaseAuth.getCurrentUser();
+                    final FirebaseAuth firebaseAuth = FirebaseAuth.getInstance();
+                    final String emailAddress = editTextEmail.getText().toString();
+                    if (emailAddress.equals("")) {
+                        Toast.makeText(getActivity(), "Please enter your Email", Toast.LENGTH_SHORT).show();
+                        return;
+                    }
+                    else {
+                    firebaseAuth.sendPasswordResetEmail(emailAddress)
+                            .addOnCompleteListener(new OnCompleteListener<Void>() {
+                                @Override
+                                public void onComplete(@NonNull Task<Void> task) {
+                                    if (task.isSuccessful()) {
+                                        Log.d(TAG, "Email sent.");
+                                        Toast.makeText(getActivity(), "Email sent successful", Toast.LENGTH_SHORT).show();
+                                        firebaseAuth.signOut();
+                                        Fragment fragment;
+                                        fragment = new LoginFragment();
+                                        FragmentManager fragmentManager = getFragmentManager();
+                                        fragmentManager.beginTransaction().replace(R.id.content, fragment).commit();
+
+                                    } else {
+                                        Toast.makeText(getActivity(), "Email sent Error", Toast.LENGTH_SHORT).show();
+                                    }
+                                }
+                            });
+                }
+                }
             }
         });
 
@@ -166,7 +196,7 @@ public class LoginFragment extends Fragment {
                                     Toast.makeText(getActivity(),"Welcome",Toast.LENGTH_SHORT).show();
 
                                     Fragment fragment;
-                                    fragment = new ProfileFragment();
+                                    fragment = new LearnFragment();
                                     FragmentManager fragmentManager = getFragmentManager();
                                     fragmentManager.beginTransaction().replace(R.id.content, fragment).commit();
                                 }

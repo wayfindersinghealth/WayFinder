@@ -2,7 +2,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="layout.RegisterFragment">
+    tools:context="layout.RegisterFragment"
+    android:background="@drawable/ic_register">
 
     <!-- TODO: Update blank fragment layout -->
     <LinearLayout
@@ -12,52 +13,71 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:baselineAligned="false"
-        android:id="@+id/linearLayout">
+        android:id="@+id/linearLayout"
+        android:weightSum="1">
 
 
         <TextView
+            android:id="@+id/textView7"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:textAppearance="?android:attr/textAppearanceLarge" />
+
+        <TextView
+            android:id="@+id/textView6"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:textAppearance="?android:attr/textAppearanceLarge" />
+
+        <TextView
+            android:id="@+id/textView5"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:textAppearance="?android:attr/textAppearanceLarge" />
+
+        <TextView
+            android:id="@+id/textView"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
             android:textAppearance="?android:attr/textAppearanceLarge"
-            android:text="User Register"
-            android:id="@+id/textView"
-            android:layout_gravity="center_horizontal"/>
-
-        <ProgressBar
-            android:id="@+id/login_progress"
-            style="?android:attr/progressBarStyleLarge"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_marginBottom="8dp"
-            android:visibility="gone" />
+            android:layout_marginTop="25dp"/>
 
         <EditText
             android:id="@+id/editTexEmail"
-            android:layout_width="match_parent"
+            android:layout_width="279dp"
             android:layout_height="wrap_content"
-            android:layout_margin="15dp"
-            android:hint="Enter you Email"
-            android:inputType="textEmailAddress" />
+            android:layout_gravity="center"
+            android:hint="Enter your Email"
+            android:inputType="textEmailAddress"
+            android:layout_weight="0.11"
+            android:ellipsize="start"/>
 
         <EditText
-            android:layout_margin="15dp"
             android:id="@+id/editTexPassword"
-            android:layout_width="match_parent"
+            android:layout_width="279dp"
             android:layout_height="wrap_content"
+            android:layout_marginTop="3dp"
             android:hint="Enter your password"
+            android:layout_gravity="center"
             android:inputType="textPassword" />
 
-        <Button
-            android:layout_margin="15dp"
+        <ImageButton
             android:id="@+id/buttonRegister"
             android:text="Register User"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_width="297dp"
+            android:layout_height="60dp"
+            android:layout_margin="15dp"
+            android:background="@drawable/signup_button1"
+            android:layout_gravity="center"
             />
 
         <TextView
             android:textAlignment="center"
-            android:hint="Already Register? Sign in here"
+            android:hint="ALLREADY HAVE AN ACCOUNT? LOG IN!"
             android:id="@+id/textViewSignin"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"

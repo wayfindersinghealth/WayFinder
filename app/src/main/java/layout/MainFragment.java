@@ -4,11 +4,15 @@ import android.content.Context;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
+
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 
 import sg.com.singhealth.wayfinder.MainActivity;
 import sg.com.singhealth.wayfinder.R;
@@ -85,7 +89,25 @@ public class MainFragment extends Fragment {
             @Override
             public void onClick(View view) {
                 //-- Call Access Learn Page Method from MainAvtivity.java --
-                ((MainActivity) getActivity()).navigationLearn();
+
+            FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+                if (user != null){
+                    Fragment fragment;
+                    fragment = new LearnFragment();
+                    FragmentManager fragmentManager = getFragmentManager();
+                    fragmentManager.beginTransaction().replace(R.id.content, fragment).commit();
+
+                }
+                else {
+                    Fragment fragment;
+                    fragment = new StartFragment();
+                    FragmentManager fragmentManager = getFragmentManager();
+                    fragmentManager.beginTransaction().replace(R.id.content, fragment).commit();
+                }
+
+
+
+                //((MainActivity) getActivity()).navigationLearn();
             }
         });
 

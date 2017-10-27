@@ -25,6 +25,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.Spinner;
 import android.widget.Toast;
 
@@ -38,8 +39,8 @@ import layout.FindYourWayFragment;
 import layout.LearnFragment;
 import layout.LoginFragment;
 import layout.MainFragment;
-import layout.ProfileFragment;
 import layout.RegisterFragment;
+import layout.StartFragment;
 
 /**
  * File Name: MainActivity.java
@@ -55,7 +56,7 @@ public class MainActivity extends AppCompatActivity
         FindYourWayFragment.OnFragmentInteractionListener,
         AboutFragment.OnFragmentInteractionListener,
         LoginFragment.OnFragmentInteractionListener,
-        ProfileFragment.OnFragmentInteractionListener,
+        StartFragment.OnFragmentInteractionListener,
         RegisterFragment.OnFragmentInteractionListener{
     SharedPreferences spf;
     SharedPreferences.Editor editor;
@@ -190,6 +191,8 @@ public class MainActivity extends AppCompatActivity
             navigationAbout();
         } else if (id == R.id.nav_Appt) {
             navigationLogin();
+        } else if (id == R.id.nav_logout) {
+            navigationLogout();
         }
         else {
             //Else Home Fragment
@@ -248,10 +251,19 @@ public class MainActivity extends AppCompatActivity
     //---- Access Learn Page ----
     public void navigationLearn() {
 
-        Fragment fragment;
-        fragment = new LearnFragment();
-        FragmentManager fragmentManager = getSupportFragmentManager();
-        fragmentManager.beginTransaction().replace(R.id.content, fragment).commit();
+        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+        if (user != null){
+            Fragment fragment;
+            fragment = new LearnFragment();
+            FragmentManager fragmentManager = getSupportFragmentManager();
+            fragmentManager.beginTransaction().replace(R.id.content, fragment).commit();
+        }
+        else {
+            Fragment fragment;
+            fragment = new StartFragment();
+            FragmentManager fragmentManager = getSupportFragmentManager();
+            fragmentManager.beginTransaction().replace(R.id.content, fragment).commit();
+        }
     }
 
     //---- Access Find Your Way Page ----
@@ -336,6 +348,25 @@ public class MainActivity extends AppCompatActivity
         fragment = new AboutFragment();
         FragmentManager fragmentManager = getSupportFragmentManager();
         fragmentManager.beginTransaction().replace(R.id.content, fragment).commit();
+    }
+
+    //---- Access Logout Function ----
+    public void navigationLogout() {
+        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+        if (user != null){
+
+        }
+        else {
+            Button logoutButton = (Button) findViewById(R.id.nav_logout);
+
+        }
+        FirebaseAuth.getInstance().signOut();
+        Toast.makeText(MainActivity.this, "Logout...Success", Toast.LENGTH_SHORT).show();
+        Fragment fragment;
+        fragment = new MainFragment();
+        FragmentManager fragmentManager = getSupportFragmentManager();
+        fragmentManager.beginTransaction().replace(R.id.content, fragment).commit();
+
     }
 
     //-------- END OF METHODS --------

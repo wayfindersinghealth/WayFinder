@@ -2,12 +2,10 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="layout.LoginFragment">
+    tools:context="layout.RegisterFragment"
+    android:background="@drawable/ic_login">
 
     <!-- TODO: Update blank fragment layout -->
-
-
-
     <LinearLayout
         android:layout_centerHorizontal="true"
         android:layout_centerVertical="true"
@@ -15,47 +13,74 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:baselineAligned="false"
-        android:id="@+id/linearLayout">
+        android:id="@+id/linearLayout"
+        android:weightSum="1">
+
 
         <TextView
+            android:id="@+id/textView4"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:textAppearance="?android:attr/textAppearanceLarge" />
+
+        <TextView
+            android:id="@+id/textView3"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:textAppearance="?android:attr/textAppearanceLarge" />
+
+        <TextView
+            android:id="@+id/textView2"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:textAppearance="?android:attr/textAppearanceLarge" />
+
+        <TextView
+            android:id="@+id/textView"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
             android:textAppearance="?android:attr/textAppearanceLarge"
-            android:text="User Login"
-            android:id="@+id/textView"
-            android:layout_gravity="center_horizontal"/>
+            android:layout_marginTop="25dp"/>
 
         <EditText
-            android:layout_margin="15dp"
-            android:inputType="textEmailAddress"
             android:id="@+id/editTexEmail"
+            android:layout_width="279dp"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
             android:hint="Enter your Email"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content" />
+            android:inputType="textEmailAddress"
+            android:layout_weight="0.11"
+            android:ellipsize="start"/>
 
         <EditText
-            android:layout_margin="15dp"
             android:id="@+id/editTexPassword"
-            android:layout_width="match_parent"
+            android:layout_width="279dp"
             android:layout_height="wrap_content"
+            android:layout_marginTop="3dp"
             android:hint="Enter your password"
+            android:layout_gravity="center"
             android:inputType="textPassword" />
 
-        <Button
+        <ImageButton
             android:id="@+id/buttonSignin"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:text="Register User"
+            android:layout_width="297dp"
+            android:layout_height="60dp"
             android:layout_margin="15dp"
-            android:text="Signin" />
+            android:background="@drawable/login_button1"
+            android:layout_gravity="center"
+            />
 
         <TextView
             android:textAlignment="center"
-            android:hint="Not have an account? Signup Here"
-            android:id="@+id/textViewSignUp"
+            android:hint="FORGET YOUR PASSWORD?"
+            android:id="@+id/textViewForget"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             />
     </LinearLayout>
-
-
 </RelativeLayout>

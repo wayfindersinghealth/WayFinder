@@ -18,6 +18,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -54,7 +55,7 @@ public class RegisterFragment extends Fragment {
 
     private OnFragmentInteractionListener mListener;
 
-    private Button buttonRegister;
+    private ImageButton buttonRegister;
     private EditText editTextEmail;
     private EditText editTextPassword;
     private TextView textViewSignin;
@@ -110,7 +111,7 @@ public class RegisterFragment extends Fragment {
         */
 
         textViewSignin =(TextView)rootView.findViewById(R.id.textViewSignin);
-        buttonRegister = (Button)rootView.findViewById(R.id.buttonRegister);
+        buttonRegister = (ImageButton) rootView.findViewById(R.id.buttonRegister);
         editTextEmail = (EditText)rootView.findViewById(R.id.editTexEmail);
         editTextPassword = (EditText)rootView.findViewById(R.id.editTexPassword);
 
@@ -204,8 +205,7 @@ public class RegisterFragment extends Fragment {
                             public void onComplete(@NonNull Task<AuthResult> task) {
                                 if(task.isSuccessful()){
 
-                                    Toast.makeText(getActivity(),"Register Successfully,Please enter you email to verification",Toast.LENGTH_LONG).show();
-
+                                    Toast.makeText(getActivity(),"Welcome",Toast.LENGTH_LONG).show();
                                     Fragment fragment;
                                     fragment = new LoginFragment();
                                     FragmentManager fragmentManager = getFragmentManager();
