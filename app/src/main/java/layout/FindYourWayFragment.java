@@ -1,22 +1,37 @@
 package layout;
 
+import android.app.ProgressDialog;
 import android.content.Context;
+import android.graphics.Bitmap;
+import android.graphics.Color;
+import android.graphics.Path;
+import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.Drawable;
 import android.location.Location;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.net.Uri;
 import android.net.wifi.ScanResult;
 import android.net.wifi.WifiManager;
 import android.os.AsyncTask;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.CountDownTimer;
+import android.os.Environment;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
+import android.support.v4.content.ContextCompat;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.Menu;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
+import android.widget.Button;
+import android.widget.EditText;
+import android.widget.Spinner;
 import android.widget.Toast;
 
 import com.google.firebase.database.DataSnapshot;
@@ -26,11 +41,15 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 import com.google.gson.JsonParser;
+import com.graphhopper.GraphHopper;
+import com.graphhopper.util.Constants;
 import com.mapbox.mapboxsdk.Mapbox;
 import com.mapbox.mapboxsdk.annotations.Icon;
 import com.mapbox.mapboxsdk.annotations.IconFactory;
 import com.mapbox.mapboxsdk.annotations.MarkerView;
 import com.mapbox.mapboxsdk.annotations.MarkerViewOptions;
+import com.mapbox.mapboxsdk.annotations.Polyline;
+import com.mapbox.mapboxsdk.annotations.PolylineOptions;
 import com.mapbox.mapboxsdk.camera.CameraPosition;
 import com.mapbox.mapboxsdk.geometry.LatLng;
 import com.mapbox.mapboxsdk.maps.MapView;
@@ -41,6 +60,28 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+
+
+import com.graphhopper.GHRequest;
+import com.graphhopper.GHResponse;
+import com.graphhopper.GraphHopper;
+import com.graphhopper.PathWrapper;
+import com.graphhopper.util.Constants;
+import com.graphhopper.util.Helper;
+import com.graphhopper.util.Parameters.Algorithms;
+import com.graphhopper.util.Parameters.Routing;
+import com.graphhopper.util.PointList;
+import com.graphhopper.util.ProgressListener;
+import com.graphhopper.util.StopWatch;
+
+import java.io.File;
+import java.io.FilenameFilter;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.Map;
+import java.util.TreeMap;
+
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.IOException;
@@ -49,11 +90,7 @@ import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.util.ArrayList;
-import java.util.Collections;
 import java.util.Comparator;
-import java.util.List;
-import java.util.Map;
 import java.util.Timer;
 import java.util.TimerTask;
 import java.util.concurrent.ExecutionException;
@@ -61,6 +98,9 @@ import java.util.concurrent.TimeUnit;
 
 import javax.net.ssl.HttpsURLConnection;
 
+import sg.com.singhealth.wayfinder.AndroidDownloader;
+import sg.com.singhealth.wayfinder.AndroidHelper;
+import sg.com.singhealth.wayfinder.GHAsyncTask;
 import sg.com.singhealth.wayfinder.LocTracker;
 import sg.com.singhealth.wayfinder.LocationDetail;
 import sg.com.singhealth.wayfinder.MainActivity;
@@ -107,6 +147,22 @@ public class FindYourWayFragment extends Fragment {
 
     private OnFragmentInteractionListener mListener;
 
+    //-- Graphhopper Variable --
+//    private String targetFilePath = "/sdcard/Download/graphhopper/maps/";
+    private File mapsFolder;
+    private volatile boolean prepareInProgress = false;
+    private String currentArea = "singapore7";
+//    private String fileListURL = "http://download2.graphhopper.com/public/maps/" + Constants.getMajorVersion() + "/";
+//    private String prefixURL = fileListURL;
+    private String downloadURL;
+    private GraphHopper hopper;
+    private volatile boolean shortestPathRunning = false;
+    private LatLng start;
+    private LatLng end;
+    private int userCurrentPos = 0;
+    private List<LatLng> calculatedPoints = new ArrayList<>();
+    private List<Polyline> calculatedPolylines = new ArrayList<>();
+
     public FindYourWayFragment() {
         // Required empty public constructor
     }
@@ -135,6 +191,21 @@ public class FindYourWayFragment extends Fragment {
 
         //-- MapBox Access Token --
         Mapbox.getInstance(getActivity(), getString(R.string.access_token));
+
+        //-- Set Graphhopper Map Folder --
+        boolean greaterOrEqKitkat = Build.VERSION.SDK_INT >= 19;
+        if (greaterOrEqKitkat) {
+            if (!Environment.getExternalStorageState().equals(Environment.MEDIA_MOUNTED)) {
+                logUser("GraphHopper is not usable without an external storage!");
+                return;
+            }
+            mapsFolder = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS),
+                    "/graphhopper/maps/");
+        } else
+            mapsFolder = new File(Environment.getExternalStorageDirectory(), "/graphhopper/maps/");
+
+        if (!mapsFolder.exists())
+            mapsFolder.mkdirs();
 
         if (getArguments() != null) {
             mParam1 = getArguments().getString(ARG_PARAM1);
@@ -193,6 +264,7 @@ public class FindYourWayFragment extends Fragment {
         mapView = (MapView) rootView.findViewById(R.id.mapView);
         mapView.onCreate(savedInstanceState);
 
+
         mapView.getMapAsync(new OnMapReadyCallback() {
             @Override
             public void onMapReady(final MapboxMap mapboxMap) {
@@ -211,144 +283,182 @@ public class FindYourWayFragment extends Fragment {
                 mapboxMap.setMaxZoomPreference(20);
                 mapboxMap.setMinZoomPreference(18.7);
 
-                //-- Timer to Loops Marker Change ---
-                t = new Timer();
-                t.scheduleAtFixedRate(new TimerTask() {
+//
+//                //-- Timer to Loops Marker Change ---
+//                t = new Timer();
+//                t.scheduleAtFixedRate(new TimerTask() {
+//
+////                    int times = 15;
+////                    boolean truth;
+//
+//                    @Override
+//                    public void run() {
+//                        int times = 15;
+//                        boolean truth = true;
+//                        ArrayList<LocTracker> locationArray = new ArrayList<>();
+//
+//                        try {
+//                            for (int t = 0; t <times; t++) {
+//                                String locations;
+//
+//                                locations = new PostTrackAPI().execute("https://ml.internalpositioning.com/track").get();
+//
+//                                if (locations.isEmpty()) {
+//                                    Log.d("Location: ", "NULL");
+//                                    break;
+//                                } else {
+//                                    Log.d("Location Name API", locations);
+//
+//                                    if (locationArray.size() == 0 ) {
+//                                        LocTracker thisLoc = new LocTracker();
+//                                        thisLoc.setCounter(1);
+//                                        thisLoc.setLocationName(locations);
+//                                        locationArray.add(thisLoc);
+//
+//                                    } else {
+//                                        for (int i=0; i<locationArray.size(); i++) {
+//                                            if (locationArray.get(i).getLocationName().equalsIgnoreCase(locations)) {
+//                                                locationArray.get(i).setCounter(locationArray.get(i).getCounter() + 1);
+//                                                truth = true;
+//                                                break;
+//                                            } else {
+//                                                truth = false;
+//                                            }
+//                                        }
+//
+//                                        if (!truth) {
+//                                            LocTracker location = new LocTracker();
+//                                            location.setLocationName(locations);
+//                                            location.setCounter(1);
+//                                            locationArray.add(location);
+//                                        }
+//                                    }
+//
+//                                }
+//                            }
+//                        } catch (InterruptedException e) {
+//                            e.printStackTrace();
+//                        } catch (ExecutionException e) {
+//                            e.printStackTrace();
+//                        }
+//
+//                        //Before Sorting ArrayList
+//                        for (int i=0; i < locationArray.size(); i++) {
+//                            Log.d("Before Sort", locationArray.get(i).getLocationName() + ", " + locationArray.get(i).getCounter());
+//                        }
+//
+//                        //Comparing and Sorting based on least counter to most counter
+//                        int maxCounter;
+//                        String maxLocation = null;
+//                        if (locationArray.size() == 1){
+//                            for (int h = 0; h < locationArray.size(); h++) {
+//                                maxLocation = locationArray.get(h).getLocationName();
+//                                maxCounter = locationArray.get(h).getCounter();
+//                            }
+//                        } else if (locationArray.size() > 0) {
+//                            //Sorting arraylist according to Smallest to Largest Counter
+//                            Collections.sort(locationArray, new Comparator<LocTracker>() {
+//                                @Override
+//                                public int compare(LocTracker locTracker, LocTracker t1) {
+//                                    return Integer.compare(locTracker.getCounter(), t1.getCounter());
+//                                }
+//                            });
+//
+//
+//                            //After Sorting ArrayList
+//                            for (int j=0; j < locationArray.size(); j++) {
+//                                Log.d("After Sort", locationArray.get(j).getLocationName() + ", " + locationArray.get(j).getCounter());
+//                            }
+//                            Log.d("Last Item After Sort", locationArray.get(locationArray.size()-1).getLocationName() + ", " + locationArray.get(locationArray.size()-1).getCounter());
+//                            maxLocation = locationArray.get(locationArray.size()-1).getLocationName();
+//                        }
+//
+//                        //-- Compare to Database --
+//                        if (maxLocation == null) {
+//                            Log.d("maxLocation: ", "NULL");
+//                        } else {
+//                            String finalLocation = maxLocation.toUpperCase();
+//                            Log.d("Final Location", finalLocation);
+//                            Log.d("-----------------------", "-----------------------");
+//
+//                            Query locationQuery = databaseLocation.orderByChild("id").equalTo(finalLocation);
+//                            locationQuery.addValueEventListener(new ValueEventListener() {
+//                                @Override
+//                                public void onDataChange(DataSnapshot dataSnapshot) {
+//                                    for (DataSnapshot locationSnapshot : dataSnapshot.getChildren()) {
+//                                        //-- Get Longitude and Latitude --
+//                                        double locLatitude = (double) locationSnapshot.child("latitude").getValue();
+//                                        double locLongitude = (double) locationSnapshot.child("longitude").getValue();
+//
+//                                        currentLocation = new LatLng(locLatitude, locLongitude);
+//
+//                                        Log.d("LatLng", locLatitude + ", " + locLongitude);
+//
+//                                        //-- Marker Icon --
+//                                        IconFactory iconFactory = IconFactory.getInstance(getActivity());
+//                                        Icon icon = iconFactory.fromResource(R.drawable.ic_curr_location);
+//
+//                                        //-- Set Marker on Map --
+//                                        LatLng latLng = new LatLng(locLatitude, locLongitude);
+//
+//                                        if (markerView == null) {
+//                                            markerView = mapboxMap.addMarker(new MarkerViewOptions().position(new LatLng(locLatitude, locLongitude)));
+//                                            markerView.setIcon(icon);
+//                                            markerView.setTitle("You Are Here");
+//                                        } else{
+//                                            markerView.setPosition(latLng);
+//                                            markerView.setIcon(icon);
+//                                            markerView.setTitle("You Are Here");
+//                                        }
+//                                    }
+//                                }
+//
+//                                @Override
+//                                public void onCancelled(DatabaseError databaseError) {
+//
+//                                }
+//                            });
+//                        }
+//
+//                    }
+//                },0,2000); //4500
 
-//                    int times = 15;
-//                    boolean truth;
 
+                mapboxMap.setOnMapLongClickListener(new MapboxMap.OnMapLongClickListener() {
                     @Override
-                    public void run() {
-                        int times = 15;
-                        boolean truth = true;
-                        ArrayList<LocTracker> locationArray = new ArrayList<>();
-
-                        try {
-                            for (int t = 0; t <times; t++) {
-                                String locations;
-
-                                locations = new PostTrackAPI().execute("https://ml.internalpositioning.com/track").get();
-
-                                if (locations.isEmpty()) {
-                                    Log.d("Location: ", "NULL");
-                                    break;
-                                } else {
-                                    Log.d("Location Name API", locations);
-
-                                    if (locationArray.size() == 0 ) {
-                                        LocTracker thisLoc = new LocTracker();
-                                        thisLoc.setCounter(1);
-                                        thisLoc.setLocationName(locations);
-                                        locationArray.add(thisLoc);
-
-                                    } else {
-                                        for (int i=0; i<locationArray.size(); i++) {
-                                            if (locationArray.get(i).getLocationName().equalsIgnoreCase(locations)) {
-                                                locationArray.get(i).setCounter(locationArray.get(i).getCounter() + 1);
-                                                truth = true;
-                                                break;
-                                            } else {
-                                                truth = false;
-                                            }
-                                        }
-
-                                        if (!truth) {
-                                            LocTracker location = new LocTracker();
-                                            location.setLocationName(locations);
-                                            location.setCounter(1);
-                                            locationArray.add(location);
-                                        }
-                                    }
-
-                                }
-                            }
-                        } catch (InterruptedException e) {
-                            e.printStackTrace();
-                        } catch (ExecutionException e) {
-                            e.printStackTrace();
+                    public void onMapLongClick(LatLng point) {
+                        if (!isReady()) {
+                            logUser("Load Map or Graph failed!");
+                            return;
+                        }
+                        if (shortestPathRunning) {
+                            logUser("Calculation still in progress");
+                            return;
                         }
 
-                        //Before Sorting ArrayList
-                        for (int i=0; i < locationArray.size(); i++) {
-                            Log.d("Before Sort", locationArray.get(i).getLocationName() + ", " + locationArray.get(i).getCounter());
-                        }
+                        if (start != null && end == null) {
+                            end = point;
+                            shortestPathRunning = true;
 
-                        //Comparing and Sorting based on least counter to most counter
-                        int maxCounter;
-                        String maxLocation = null;
-                        if (locationArray.size() == 1){
-                            for (int h = 0; h < locationArray.size(); h++) {
-                                maxLocation = locationArray.get(h).getLocationName();
-                                maxCounter = locationArray.get(h).getCounter();
-                            }
-                        } else if (locationArray.size() > 0) {
-                            //Sorting arraylist according to Smallest to Largest Counter
-                            Collections.sort(locationArray, new Comparator<LocTracker>() {
-                                @Override
-                                public int compare(LocTracker locTracker, LocTracker t1) {
-                                    return Integer.compare(locTracker.getCounter(), t1.getCounter());
-                                }
-                            });
+                            // Add the marker to the map
+                            mapboxMap.addMarker(createMarkerItem(end, R.drawable.ic_curr_location, "Destination", ""));
 
-
-                            //After Sorting ArrayList
-                            for (int j=0; j < locationArray.size(); j++) {
-                                Log.d("After Sort", locationArray.get(j).getLocationName() + ", " + locationArray.get(j).getCounter());
-                            }
-                            Log.d("Last Item After Sort", locationArray.get(locationArray.size()-1).getLocationName() + ", " + locationArray.get(locationArray.size()-1).getCounter());
-                            maxLocation = locationArray.get(locationArray.size()-1).getLocationName();
-                        }
-
-                        //-- Compare to Database --
-                        if (maxLocation == null) {
-                            Log.d("maxLocation: ", "NULL");
+                            // Calculate Shortest Path
+                            calcPath(start.getLatitude(), start.getLongitude(), end.getLatitude(), end.getLongitude(), mapboxMap);
                         } else {
-                            String finalLocation = maxLocation.toUpperCase();
-                            Log.d("Final Location", finalLocation);
-                            Log.d("-----------------------", "-----------------------");
-
-                            Query locationQuery = databaseLocation.orderByChild("id").equalTo(finalLocation);
-                            locationQuery.addValueEventListener(new ValueEventListener() {
-                                @Override
-                                public void onDataChange(DataSnapshot dataSnapshot) {
-                                    for (DataSnapshot locationSnapshot : dataSnapshot.getChildren()) {
-                                        //-- Get Longitude and Latitude --
-                                        double locLatitude = (double) locationSnapshot.child("latitude").getValue();
-                                        double locLongitude = (double) locationSnapshot.child("longitude").getValue();
-
-                                        currentLocation = new LatLng(locLatitude, locLongitude);
-
-                                        Log.d("LatLng", locLatitude + ", " + locLongitude);
-
-                                        //-- Marker Icon --
-                                        IconFactory iconFactory = IconFactory.getInstance(getActivity());
-                                        Icon icon = iconFactory.fromResource(R.drawable.ic_curr_location);
-
-                                        //-- Set Marker on Map --
-                                        LatLng latLng = new LatLng(locLatitude, locLongitude);
-
-                                        if (markerView == null) {
-                                            markerView = mapboxMap.addMarker(new MarkerViewOptions().position(new LatLng(locLatitude, locLongitude)));
-                                            markerView.setIcon(icon);
-                                            markerView.setTitle("You Are Here");
-                                        } else{
-                                            markerView.setPosition(latLng);
-                                            markerView.setIcon(icon);
-                                            markerView.setTitle("You Are Here");
-                                        }
-                                    }
-                                }
-
-                                @Override
-                                public void onCancelled(DatabaseError databaseError) {
-
-                                }
-                            });
+                            userCurrentPos = 0;
+                            start = point;
+                            String test = Double.toString(start.getLatitude()) + "," + Double.toString(start.getLongitude());
+                            Log.e("Test", Double.toString(start.getLatitude()) + "," + Double.toString(start.getLongitude()));
+                            end = null;
+                            mapboxMap.clear();
+                            // Add the marker to the map
+                            mapboxMap.addMarker(createMarkerItem(start, R.drawable.ic_destination_flag, "Start", ""));
                         }
-
                     }
-                },0,2000); //4500
+                });
+
+                initFiles(currentArea);
 
                 //-- Floating Action Button Click to go to Current Location--
                 FloatingActionButton fab = (FloatingActionButton) rootView.findViewById(R.id.fab);
@@ -530,6 +640,265 @@ public class FindYourWayFragment extends Fragment {
     public void onDestroy() {
         super.onDestroy();
         mapView.onDestroy();
+    }
+
+    //-------- Graphhopper Methods --------
+
+    //---- Network Checker to Download Graphhopper Map ----
+    private boolean isNetworkAvailable() {
+        ConnectivityManager connectivityManager
+                = (ConnectivityManager) getActivity().getApplicationContext().getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo activeNetworkInfo = connectivityManager.getActiveNetworkInfo();
+        return activeNetworkInfo != null && activeNetworkInfo.isConnected();
+    }
+
+    //---- IsReady Method ----
+    boolean isReady() {
+        // only return true if already loaded
+        if (hopper != null)
+            return true;
+
+        if (prepareInProgress) {
+            logUser("Preparation still in progress");
+            return false;
+        }
+        logUser("Prepare finished but hopper not ready. This happens when there was an error while loading the files");
+        return false;
+    }
+
+    //---- InitFiles Method ----
+    private void initFiles(String area) {
+        prepareInProgress = true;
+        currentArea = area;
+        downloadingFiles();
+    }
+
+    //---- DownloadingFiles Method ----
+    void downloadingFiles() {
+        final File areaFolder = new File(mapsFolder, currentArea + "-gh");
+        if (downloadURL == null || areaFolder.exists()) {
+            loadMap(areaFolder);
+            return;
+        }
+
+        final ProgressDialog dialog = new ProgressDialog(getActivity());
+        dialog.setMessage("Downloading and uncompressing " + downloadURL);
+        dialog.setIndeterminate(false);
+        dialog.setMax(100);
+        dialog.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
+        dialog.show();
+
+        new GHAsyncTask<Void, Integer, Object>() {
+            protected Object saveDoInBackground(Void... _ignore)
+                    throws Exception {
+                String localFolder = Helper.pruneFileEnd(AndroidHelper.getFileName(downloadURL));
+                localFolder = new File(mapsFolder, localFolder + "-gh").getAbsolutePath();
+                log("downloading & unzipping " + downloadURL + " to " + localFolder);
+                AndroidDownloader downloader = new AndroidDownloader();
+                downloader.setTimeout(30000);
+                downloader.downloadAndUnzip(downloadURL, localFolder,
+                        new ProgressListener() {
+                            @Override
+                            public void update(long val) {
+                                publishProgress((int) val);
+                            }
+                        });
+                return null;
+            }
+
+            protected void onProgressUpdate(Integer... values) {
+                super.onProgressUpdate(values);
+                dialog.setProgress(values[0]);
+            }
+
+            protected void onPostExecute(Object _ignore) {
+                dialog.dismiss();
+                if (hasError()) {
+                    String str = "An error happened while retrieving maps:" + getErrorMessage();
+                    log(str, getError());
+                    logUser(str);
+                } else {
+                    loadMap(areaFolder);
+                }
+            }
+        }.execute();
+    }
+
+    //---- LoadMap Method ----
+    void loadMap(File areaFolder) {
+//        logUser("loading map");
+
+        // Long press receiver
+//        mapView.map().layers().add(new LongPressLayer(mapView.map()));
+//
+//        // Map file source
+//        MapFileTileSource tileSource = new MapFileTileSource();
+//        tileSource.setMapFile(new File(areaFolder, currentArea + ".map").getAbsolutePath());
+//        VectorTileLayer l = mapView.map().setBaseMap(tileSource);
+//        mapView.map().setTheme(VtmThemes.DEFAULT);
+//        mapView.map().layers().add(new BuildingLayer(mapView.map(), l));
+//        mapView.map().layers().add(new LabelLayer(mapView.map(), l));
+//
+//        // Markers layer
+//        itemizedLayer = new ItemizedLayer<>(mapView.map(), (MarkerSymbol) null);
+//        mapView.map().layers().add(itemizedLayer);
+//
+//        // Map position
+//        GeoPoint mapCenter = tileSource.getMapInfo().boundingBox.getCenterPoint();
+//        mapView.map().setMapPosition(mapCenter.getLatitude(), mapCenter.getLongitude(), 1 << 15);
+//
+//        setContentView(mapView);
+        loadGraphStorage();
+    }
+
+    //---- LoadGraphStorage Method ----
+    void loadGraphStorage() {
+        //logUser("loading graph (" + Constants.VERSION + ") ... ");
+        new GHAsyncTask<Void, Void, Path>() {
+            protected Path saveDoInBackground(Void... v) throws Exception {
+                GraphHopper tmpHopp = new GraphHopper().forMobile();
+                tmpHopp.load(new File(mapsFolder, currentArea).getAbsolutePath() + "-gh");
+                log("found graph " + tmpHopp.getGraphHopperStorage().toString() + ", nodes:" + tmpHopp.getGraphHopperStorage().getNodes());
+                hopper = tmpHopp;
+                return null;
+            }
+
+            protected void onPostExecute(Path o) {
+                if (hasError()) {
+                    logUser("An error happened while creating graph:"
+                            + getErrorMessage());
+                } else {
+                    logUser("Finished loading graph. Long press to define where to start and end the route.");
+                }
+                finishPrepare();
+            }
+        }.execute();
+    }
+
+    //----FinishPrepare Method ----
+    private void finishPrepare() {
+        prepareInProgress = false;
+    }
+
+    //---- GetBearing Method ----
+    private double getBearing(LatLng first, LatLng second) {
+        double longitude1 = first.getLongitude();
+        double longitude2 = second.getLongitude();
+        double latitude1 = Math.toRadians(first.getLatitude());
+        double latitude2 = Math.toRadians(second.getLatitude());
+        double longDiff = Math.toRadians(longitude2 - longitude1);
+        double y = Math.sin(longDiff) * Math.cos(latitude2);
+        double x = Math.cos(latitude1) * Math.sin(latitude2) - Math.sin(latitude1) * Math.cos(latitude2) * Math.cos(longDiff);
+
+        return (Math.toDegrees(Math.atan2(y, x)) + 360) % 360;
+    }
+
+    //---- CalcPath Method ----
+    public void calcPath(final double fromLat, final double fromLon,
+                         final double toLat, final double toLon, final MapboxMap mapboxMap) {
+
+        log("calculating path ...");
+        new AsyncTask<Void, Void, PathWrapper>() {
+            float time;
+
+            protected PathWrapper doInBackground(Void... v) {
+                StopWatch sw = new StopWatch().start();
+                GHRequest req = new GHRequest(fromLat, fromLon, toLat, toLon).
+                        setAlgorithm(Algorithms.DIJKSTRA_BI);
+                req.getHints().
+                        put(Routing.INSTRUCTIONS, "false");
+                GHResponse resp = hopper.route(req);
+                time = sw.stop().getSeconds();
+                return resp.getBest();
+            }
+
+            protected void onPostExecute(PathWrapper resp) {
+                if (!resp.hasErrors()) {
+                    log("from:" + fromLat + "," + fromLon + " to:" + toLat + ","
+                            + toLon + " found path with distance:" + resp.getDistance()
+                            / 1000f + ", nodes:" + resp.getPoints().getSize() + ", time:"
+                            + time + " " + resp.getDebugInfo());
+                    logUser("the route is " + (int) (resp.getDistance() / 100) / 10f
+                            + "km long, time:" + resp.getTime() / 60000f + "min, debug:" + time);
+
+                    List<LatLng> points = createPathLayer(resp);
+                    List<Polyline> polylines = new ArrayList<Polyline>();
+
+                    if (points.size() > 0) {
+                        for (int i = 0; i < points.size() - 1; i++) {
+                            // Draw polyline on map
+                            Polyline polyline = mapboxMap.addPolyline(new PolylineOptions()
+                                    .add(points.get(i))
+                                    .add(points.get(i + 1))
+                                    .color(Color.parseColor("#F27777"))
+                                    .width(3));
+                            polylines.add(polyline);
+                        }
+                    }
+                    setCalculatedPointsAndPolylines(points, polylines);
+
+                    Double bearing = getBearing(points.get(0), points.get(1));
+
+//                   pathLayer = createPathLayer(resp);
+//                   mapView.map().layers().add(pathLayer);
+//                   mapView.map().updateMap(true);
+
+                } else {
+                    logUser("Error:" + resp.getErrors());
+                }
+                shortestPathRunning = false;
+            }
+        }.execute();
+    }
+
+    //---- List CreatePathLayer Method ----
+    private List<LatLng> createPathLayer(PathWrapper response) {
+        List<LatLng> geoPoints = new ArrayList<>();
+        PointList pointList = response.getPoints();
+        for (int i = 0; i < pointList.getSize(); i++) {
+            geoPoints.add(new LatLng(pointList.getLatitude(i), pointList.getLongitude(i)));
+        }
+        return geoPoints;
+    }
+
+    //---- SetCalculatedPointsAndPolylines Method ----
+    private void setCalculatedPointsAndPolylines(List<LatLng> points, List<Polyline> polylines) {
+        calculatedPoints = points;
+        calculatedPolylines = polylines;
+    }
+
+    private MarkerViewOptions createMarkerItem(LatLng point, int resource, String title, String snippet) {
+        IconFactory iconFactory = IconFactory.getInstance(getActivity());
+        Drawable iconDrawable = ContextCompat.getDrawable(getActivity(), resource);
+        Bitmap bitmap = ((BitmapDrawable) iconDrawable).getBitmap();
+        // Scale it to 50 x 50
+        Drawable d = new BitmapDrawable(getResources(), Bitmap.createScaledBitmap(bitmap, 80, 80, true));
+        Icon icon = iconFactory.fromResource(R.drawable.ic_existing_location);
+
+        MarkerViewOptions marker = new MarkerViewOptions()
+                .position(point)
+                .icon(icon)
+                .anchor(0.5f, 1)
+                .title(title)
+                .snippet(snippet);
+
+        return marker;
+    }
+
+    //---- Log Method ----
+    private void log(String str) {
+        Log.i("GH", str);
+    }
+
+    //---- Log Method ----
+    private void log(String str, Throwable t) {
+        Log.i("GH", str, t);
+    }
+
+    //---- LogUser Method ----
+    private void logUser(String str) {
+        log(str);
+        Toast.makeText(getActivity(), str, Toast.LENGTH_LONG).show();
     }
 
     //---- Format Data As JSON Method ----

@@ -107,6 +107,7 @@ public class MainActivity extends AppCompatActivity
         //-- Hide Keyboard in DrawerLayout --
         ActionBarDrawerToggle actionBarDrawerToggle = new ActionBarDrawerToggle(this, drawer, toolbar, R.string.app_name, R.string.app_name) {
 
+
             @Override
             public void onDrawerClosed(View drawerView) {
                 super.onDrawerClosed(drawerView);
@@ -118,6 +119,15 @@ public class MainActivity extends AppCompatActivity
                 super.onDrawerOpened(drawerView);
                 hideKeyboard(drawerView);
             }
+
+//            FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+//            nav_Menu = navigationView.getMenu();
+//        if (user != null){
+//                nav_Menu.findItem(R.id.nav_logout).setVisible(true);
+//            }
+//        else {
+//                nav_Menu.findItem(R.id.nav_logout).setVisible(false);
+//            }
         };
 
         //Setting the actionbarToggle to drawer layout
@@ -140,14 +150,7 @@ public class MainActivity extends AppCompatActivity
 
         //-------- DO NOT TOUCH END --------
 
-        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
-        nav_Menu = navigationView.getMenu();
-        if (user != null){
-            nav_Menu.findItem(R.id.nav_logout).setVisible(true);
-        }
-        else {
-            nav_Menu.findItem(R.id.nav_logout).setVisible(false);
-        }
+
 
     }
 
@@ -363,6 +366,7 @@ public class MainActivity extends AppCompatActivity
 
     //---- Access Logout Function ----
     public void navigationLogout() {
+
         nav_Menu.findItem(R.id.nav_logout).setVisible(false);
 
         FirebaseAuth.getInstance().signOut();
