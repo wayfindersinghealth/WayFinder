@@ -1,10 +1,12 @@
 package sg.com.singhealth.wayfinder;
 
-/**
- * Created by L31105 on 10/30/2017.
- */
-
 import com.graphhopper.util.Downloader;
+
+/**
+ * File Name: AndroidDownloader.java
+ * Created By: AY17 P3 FYPJ NYP SIT
+ * Description: -
+ */
 
 public class AndroidDownloader extends Downloader {
     public AndroidDownloader() {

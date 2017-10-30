@@ -1,9 +1,5 @@
 package sg.com.singhealth.wayfinder;
 
-/**
- * Created by L31105 on 10/30/2017.
- */
-
 import android.content.Context;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
@@ -13,6 +9,12 @@ import java.io.IOException;
 import java.io.Reader;
 import java.util.ArrayList;
 import java.util.List;
+
+/**
+ * File Name: AndroidHelper.java
+ * Created By: AY17 P3 FYPJ NYP SIT
+ * Description: -
+ */
 
 public class AndroidHelper {
     public static List<String> readFile(Reader simpleReader) throws IOException {

@@ -1,10 +1,12 @@
 package sg.com.singhealth.wayfinder;
 
-/**
- * Created by L31105 on 10/30/2017.
- */
-
 import android.os.AsyncTask;
+
+/**
+ * File Name: GHAsyncTask.java
+ * Created By: AY17 P3 FYPJ NYP SIT
+ * Description: -
+ */
 
 public abstract class GHAsyncTask<A, B, C> extends AsyncTask<A, B, C> {
     private Throwable error;
