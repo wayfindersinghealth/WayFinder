@@ -405,31 +405,25 @@ public class FindYourWayFragment extends Fragment {
                             logUser("Calculation still in progress");
                             return;
                         }
+                        //-- Destination Marker Icon --
+                        IconFactory iconFactory = IconFactory.getInstance(getActivity());
+                        Icon icon = iconFactory.fromResource(R.drawable.ic_destination_flag);
 
                         if (currentLocation != null && end == null) {
                             end = point;
                             shortestPathRunning = true;
 
-                            //-- Destination Marker Icon --
-                            IconFactory iconFactory = IconFactory.getInstance(getActivity());
-                            Icon icon = iconFactory.fromResource(R.drawable.ic_destination_flag);
-
                             // Add the marker to the map
-                            //mapboxMap.addMarker(createMarkerItem(end, R.drawable.ic_curr_location, "Destination", ""));
                             markerViewCurrent = mapboxMap.addMarker(new MarkerViewOptions().position(end));
                             markerViewCurrent.setIcon(icon);
                             markerViewCurrent.setTitle("Destination");
 
                             // Calculate Shortest Path
                             calcPath(currentLocation.getLatitude(), currentLocation.getLongitude(), end.getLatitude(), end.getLongitude(), mapboxMap);
-                        }else if (currentLocation != null && end != null) {
 
+                        }else if (currentLocation != null && end != null) {
                             end = point;
                             shortestPathRunning = true;
-
-                            //-- Destination Marker Icon --
-                            IconFactory iconFactory = IconFactory.getInstance(getActivity());
-                            Icon icon = iconFactory.fromResource(R.drawable.ic_destination_flag);
 
                             // Add the marker to the map
                             markerViewCurrent.setPosition(point);
@@ -438,6 +432,8 @@ public class FindYourWayFragment extends Fragment {
 
                             // Calculate Shortest Path
                             calcPath(currentLocation.getLatitude(), currentLocation.getLongitude(), end.getLatitude(), end.getLongitude(), mapboxMap);
+                        }else {
+                            Toast.makeText(getActivity(), "Locating, Please Wait." , Toast.LENGTH_SHORT).show();
                         }
 
                     }
@@ -497,6 +493,7 @@ public class FindYourWayFragment extends Fragment {
                                     if (locMarker != null) {
                                         locMarker.setPosition(latLng);
                                         locMarker.setIcon(icon);
+
 
                                     } else if (locMarker == null){
                                         locMarker = mapboxMap.addMarker(new MarkerViewOptions().position(new LatLng(locLatitude, locLongitude)));
@@ -727,6 +724,7 @@ public class FindYourWayFragment extends Fragment {
         }.execute();
     }
 
+
     //----FinishPrepare Method ----
     private void finishPrepare() {
         prepareInProgress = false;
@@ -762,8 +760,8 @@ public class FindYourWayFragment extends Fragment {
                                 + toLon + " found path with distance:" + resp.getDistance()
                                 / 1000f + ", nodes:" + resp.getPoints().getSize() + ", time:"
                                 + time + " " + resp.getDebugInfo());
-                        logUser("the route is " + (int) (resp.getDistance() / 100) / 10f
-                                + "km long, time:" + resp.getTime() / 60000f + "min, debug:" + time);
+//                        logUser("the route is " + (int) (resp.getDistance() / 100) / 10f
+//                                + "km long, time:" + resp.getTime() / 60000f + "min, debug:" + time);
 
                         points = createPathLayer(resp);
 
@@ -784,8 +782,8 @@ public class FindYourWayFragment extends Fragment {
                                 + toLon + " found path with distance:" + resp.getDistance()
                                 / 1000f + ", nodes:" + resp.getPoints().getSize() + ", time:"
                                 + time + " " + resp.getDebugInfo());
-                        logUser("the route is " + (int) (resp.getDistance() / 100) / 10f
-                                + "km long, time:" + resp.getTime() / 60000f + "min, debug:" + time);
+//                        logUser("the route is " + (int) (resp.getDistance() / 100) / 10f
+//                                + "km long, time:" + resp.getTime() / 60000f + "min, debug:" + time);
 
                         points = createPathLayer(resp);
 
