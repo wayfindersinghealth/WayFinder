@@ -193,6 +193,8 @@ public class LearnFragment extends Fragment {
                     }
                 });
 
+
+
                 //-- Customize map with markers, polylines, etc. --
                 //-- MapBox URL --
                 mapboxMap.setStyleUrl(getString((R.string.mapbox_url)));
@@ -206,11 +208,12 @@ public class LearnFragment extends Fragment {
                 mapboxMap.setCameraPosition(position);
                 mapboxMap.animateCamera(CameraUpdateFactory.newCameraPosition(position), 2000);
 
+
                 //-- Set Camera LatLng Bounds --
                 mapboxMap.setLatLngBoundsForCameraTarget(NYPBLKL_BOUNDS);
 
                 mapboxMap.setMaxZoomPreference(20);
-                mapboxMap.setMinZoomPreference(19);
+                mapboxMap.setMinZoomPreference(19.2);
 
                 //-- Connecting to DB --
                 databaseLocation = FirebaseDatabase.getInstance().getReference("locations");
@@ -371,7 +374,7 @@ public class LearnFragment extends Fragment {
 
     //---- Format Data As JSON Method ----
     public void formatDataAsJSON() {
-        CountDownTimer timer = new CountDownTimer(240000, 2000) {
+        CountDownTimer timer = new CountDownTimer(240000, 1000) {
             String timeStamp = TimeUnit.MILLISECONDS.toSeconds(System.currentTimeMillis()) + "";
             ArrayList<JSONObject> fpArray = new ArrayList<>();
 
@@ -409,7 +412,7 @@ public class LearnFragment extends Fragment {
                                     for (int j = 0; j < fpArray.size(); j++) {
                                         if (fpArray.get(j).get("mac").toString().equalsIgnoreCase(fingerprint.get("mac").toString())) {
                                             int currLvl = results.get(i).level;
-                                            if((currLvl <= ((int)fpArray.get(j).get("rssi") +2)) && (currLvl >= ((int)fpArray.get(j).get("rssi") -2)) ){
+                                            if((currLvl <= ((int)fpArray.get(j).get("rssi") +1)) && (currLvl >= ((int)fpArray.get(j).get("rssi") -1)) ){
                                                 int avgLvl = (currLvl + (int)fpArray.get(j).get("rssi"))/2 ;
                                                 fpArray.get(j).put("rssi", avgLvl);
                                                 test = true;
@@ -445,7 +448,7 @@ public class LearnFragment extends Fragment {
                     buttonLearn.setEnabled(false);
                     locText.setEnabled(false);
                     loc = locText.getText().toString();
-                    root.put("group", "interim06");
+                    root.put("group", "interim02");
                     root.put("username", "p3");
                     root.put("location", loc);
                     root.put("time", timeStamp);
@@ -463,7 +466,7 @@ public class LearnFragment extends Fragment {
                     e.printStackTrace();
                 }
                 new PostLearnAPI().execute("https://ml.internalpositioning.com/learn");
-                new GetCalculateAPI().execute("https://ml.internalpositioning.com/calculate?group=interim06");
+                new GetCalculateAPI().execute("https://ml.internalpositioning.com/calculate?group=interim01");
                 Toast.makeText(getActivity(), "Inserted Into Repository" , Toast.LENGTH_SHORT).show();
                 buttonLearn.setEnabled(true);
                 locText.setEnabled(true);

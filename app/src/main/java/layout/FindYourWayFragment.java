@@ -38,6 +38,7 @@ import com.mapbox.mapboxsdk.annotations.MarkerViewOptions;
 import com.mapbox.mapboxsdk.annotations.Polyline;
 import com.mapbox.mapboxsdk.annotations.PolylineOptions;
 import com.mapbox.mapboxsdk.camera.CameraPosition;
+import com.mapbox.mapboxsdk.camera.CameraUpdateFactory;
 import com.mapbox.mapboxsdk.geometry.LatLng;
 import com.mapbox.mapboxsdk.maps.MapView;
 import com.mapbox.mapboxsdk.maps.MapboxMap;
@@ -108,6 +109,7 @@ public class FindYourWayFragment extends Fragment {
     private static final String ARG_PARAM2 = "param2";
 
     LatLng currentLocation = null;
+    LatLng destLocation = null;
 
     // TODO: Rename and change types of parameters
     private String mParam1;
@@ -135,6 +137,8 @@ public class FindYourWayFragment extends Fragment {
     private String downloadURL;
     private List<LatLng> calculatedPoints = new ArrayList<>();
     private List<Polyline> calculatedPolylines = new ArrayList<>();
+    private List<LatLng> points;
+    private List<Polyline> polylines = new ArrayList<Polyline>();
 
     public FindYourWayFragment() {
         // Required empty public constructor
@@ -359,11 +363,6 @@ public class FindYourWayFragment extends Fragment {
                                         double locLongitude = (double) locationSnapshot.child("longitude").getValue();
 
                                         currentLocation = new LatLng(locLatitude, locLongitude);
-                                        if (currentLocation.equals("") && end.equals("")) {
-                                            // Calculate Shortest Path
-                                            calcPath(currentLocation.getLatitude(), currentLocation.getLongitude(), end.getLatitude(), end.getLongitude(), mapboxMap);
-                                        }
-
                                         Log.d("LatLng", locLatitude + ", " + locLongitude);
 
                                         //-- Marker Icon --
@@ -423,21 +422,24 @@ public class FindYourWayFragment extends Fragment {
 
                             // Calculate Shortest Path
                             calcPath(currentLocation.getLatitude(), currentLocation.getLongitude(), end.getLatitude(), end.getLongitude(), mapboxMap);
-                        }
-//                        else {
-//                            userCurrentPos = 0;
-//                            currentLocation = point;
-//                            end = null;
+                        }else if (currentLocation != null && end != null) {
 
-//                            //-- Start Marker Icon --
-//                            IconFactory iconFactory = IconFactory.getInstance(getActivity());
-//                            Icon icon = iconFactory.fromResource(R.drawable.ic_curr_location);
-//
-//                            // Add the marker to the map
-//                            markerViewCurrent = mapboxMap.addMarker(new MarkerViewOptions().position(currentLocation));
-//                            markerViewCurrent.setIcon(icon);
-//                            markerViewCurrent.setTitle("You Are Here");
-//                        }
+                            end = point;
+                            shortestPathRunning = true;
+
+                            //-- Destination Marker Icon --
+                            IconFactory iconFactory = IconFactory.getInstance(getActivity());
+                            Icon icon = iconFactory.fromResource(R.drawable.ic_destination_flag);
+
+                            // Add the marker to the map
+                            markerViewCurrent.setPosition(point);
+                            markerViewCurrent.setIcon(icon);
+                            markerViewCurrent.setTitle("Destination");
+
+                            // Calculate Shortest Path
+                            calcPath(currentLocation.getLatitude(), currentLocation.getLongitude(), end.getLatitude(), end.getLongitude(), mapboxMap);
+                        }
+
                     }
                 });
 
@@ -448,15 +450,15 @@ public class FindYourWayFragment extends Fragment {
                 fab.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
-                       if (currentLocation == null) {
-                           Toast.makeText(getActivity(), "Locating Your Position...." , Toast.LENGTH_SHORT).show();
-                       } else {
-                           LatLng zoomLocation = new LatLng(currentLocation);
-                           CameraPosition position = new CameraPosition.Builder()
-                                   .target(zoomLocation)
-                                   .zoom(20) // Sets the zoom
-                                   .build(); // Creates a CameraPosition from the builder
-                           mapboxMap.setCameraPosition(position);
+                        if (currentLocation == null) {
+                            Toast.makeText(getActivity(), "Locating Your Position...." , Toast.LENGTH_SHORT).show();
+                        } else {
+                            LatLng zoomLocation = new LatLng(currentLocation);
+                            CameraPosition position = new CameraPosition.Builder()
+                                    .target(zoomLocation)
+                                    .zoom(20) // Sets the zoom
+                                    .build(); // Creates a CameraPosition from the builder
+                            mapboxMap.setCameraPosition(position);
                         }
                     }
                 });
@@ -751,28 +753,56 @@ public class FindYourWayFragment extends Fragment {
 
             protected void onPostExecute(PathWrapper resp) {
                 if (!resp.hasErrors()) {
-                    log("from:" + fromLat + "," + fromLon + " to:" + toLat + ","
-                            + toLon + " found path with distance:" + resp.getDistance()
-                            / 1000f + ", nodes:" + resp.getPoints().getSize() + ", time:"
-                            + time + " " + resp.getDebugInfo());
-                    logUser("the route is " + (int) (resp.getDistance() / 100) / 10f
-                            + "km long, time:" + resp.getTime() / 60000f + "min, debug:" + time);
-
-                    List<LatLng> points = createPathLayer(resp);
-                    List<Polyline> polylines = new ArrayList<Polyline>();
-
-                    if (points.size() > 0) {
-                        for (int i = 0; i < points.size() - 1; i++) {
-                            // Draw polyline on map
-                            Polyline polyline = mapboxMap.addPolyline(new PolylineOptions()
-                                    .add(points.get(i))
-                                    .add(points.get(i + 1))
-                                    .color(Color.parseColor("#F27777"))
-                                    .width(3));
-                            polylines.add(polyline);
+                    if(polylines != null){
+                        for(int j = 0; j< polylines.size(); j++){
+                            mapboxMap.removePolyline(polylines.get(j));
                         }
+
+                        log("from:" + fromLat + "," + fromLon + " to:" + toLat + ","
+                                + toLon + " found path with distance:" + resp.getDistance()
+                                / 1000f + ", nodes:" + resp.getPoints().getSize() + ", time:"
+                                + time + " " + resp.getDebugInfo());
+                        logUser("the route is " + (int) (resp.getDistance() / 100) / 10f
+                                + "km long, time:" + resp.getTime() / 60000f + "min, debug:" + time);
+
+                        points = createPathLayer(resp);
+
+                        if (points.size() > 0) {
+                            for (int i = 0; i < points.size() - 1; i++) {
+                                // Draw polyline on map
+                                Polyline polyline = mapboxMap.addPolyline(new PolylineOptions()
+                                        .add(points.get(i))
+                                        .add(points.get(i + 1))
+                                        .color(Color.parseColor("#F27777"))
+                                        .width(3));
+                                polylines.add(polyline);
+                            }
+                            setCalculatedPointsAndPolylines(points, polylines);
+                        }
+                    }else{
+                        log("from:" + fromLat + "," + fromLon + " to:" + toLat + ","
+                                + toLon + " found path with distance:" + resp.getDistance()
+                                / 1000f + ", nodes:" + resp.getPoints().getSize() + ", time:"
+                                + time + " " + resp.getDebugInfo());
+                        logUser("the route is " + (int) (resp.getDistance() / 100) / 10f
+                                + "km long, time:" + resp.getTime() / 60000f + "min, debug:" + time);
+
+                        points = createPathLayer(resp);
+
+                        if (points.size() > 0) {
+                            for (int i = 0; i < points.size() - 1; i++) {
+                                // Draw polyline on map
+                                Polyline polyline = mapboxMap.addPolyline(new PolylineOptions()
+                                        .add(points.get(i))
+                                        .add(points.get(i + 1))
+                                        .color(Color.parseColor("#F27777"))
+                                        .width(3));
+                                polylines.add(polyline);
+                            }
+                        }
+                        setCalculatedPointsAndPolylines(points, polylines);
                     }
-                    setCalculatedPointsAndPolylines(points, polylines);
+
 
                 } else {
                     logUser("Error:" + resp.getErrors());
@@ -892,7 +922,7 @@ public class FindYourWayFragment extends Fragment {
                     }
 
                     finalJSON = sb.toString();
-                     Log.d("finalJSON value", finalJSON.toString() + "  ");
+                    Log.d("finalJSON value", finalJSON.toString() + "  ");
 
                     JSONObject jsonObject = new JSONObject(finalJSON);
                     //Log.d("JSONObject" , jsonObject + "");
