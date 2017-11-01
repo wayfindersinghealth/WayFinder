@@ -250,3 +250,25 @@ No. | Appointment | User | Location
 - Floor Plan
 
 --------------------------------
+
+## 31/10/2017
+
+### Discussed 
+
+#### 1\. Comments
+
+- Research on why need to connect to wifi.
+
+#### 2\. Application
+
+- Refine accuracy.
+
+- Push Graphhopper Map download to Application start.
+
+### == Notes ==
+
+- Will update interim grade.
+
+- Date to meet up with partner to be finalised by the end of this week. 
+
+--------------------------------
