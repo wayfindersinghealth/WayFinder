@@ -109,7 +109,6 @@ public class FindYourWayFragment extends Fragment {
     private static final String ARG_PARAM2 = "param2";
 
     LatLng currentLocation = null;
-    LatLng destLocation = null;
 
     // TODO: Rename and change types of parameters
     private String mParam1;
@@ -414,9 +413,16 @@ public class FindYourWayFragment extends Fragment {
                             shortestPathRunning = true;
 
                             // Add the marker to the map
-                            markerViewCurrent = mapboxMap.addMarker(new MarkerViewOptions().position(end));
-                            markerViewCurrent.setIcon(icon);
-                            markerViewCurrent.setTitle("Destination");
+                            if(markerViewCurrent == null){
+                                markerViewCurrent = mapboxMap.addMarker(new MarkerViewOptions().position(end));
+                                markerViewCurrent.setIcon(icon);
+                                markerViewCurrent.setTitle("Destination");
+                            }else{
+                                markerViewCurrent.setPosition(end);
+                                markerViewCurrent.setIcon(icon);
+                                markerViewCurrent.setTitle("Destination");
+                            }
+
 
                             // Calculate Shortest Path
                             calcPath(currentLocation.getLatitude(), currentLocation.getLongitude(), end.getLatitude(), end.getLongitude(), mapboxMap);
@@ -478,7 +484,7 @@ public class FindYourWayFragment extends Fragment {
                                     double locLatitude = (double) locationSnapshot.child("latitude").getValue();
                                     double locLongitude = (double) locationSnapshot.child("longitude").getValue();
 
-                                    currentLocation = new LatLng(locLatitude, locLongitude);
+                                    end = new LatLng(locLatitude, locLongitude);
 
                                     Log.d("LatLng", locLatitude + ", " + locLongitude);
 
@@ -490,15 +496,17 @@ public class FindYourWayFragment extends Fragment {
 
                                     //-- Set Marker on Map --
                                     LatLng latLng = new LatLng(locLatitude, locLongitude);
-                                    if (locMarker != null) {
-                                        locMarker.setPosition(latLng);
-                                        locMarker.setIcon(icon);
 
+                                    if (markerViewCurrent != null) {
+                                        markerViewCurrent.setPosition(latLng);
+                                        markerViewCurrent.setIcon(icon);
 
-                                    } else if (locMarker == null){
-                                        locMarker = mapboxMap.addMarker(new MarkerViewOptions().position(new LatLng(locLatitude, locLongitude)));
-                                        locMarker.setIcon(icon);
+                                    } else if (markerViewCurrent == null){
+                                        markerViewCurrent = mapboxMap.addMarker(new MarkerViewOptions().position(new LatLng(locLatitude, locLongitude)));
+                                        markerViewCurrent.setIcon(icon);
                                     }
+
+                                    calcPath(currentLocation.getLatitude(), currentLocation.getLongitude(), end.getLatitude(), end.getLongitude(), mapboxMap);
                                 }
                             }
 
@@ -853,7 +861,7 @@ public class FindYourWayFragment extends Fragment {
         wmgr.startScan();
 
         for (ScanResult R : results) {
-            if (R.SSID.equalsIgnoreCase("NYP-Student")) {
+//            if (R.SSID.equalsIgnoreCase("NYP-Student")) {
                 try {
                     fingerprint.put("mac", R.BSSID.toString());
                     fingerprint.put("rssi", R.level);
@@ -862,9 +870,9 @@ public class FindYourWayFragment extends Fragment {
                     e.printStackTrace();
                 }
             }
-        }
+//        }
         try {
-            root.put("group", "interim06");
+            root.put("group", "group05");
             root.put("username", "p3");
             root.put("time", timeStamp);
             root.put("wifi-fingerprint", wifiFingerprint);
