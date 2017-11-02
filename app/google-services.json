@@ -15,6 +15,14 @@
       },
       "oauth_client": [
         {
+          "client_id": "225851701973-0tdi3r42tdvlm23dej4h69bi6ao070dh.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "sg.com.singhealth.wayfinder",
+            "certificate_hash": "68bc5ad6956522c8c0172c63b6d864eac092b827"
+          }
+        },
+        {
           "client_id": "225851701973-d4dee5318femsvsmtue59a5rrnr7tvaq.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {

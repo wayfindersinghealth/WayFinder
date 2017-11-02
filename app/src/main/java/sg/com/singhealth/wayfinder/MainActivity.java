@@ -60,7 +60,6 @@ public class MainActivity extends AppCompatActivity
         RegisterFragment.OnFragmentInteractionListener{
     SharedPreferences spf;
     SharedPreferences.Editor editor;
-    private FirebaseAuth firebaseAuth;
     NavigationView navigationView;
     Menu nav_Menu;
     @Override
@@ -119,16 +118,9 @@ public class MainActivity extends AppCompatActivity
                 super.onDrawerOpened(drawerView);
                 hideKeyboard(drawerView);
             }
-
-//            FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
-//            nav_Menu = navigationView.getMenu();
-//        if (user != null){
-//                nav_Menu.findItem(R.id.nav_logout).setVisible(true);
-//            }
-//        else {
-//                nav_Menu.findItem(R.id.nav_logout).setVisible(false);
-//            }
         };
+
+
 
         //Setting the actionbarToggle to drawer layout
         drawer.setDrawerListener(actionBarDrawerToggle);
@@ -191,7 +183,7 @@ public class MainActivity extends AppCompatActivity
     public boolean onNavigationItemSelected(MenuItem item) {
         // Handle navigation view item clicks here.
         int id = item.getItemId();
-
+        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
         if (id == R.id.nav_learn) {
             navigationLearn();
         } else if (id == R.id.nav_preferences) {
@@ -212,6 +204,7 @@ public class MainActivity extends AppCompatActivity
             //Else Home Fragment
             navigationHome();
         }
+
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
@@ -261,6 +254,9 @@ public class MainActivity extends AppCompatActivity
         FragmentManager fragmentManager = getSupportFragmentManager();
         fragmentManager.beginTransaction().replace(R.id.content, fragment).commit();
     }
+
+
+
 
     //---- Access Learn Page ----
     public void navigationLearn() {
@@ -364,18 +360,20 @@ public class MainActivity extends AppCompatActivity
         fragmentManager.beginTransaction().replace(R.id.content, fragment).commit();
     }
 
+
     //---- Access Logout Function ----
     public void navigationLogout() {
-
-        nav_Menu.findItem(R.id.nav_logout).setVisible(false);
-
-        FirebaseAuth.getInstance().signOut();
-        Toast.makeText(MainActivity.this, "Logout...Success", Toast.LENGTH_SHORT).show();
+        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+        if(user!= null){
+            FirebaseAuth.getInstance().signOut();
+            Toast.makeText(MainActivity.this, "Logout...Success", Toast.LENGTH_SHORT).show();
+        }else {
+            Toast.makeText(MainActivity.this, "The user is not logged in", Toast.LENGTH_SHORT).show();
+        }
         Fragment fragment;
         fragment = new MainFragment();
         FragmentManager fragmentManager = getSupportFragmentManager();
         fragmentManager.beginTransaction().replace(R.id.content, fragment).commit();
-
     }
 
     //-------- END OF METHODS --------
