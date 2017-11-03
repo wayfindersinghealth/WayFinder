@@ -35,6 +35,7 @@ import com.google.firebase.auth.FirebaseUser;
 import java.util.Locale;
 
 import layout.AboutFragment;
+import layout.BlankFragment;
 import layout.FindYourWayFragment;
 import layout.LearnFragment;
 import layout.LoginFragment;
@@ -57,11 +58,13 @@ public class MainActivity extends AppCompatActivity
         AboutFragment.OnFragmentInteractionListener,
         LoginFragment.OnFragmentInteractionListener,
         StartFragment.OnFragmentInteractionListener,
-        RegisterFragment.OnFragmentInteractionListener{
+        RegisterFragment.OnFragmentInteractionListener,
+        BlankFragment.OnFragmentInteractionListener{
     SharedPreferences spf;
     SharedPreferences.Editor editor;
     NavigationView navigationView;
     Menu nav_Menu;
+    FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -196,7 +199,7 @@ public class MainActivity extends AppCompatActivity
         } */ else if (id == R.id.nav_about) {
             navigationAbout();
         } else if (id == R.id.nav_Appt) {
-            navigationLogin();
+            navigationBlack();
         } else if (id == R.id.nav_logout) {
             navigationLogout();
         }
@@ -363,7 +366,6 @@ public class MainActivity extends AppCompatActivity
 
     //---- Access Logout Function ----
     public void navigationLogout() {
-        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
         if(user!= null){
             FirebaseAuth.getInstance().signOut();
             Toast.makeText(MainActivity.this, "Logout...Success", Toast.LENGTH_SHORT).show();
@@ -372,6 +374,14 @@ public class MainActivity extends AppCompatActivity
         }
         Fragment fragment;
         fragment = new MainFragment();
+        FragmentManager fragmentManager = getSupportFragmentManager();
+        fragmentManager.beginTransaction().replace(R.id.content, fragment).commit();
+    }
+
+    //---- Access Black Page ----
+    public void navigationBlack(){
+        Fragment fragment;
+        fragment = new BlankFragment();
         FragmentManager fragmentManager = getSupportFragmentManager();
         fragmentManager.beginTransaction().replace(R.id.content, fragment).commit();
     }

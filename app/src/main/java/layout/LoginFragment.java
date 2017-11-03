@@ -63,6 +63,7 @@ public class LoginFragment extends Fragment {
     private FirebaseAuth firebaseAuth;
     private FragmentManager manager;
     private FragmentTransaction ft;
+    private Button button_backStart;
 
     public LoginFragment() {
         // Required empty public constructor
@@ -115,7 +116,7 @@ public class LoginFragment extends Fragment {
         //    startActivity(new Intent(getActivity(),ProfileFragment.class));
 
         }
-
+        button_backStart = (Button)rootView.findViewById(R.id.button_backStart);
         buttonSignIn = (ImageButton) rootView.findViewById(R.id.buttonSignin);
         textViewForget = (TextView)rootView.findViewById(R.id.textViewForget) ;
         editTextEmail = (EditText)rootView.findViewById(R.id.editTexEmail);
@@ -209,11 +210,16 @@ public class LoginFragment extends Fragment {
                             }
                         });
             }
-
-
-
-
         });;
+        button_backStart.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Fragment fragment;
+                fragment = new StartFragment();
+                FragmentManager fragmentManager = getFragmentManager();
+                fragmentManager.beginTransaction().replace(R.id.content, fragment).commit();
+            }
+        });
 
         // Inflate the layout for this fragment
         return rootView;
