@@ -86,4 +86,11 @@
 
     <!--Help-->
     <string name="help">HELP</string>
+    <string name="Simplified">Journey Simplified</string>
+    <string name="help_learn">Learn Location</string>
+    <string name="learn_help">Find where you are with a touch</string>
+    <string name="help_find">Find Your Way</string>
+    <string name="find_help">Make your journey simple with pinpoint accuracy direction to your destination</string>
+    <string name="help_ok">You are all set. Enjoy WayFinder</string>
+    <string name="begin">GET STARTED</string>
 </resources>
