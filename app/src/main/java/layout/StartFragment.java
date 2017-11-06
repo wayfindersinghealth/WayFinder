@@ -5,7 +5,6 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
-import android.support.v4.media.session.MediaSessionCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -78,7 +77,6 @@ public class StartFragment extends Fragment {
 
         button_login = (Button)rootView.findViewById(R.id.button_login);
         button_signup = (Button)rootView.findViewById(R.id.button_signup);
-        button_backMain = (Button)rootView.findViewById(R.id.button_backMain);
         button_login.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -100,15 +98,6 @@ public class StartFragment extends Fragment {
             }
         });
 
-        button_backMain.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Fragment fragment;
-                fragment = new MainFragment();
-                FragmentManager fragmentManager = getFragmentManager();
-                fragmentManager.beginTransaction().replace(R.id.content, fragment).commit();
-            }
-        });
 
 
 

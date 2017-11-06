@@ -8,64 +8,93 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/colorPrimaryDark"
+    android:background="@color/colorWhite"
     app:layout_behavior="@string/appbar_scrolling_view_behavior"
     tools:context="sg.com.singhealth.wayfinder.MainActivity"
     tools:layout_editor_absoluteY="81dp"
     tools:layout_editor_absoluteX="0dp">
 
-    <ImageButton
-        android:id="@+id/imageButtonLearn"
-        android:background="@null"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        app:srcCompat="@drawable/ic_wifi_scan_menu"
-        android:scaleType="centerCrop"
-        tools:layout_constraintTop_creator="1"
-        tools:layout_constraintRight_creator="1"
-        tools:layout_constraintBottom_creator="1"
-        app:layout_constraintBottom_toTopOf="@+id/imageButtonFindYourWay"
-        android:layout_marginStart="8dp"
-        android:layout_marginEnd="8dp"
-        app:layout_constraintRight_toRightOf="parent"
-        tools:layout_constraintLeft_creator="1"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
 
-    <ImageButton
-        android:id="@+id/imageButtonFindYourWay"
-        android:background="@null"
-        android:scaleType="centerCrop"
+    <com.phillipcalvin.iconbutton.IconButton
+        android:id="@+id/button_learn"
         android:layout_width="0dp"
-        android:layout_height="170dp"
-        app:srcCompat="@drawable/ic_direction_menu"
+        android:layout_height="209dp"
+        android:background="@drawable/bulebg"
+        android:text="@string/button_learn"
+        android:textSize="25dp"
+        android:textColor="@color/colorWhite"
+        android:drawableLeft="@drawable/icon_location"
+        app:iconPadding="20dp"
         tools:layout_constraintTop_creator="1"
-        tools:layout_constraintRight_creator="1"
         tools:layout_constraintBottom_creator="1"
-        android:layout_marginStart="8dp"
         app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.015"
+        tools:layout_constraintRight_creator="1"
+        android:layout_marginStart="8dp"
         android:layout_marginEnd="8dp"
         app:layout_constraintRight_toRightOf="parent"
-        tools:layout_constraintLeft_creator="1"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
-    <ImageButton
-        android:id="@+id/imageButtonHelp"
-        android:background="@null"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        app:srcCompat="@drawable/ic_help_menu"
-        android:scaleType="centerCrop"
-        tools:layout_constraintTop_creator="1"
-        tools:layout_constraintRight_creator="1"
-        tools:layout_constraintBottom_creator="1"
-        android:layout_marginStart="8dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        android:layout_marginEnd="8dp"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/imageButtonFindYourWay"
         tools:layout_constraintLeft_creator="1"
         app:layout_constraintLeft_toLeftOf="parent" />
+
+    <!--<Button-->
+        <!--android:id="@+id/button_find"-->
+        <!--android:layout_width="368dp"-->
+        <!--android:layout_height="178dp"-->
+        <!--android:background="@drawable/bulebg"-->
+        <!--android:drawableLeft="@drawable/icon_location"-->
+
+        <!--android:text="this is text"-->
+        <!--android:gravity="center|center_vertical"-->
+        <!--tools:layout_constraintRight_creator="1"-->
+        <!--tools:layout_constraintBottom_creator="1"-->
+        <!--app:layout_constraintBottom_toTopOf="@+id/button_help"-->
+        <!--app:layout_constraintRight_toRightOf="parent"-->
+        <!--tools:layout_constraintLeft_creator="1"-->
+        <!--android:layout_marginBottom="7dp"-->
+        <!--app:layout_constraintLeft_toLeftOf="parent" />-->
+
+    <com.phillipcalvin.iconbutton.IconButton
+        android:id="@+id/button_find"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:background="@drawable/bulebg"
+        android:text="@string/button_find"
+        android:textSize="25dp"
+        android:textColor="@color/colorWhite"
+        android:drawableLeft="@drawable/icon_find"
+        app:iconPadding="20dp"
+        tools:layout_constraintTop_creator="1"
+        tools:layout_constraintBottom_creator="1"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:layout_constraintRight_creator="1"
+        android:layout_marginStart="8dp"
+        android:layout_marginEnd="8dp"
+        app:layout_constraintRight_toRightOf="parent"
+        android:layout_marginTop="225dp"
+        tools:layout_constraintLeft_creator="1"
+        android:layout_marginBottom="225dp"
+        app:layout_constraintLeft_toLeftOf="parent" />
+
+    <com.phillipcalvin.iconbutton.IconButton
+        android:id="@+id/button_help"
+        android:layout_width="0dp"
+        android:layout_height="209dp"
+        android:background="@drawable/bulebg"
+        android:drawableLeft="@drawable/icon_help"
+        android:text="@string/button_help"
+        android:textSize="25dp"
+        android:textColor="@color/colorWhite"
+        app:iconPadding="20dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:layout_constraintBottom_creator="1"
+        tools:layout_constraintTop_creator="1"
+        app:layout_constraintVertical_bias="0.981"
+        tools:layout_constraintRight_creator="1"
+        app:layout_constraintRight_toRightOf="@+id/button_find"
+        tools:layout_constraintLeft_creator="1"
+        app:layout_constraintLeft_toLeftOf="@+id/button_find" />
 
 </android.support.constraint.ConstraintLayout>

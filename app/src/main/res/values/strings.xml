@@ -75,7 +75,15 @@
     <string name="error_field_required">This field is required</string>
     <string name="permission_rationale">"Contacts permissions are needed for providing email
         completions."
+
     </string>
 
 
+    <!-- Main menu-->
+    <string name="button_learn">Leran Location</string>
+    <string name="button_find">Find Your Way</string>
+    <string name="button_help">Help</string>
+
+    <!--Help-->
+    <string name="help">HELP</string>
 </resources>

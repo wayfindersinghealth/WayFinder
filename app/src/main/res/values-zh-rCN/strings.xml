@@ -6,8 +6,6 @@
 *Description: -
 -->
     <string name="app_name">WayFinder</string>
-    <string name="aboutSingHealth">关于SingHealth</string>
-    <string name="aboutSingHealthDetails">SingHealth在超过40个专业的综合范围内提供三级医疗服务，拥有150个子专业的深度专业知识。该组织得到了超过1000名国际合格医学专家的支持，拥有先进的医疗诊断和治疗技术，在该地区获得了在治疗方面取得新突破的认可。作为一个学术医学中心，我们寻求通过整合临床服务、教学和研究来改变病人的护理。SingHealth的患者在综合和多学科的环境下，专注于质量和整体护理，享受尖端治疗的好处。</string>
     <string name="aboutWayFinder">关于Way Finder</string>
     <string name="aboutWayFinderDetails">WAYFINDER，室内导航的内部定位系统。 我们的主要目标是帮助患者和访客轻松地找到自己要去的地点。 此外，允许用户管理当前现有的地理位置或学习新的地理位置。</string>
     <string name="action_refresh">重置</string>
@@ -33,4 +31,17 @@
     <string name="prompt_email">邮箱</string>
     <string name="prompt_password">密码</string>
     <string name="navLearn">学习新的位置</string>
+    <string name="button_find">导航</string>
+    <string name="button_help">帮助</string>
+    <string name="button_learn">定位当前位置</string>
+    <string name="textViewTitleWayFinder">WAYFINDER,一个基于WIFI的室内定位系统</string>
+    <string name="textViewInput">请输入您的当前位置</string>
+    <string name="textViewDetails">点击地图放置点</string>
+    <string name="textViewAboutTitleWayFinder">通过我们的程序您将可以轻松的找到您要去的位置</string>
+    <string name="show_language_preferences">语言偏好设置</string>
+    <string name="navLogout">注销</string>
+    <string name="error_incorrect_password">密码错误</string>
+    <string name="error_invalid_email">此电子邮件地址无效</string>
+    <string name="error_invalid_password">此密码太短</string>
+    <string name="error_field_required">这是必填项</string>
 </resources>

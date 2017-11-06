@@ -5,11 +5,10 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageButton;
+import android.widget.Button;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -84,7 +83,7 @@ public class MainFragment extends Fragment {
         View rootView = inflater.inflate(R.layout.fragment_main, container, false);
 
         //-- ImageButton Learn Click--
-        ImageButton imageButtonLearn = (ImageButton) rootView.findViewById(R.id.imageButtonLearn);
+        Button imageButtonLearn = (Button) rootView.findViewById(R.id.button_learn);
         imageButtonLearn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -112,12 +111,22 @@ public class MainFragment extends Fragment {
         });
 
         //-- ImageButton Find Your Way Click --
-        ImageButton imageButtonFindYourWay = (ImageButton) rootView.findViewById(R.id.imageButtonFindYourWay);
+        Button imageButtonFindYourWay = (Button) rootView.findViewById(R.id.button_find);
         imageButtonFindYourWay.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 //-- Call Access Find Your Way Page Method from MainActivity.java --
                 ((MainActivity) getActivity()).navigationFindYourWay();
+            }
+        });
+
+        //-- ImageButton Help Click --
+        Button imageButtonHelp = (Button) rootView.findViewById(R.id.button_help);
+        imageButtonHelp.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                //-- Call Access Find Your Way Page Method from MainActivity.java --
+                ((MainActivity) getActivity()).navigationHelp();
             }
         });
 

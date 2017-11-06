@@ -15,7 +15,7 @@
         android:layout_width="185dp"
         android:layout_height="176dp"
         android:layout_gravity="center"
-        android:src="@mipmap/ic_launcher_wayfind"
+        android:src="@mipmap/icons"
         android:layout_centerHorizontal="true"
         tools:layout_constraintTop_creator="1"
         tools:layout_constraintRight_creator="1"

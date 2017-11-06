@@ -25,7 +25,6 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.ArrayAdapter;
-import android.widget.Button;
 import android.widget.Spinner;
 import android.widget.Toast;
 
@@ -193,10 +192,9 @@ public class MainActivity extends AppCompatActivity
             navigationLanguagePreference();
         } else if (id == R.id.nav_findYourWay) {
             navigationFindYourWay();
-
-        } /*else if (id == R.id.nav_help) {
-
-        } */ else if (id == R.id.nav_about) {
+        } else if (id == R.id.nav_help) {
+            navigationHelp();
+        } else if (id == R.id.nav_about) {
             navigationAbout();
         } else if (id == R.id.nav_Appt) {
             navigationBlack();
@@ -297,6 +295,11 @@ public class MainActivity extends AppCompatActivity
 
 
     //---- Access Help Page ----
+    public void navigationHelp() {
+        Intent intent = new Intent(MainActivity.this, Help.class);
+        startActivity(intent);
+    }
+
 
     //---- Access Language Preference Page ----
     public void navigationLanguagePreference() {

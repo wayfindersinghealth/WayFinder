@@ -78,5 +78,9 @@
     <string name="permission_rationale">"Contacts permissions are needed for providing email
         completions."
     </string>
+    <string name="button_find">Find Your Way</string>
+    <string name="button_help">Help</string>
+    <string name="button_learn">Leran Location</string>
+    <string name="navLogout">Logout</string>
 
 </resources>

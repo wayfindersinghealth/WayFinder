@@ -2,12 +2,9 @@ package layout;
 
 import android.app.ProgressDialog;
 import android.content.Context;
-import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
-import android.preference.PreferenceFragment;
 import android.support.annotation.NonNull;
-import android.support.design.widget.BaseTransientBottomBar;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
@@ -23,13 +20,11 @@ import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.google.android.gms.common.server.FavaDiagnosticsEntity;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.storage.StorageReference;
 
 import sg.com.singhealth.wayfinder.R;
 
@@ -116,7 +111,7 @@ public class LoginFragment extends Fragment {
         //    startActivity(new Intent(getActivity(),ProfileFragment.class));
 
         }
-        button_backStart = (Button)rootView.findViewById(R.id.button_backStart);
+
         buttonSignIn = (ImageButton) rootView.findViewById(R.id.buttonSignin);
         textViewForget = (TextView)rootView.findViewById(R.id.textViewForget) ;
         editTextEmail = (EditText)rootView.findViewById(R.id.editTexEmail);
@@ -211,15 +206,7 @@ public class LoginFragment extends Fragment {
                         });
             }
         });;
-        button_backStart.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Fragment fragment;
-                fragment = new StartFragment();
-                FragmentManager fragmentManager = getFragmentManager();
-                fragmentManager.beginTransaction().replace(R.id.content, fragment).commit();
-            }
-        });
+
 
         // Inflate the layout for this fragment
         return rootView;

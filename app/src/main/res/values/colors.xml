@@ -9,4 +9,6 @@
     <color name="colorAccent">#ed9107</color>
     <color name="colorSplashScreenBackground">#f7e6d2</color>
     <color name="colorSplashScreenText">#919191</color>
+    <color name="colorWhite">#FFFFFF</color>
+    <color name="colorRed">	#1E90FF</color>
 </resources>
