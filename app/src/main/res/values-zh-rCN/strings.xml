@@ -44,4 +44,12 @@
     <string name="error_invalid_email">此电子邮件地址无效</string>
     <string name="error_invalid_password">此密码太短</string>
     <string name="error_field_required">这是必填项</string>
+    <string name="help">帮助</string>
+    <string name="help_find">导航</string>
+    <string name="help_learn">定位当前位置</string>
+    <string name="help_ok">您已经学会怎样使用了</string>
+    <string name="begin">让我们开始吧！</string>
+    <string name="find_help">为您规划一条最方便的路线去您要去的目的地</string>
+    <string name="Simplified">简单的介绍</string>
+    <string name="learn_help">找到您当前所在的位置</string>
 </resources>

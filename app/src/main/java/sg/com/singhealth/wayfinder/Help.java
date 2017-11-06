@@ -18,11 +18,21 @@ public class Help extends AppIntro2 {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+        String help = getString(R.string.help);
+        String Simplified = getString(R.string.Simplified);
+        String Learn = getString(R.string.help_learn);
+        String learn_help = getString(R.string.learn_help);
+        String Find = getString(R.string.help_find);
+        String find_help = getString(R.string.find_help);
+        String OK = getString(R.string.help_ok);
+        String begin = getString(R.string.begin);
+
+
         //-- Add Slide --
-        addSlide(AppIntroFragment.newInstance("HELP", "Journey Simplified.", R.drawable.icon_help, Color.parseColor("#ed9107")));
-        addSlide(AppIntroFragment.newInstance("Learn Location", "Find where you are with a touch", R.drawable.icon_location, Color.parseColor("#ed9107")));
-        addSlide(AppIntroFragment.newInstance("Find Your Way", "Make your journey simple with pinpoint accuracy direction to your destination", R.drawable.icon_find, Color.parseColor("#ed9107")));
-        addSlide(AppIntroFragment.newInstance("You are all set. Enjoy WayFinder", "GET STARTED", R.drawable.icon_ok, Color.parseColor("#ed9107")));
+        addSlide(AppIntroFragment.newInstance(help, Simplified, R.drawable.icon_help, Color.parseColor("#ed9107")));
+        addSlide(AppIntroFragment.newInstance(Learn, learn_help, R.drawable.icon_location, Color.parseColor("#ed9107")));
+        addSlide(AppIntroFragment.newInstance(Find, find_help, R.drawable.icon_find, Color.parseColor("#ed9107")));
+        addSlide(AppIntroFragment.newInstance(OK, begin, R.drawable.icon_ok, Color.parseColor("#ed9107")));
 
         //-- Override bar/separator color --
         setBarColor(Color.parseColor("#ed9107"));
