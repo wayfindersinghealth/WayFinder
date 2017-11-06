@@ -51,6 +51,7 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
+import java.lang.reflect.Array;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
@@ -61,6 +62,7 @@ import javax.net.ssl.HttpsURLConnection;
 import sg.com.singhealth.wayfinder.LocationDetail;
 import sg.com.singhealth.wayfinder.MainActivity;
 import sg.com.singhealth.wayfinder.R;
+import sg.com.singhealth.wayfinder.fingerprint;
 
 /**
  * File Name: LearnFragment.java
@@ -102,6 +104,7 @@ public class LearnFragment extends Fragment {
     View rootView = null;
 
     WifiManager wmgr;
+    WifiManager wmgr1;
     TextView locText;
     Button buttonLearn;
     String loc;
@@ -158,6 +161,7 @@ public class LearnFragment extends Fragment {
 
         //-- WifiManager --
         wmgr = (WifiManager) getActivity().getApplicationContext().getSystemService(Context.WIFI_SERVICE);
+        wmgr1 = (WifiManager) getActivity().getApplicationContext().getSystemService(Context.WIFI_SERVICE);
 
         //-- EditText Learn Input --
         locText = (TextView) rootView.findViewById(R.id.locationText);
@@ -256,6 +260,7 @@ public class LearnFragment extends Fragment {
                             if(markerView != null) {
                                 try {
                                     formatDataAsJSON();
+//
                                     findApSnack = Snackbar.make(rootView, "Finding AP", Snackbar.LENGTH_INDEFINITE).setAction("Action", null);
                                     findApSnack.show();
                                 } finally {
@@ -374,80 +379,179 @@ public class LearnFragment extends Fragment {
 
     //---- Format Data As JSON Method ----
     public void formatDataAsJSON() {
-        CountDownTimer timer = new CountDownTimer(240000, 1000) {
+        CountDownTimer timer = new CountDownTimer(120000, 1000) {
             String timeStamp = TimeUnit.MILLISECONDS.toSeconds(System.currentTimeMillis()) + "";
             ArrayList<JSONObject> fpArray = new ArrayList<>();
 
             @Override
             public void onTick(long l) {
-                wmgr.startScan();
 
-                if(fpArray.size() == 0){
-                    ArrayList<ScanResult> results = (ArrayList<ScanResult>) wmgr.getScanResults();
-                    for (int i=0; i <results.size(); i++) {
-                        if (results.get(i).SSID.equalsIgnoreCase("NYP-Student")) {
-                            try {
-                                JSONObject fingerprint = new JSONObject();
-                                fingerprint.put("mac", results.get(i).BSSID);
-                                fingerprint.put("rssi", results.get(i).level);
-                                fpArray.add(fingerprint);
-
-                            } catch (JSONException e) {
-                                e.printStackTrace();
-                            }
-                        }
-                    }
-                    Log.d("fpArray1", fpArray.toString());
-
-                } else {
-                    if (fpArray.size() > 0) {
+                    wmgr.startScan();
+                    if(fpArray.size() == 0){
                         ArrayList<ScanResult> results = (ArrayList<ScanResult>) wmgr.getScanResults();
-                        for (int i = 0; i < results.size(); i++) {
-//                            if (results.get(i).SSID.equalsIgnoreCase("NYP-Student")) {
-                                boolean test = true;
+                        for (int i=0; i <results.size(); i++) {
+                            if (results.get(i).SSID.equalsIgnoreCase("NYP-Student")) {
                                 try {
                                     JSONObject fingerprint = new JSONObject();
                                     fingerprint.put("mac", results.get(i).BSSID);
+                                    fingerprint.put("rssi", results.get(i).level);
+                                    fpArray.add(fingerprint);
 
-                                    for (int j = 0; j < fpArray.size(); j++) {
-                                        if (fpArray.get(j).get("mac").toString().equalsIgnoreCase(fingerprint.get("mac").toString())) {
-                                            int currLvl = results.get(i).level;
-                                            if((currLvl <= ((int)fpArray.get(j).get("rssi") +1)) && (currLvl >= ((int)fpArray.get(j).get("rssi") -1)) ){
-                                                int avgLvl = (currLvl + (int)fpArray.get(j).get("rssi"))/2 ;
-                                                fpArray.get(j).put("rssi", avgLvl);
-                                                test = true;
-                                                break;
-                                            }else{
-                                                test = true;
-                                                break;
-                                            }
-                                        }else{
-                                            test = false;
-                                        }
-                                    }
-                                    if(!test){
-                                        fingerprint.put("rssi", results.get(i).level);
-                                        fpArray.add(fingerprint);
-                                    }
                                 } catch (JSONException e) {
                                     e.printStackTrace();
                                 }
-//                            }
+                            }
                         }
-                        Log.d("fpArray2", fpArray.toString());
+                    } else {
+                        if (fpArray.size() > 0) {
+                            ArrayList<ScanResult> results = (ArrayList<ScanResult>) wmgr.getScanResults();
+                            for (int i = 0; i < results.size(); i++) {
+                                if (results.get(i).SSID.equalsIgnoreCase("NYP-Student")) {
+                                    boolean test = true;
+                                    try {
+                                        JSONObject fingerprint = new JSONObject();
+                                        fingerprint.put("mac", results.get(i).BSSID);
+
+                                        for (int j = 0; j < fpArray.size(); j++) {
+                                            if (fpArray.get(j).get("mac").toString().equalsIgnoreCase(fingerprint.get("mac").toString())) {
+                                                int currLvl = results.get(i).level;
+                                                if((currLvl <= ((int)fpArray.get(j).get("rssi") +5)) && (currLvl >= ((int)fpArray.get(j).get("rssi") -5)) ){
+
+                                                    int avgLvl = (currLvl + (int)fpArray.get(j).get("rssi"))/2 ;
+                                                    fpArray.get(j).put("rssi", avgLvl);
+                                                    test = true;
+                                                    break;
+                                                }else{
+                                                    test = true;
+                                                    break;
+                                                }
+                                            }else{
+                                                test = false;
+                                            }
+                                        }
+                                        if(!test){
+                                            fingerprint.put("rssi", results.get(i).level);
+                                            fpArray.add(fingerprint);
+                                        }
+                                    } catch (JSONException e) {
+                                        e.printStackTrace();
+                                    }
+                                }
+                            }
+                        }
                     }
-                }
+
                 buttonLearn.setEnabled(false);
                 locText.setEnabled(false);
             }
 
             @Override
             public void onFinish() {
+
+                CountDownTimer timer = new CountDownTimer(120000, 1000) {
+                    String timeStamp = TimeUnit.MILLISECONDS.toSeconds(System.currentTimeMillis()) + "";
+                    ArrayList<JSONObject> fpArraySecond = new ArrayList<>();
+
+                    @Override
+                    public void onTick(long l) {
+
+                        wmgr1.startScan();
+                        if(fpArraySecond.size() == 0){
+                            ArrayList<ScanResult> results = (ArrayList<ScanResult>) wmgr1.getScanResults();
+                            for (int i=0; i <results.size(); i++) {
+                                if (results.get(i).SSID.equalsIgnoreCase("NYP-Student")) {
+                                    try {
+                                        JSONObject fingerprint = new JSONObject();
+                                        fingerprint.put("mac", results.get(i).BSSID);
+                                        fingerprint.put("rssi", results.get(i).level);
+                                        fpArraySecond.add(fingerprint);
+
+                                    } catch (JSONException e) {
+                                        e.printStackTrace();
+                                    }
+                                }
+                            }
+                        } else {
+                            if (fpArraySecond.size() > 0) {
+                                ArrayList<ScanResult> results = (ArrayList<ScanResult>) wmgr1.getScanResults();
+                                for (int i = 0; i < results.size(); i++) {
+                                    if (results.get(i).SSID.equalsIgnoreCase("NYP-Student")) {
+                                        boolean test = true;
+                                        try {
+                                            JSONObject fingerprint = new JSONObject();
+                                            fingerprint.put("mac", results.get(i).BSSID);
+
+                                            for (int j = 0; j < fpArraySecond.size(); j++) {
+                                                if (fpArraySecond.get(j).get("mac").toString().equalsIgnoreCase(fingerprint.get("mac").toString())) {
+                                                    int currLvl = results.get(i).level;
+                                                    if((currLvl <= ((int)fpArraySecond.get(j).get("rssi") +5)) && (currLvl >= ((int)fpArraySecond.get(j).get("rssi") -5)) ){
+
+                                                        int avgLvl = (currLvl + (int)fpArraySecond.get(j).get("rssi"))/2 ;
+                                                        fpArraySecond.get(j).put("rssi", avgLvl);
+                                                        test = true;
+                                                        break;
+                                                    }else{
+                                                        test = true;
+                                                        break;
+                                                    }
+                                                }else{
+                                                    test = false;
+                                                }
+                                            }
+                                            if(!test){
+                                                fingerprint.put("rssi", results.get(i).level);
+                                                fpArraySecond.add(fingerprint);
+                                            }
+                                        } catch (JSONException e) {
+                                            e.printStackTrace();
+                                        }
+                                    }
+                                }
+                            }
+                        }
+
+                        buttonLearn.setEnabled(false);
+                        locText.setEnabled(false);
+                    }
+
+                    @Override
+                    public void onFinish() {
+                        Log.d("FpArray 1st", fpArray.toString());
+                        Log.d("FpArray 2nd", fpArraySecond.toString());
+
+
+                        for(int i=0; i<fpArray.size(); i++){
+                            try {
+                                boolean test = true;
+                                JSONObject fp = new JSONObject();
+                                for(int m=0; m<fpArraySecond.size(); m++){
+                                    if (fpArray.get(i).get("mac").toString().equalsIgnoreCase((String) fpArraySecond.get(m).get("mac"))){
+                                        int averageLevel = ((Integer) fpArray.get(i).get("rssi") + (Integer) fpArraySecond.get(m).get("rssi"))/2;
+                                        fpArray.get(i).put("rssi", averageLevel);
+                                        test= true;
+                                        break;
+                                    }else{
+                                       fp.put("rssi", fpArraySecond.get(m).get("rssi"));
+                                       fp.put("mac", fpArraySecond.get(m).get("mac"));
+                                       test = false;
+                                    }
+                                }
+                                if (!test){
+                                    fpArray.add(fp);
+                                }
+                            } catch (JSONException e) {
+                                e.printStackTrace();
+                            }
+                        }
+
+                        Log.d("fpArray After", fpArray.toString());
+
                 try {
                     findApSnack.dismiss();
                     buttonLearn.setEnabled(false);
                     locText.setEnabled(false);
                     loc = locText.getText().toString();
+
                     root.put("group", "group05");
                     root.put("username", "p3");
                     root.put("location", loc);
@@ -458,9 +562,8 @@ public class LearnFragment extends Fragment {
                         fingerprint.put("rssi", fpArray.get(i).get("rssi"));
                         wifiFingerprint.put(fingerprint);
                     }
-                    Log.d("wifiFingerprint", wifiFingerprint + " ");
                     root.put("wifi-fingerprint", wifiFingerprint);
-                    Log.d("wifi Detail3", root.toString());
+                    Log.d("wifi Detail", root.toString());
 
                 } catch (JSONException e) {
                     e.printStackTrace();
@@ -468,13 +571,18 @@ public class LearnFragment extends Fragment {
                 new PostLearnAPI().execute("https://ml.internalpositioning.com/learn");
                 new GetCalculateAPI().execute("https://ml.internalpositioning.com/calculate?group=group05");
                 Toast.makeText(getActivity(), "Inserted Into Repository" , Toast.LENGTH_SHORT).show();
-                buttonLearn.setEnabled(true);
-                locText.setEnabled(true);
+                        buttonLearn.setEnabled(true);
+                        locText.setEnabled(true);
+
+                    }
+                };
+                timer.start();
 
             }
         };
         timer.start();
     }
+
 
     //---- addLocation Methods ----
     private void addLocation(LatLng position){

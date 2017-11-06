@@ -206,6 +206,9 @@ public class FindYourWayFragment extends Fragment {
         //https://gist.github.com/ruuhkis/d942330d97163d868ee7
         autoCompleteTextViewTo = (AutoCompleteTextView) rootView.findViewById(R.id.autoCompleteTextViewTo);
 
+        //-- Init Singapore7 GMap
+        initFiles(currentArea);
+
         //-- Get From DB --
         databaseLocation.addValueEventListener(new ValueEventListener() {
             @Override
@@ -265,20 +268,15 @@ public class FindYourWayFragment extends Fragment {
 
                     @Override
                     public void run() {
-                        int times = 15;
+                        int times = 10;
                         boolean truth = true;
                         ArrayList<LocTracker> locationArray = new ArrayList<>();
 
                         try {
                             for (int t = 0; t <times; t++) {
-                                String locations;
+                                String locations = new PostTrackAPI().execute("https://ml.internalpositioning.com/track").get();
 
-                                locations = new PostTrackAPI().execute("https://ml.internalpositioning.com/track").get();
-
-                                if (locations.isEmpty()) {
-                                    Log.d("Location: ", "NULL");
-                                    break;
-                                } else {
+                                if (locations != null) {
                                     Log.d("Location Name API", locations);
 
                                     if (locationArray.size() == 0 ) {
@@ -445,7 +443,6 @@ public class FindYourWayFragment extends Fragment {
                     }
                 });
 
-                initFiles(currentArea);
 
                 //-- Floating Action Button Click to go to Current Location--
                 FloatingActionButton fab = (FloatingActionButton) rootView.findViewById(R.id.fab);
@@ -652,6 +649,12 @@ public class FindYourWayFragment extends Fragment {
         downloadingFiles();
     }
 
+
+    //---- LoadMap Method ----
+    void loadMap(File areaFolder) {
+        loadGraphStorage();
+    }
+
     //---- DownloadingFiles Method ----   Maybe no need this method -
     void downloadingFiles() {
         final File areaFolder = new File(mapsFolder, currentArea + "-gh");
@@ -703,10 +706,6 @@ public class FindYourWayFragment extends Fragment {
         }.execute();
     }
 
-    //---- LoadMap Method ----
-    void loadMap(File areaFolder) {
-        loadGraphStorage();
-    }
 
     //---- LoadGraphStorage Method ----
     void loadGraphStorage() {
@@ -725,7 +724,7 @@ public class FindYourWayFragment extends Fragment {
                     logUser("An error happened while creating graph:"
                             + getErrorMessage());
                 } else {
-                    logUser("Finished loading graph. Long press to define where to start and end the route.");
+                    logUser("Finished loading graph.");
                 }
                 finishPrepare();
             }
@@ -768,8 +767,6 @@ public class FindYourWayFragment extends Fragment {
                                 + toLon + " found path with distance:" + resp.getDistance()
                                 / 1000f + ", nodes:" + resp.getPoints().getSize() + ", time:"
                                 + time + " " + resp.getDebugInfo());
-//                        logUser("the route is " + (int) (resp.getDistance() / 100) / 10f
-//                                + "km long, time:" + resp.getTime() / 60000f + "min, debug:" + time);
 
                         points = createPathLayer(resp);
 
@@ -790,8 +787,7 @@ public class FindYourWayFragment extends Fragment {
                                 + toLon + " found path with distance:" + resp.getDistance()
                                 / 1000f + ", nodes:" + resp.getPoints().getSize() + ", time:"
                                 + time + " " + resp.getDebugInfo());
-//                        logUser("the route is " + (int) (resp.getDistance() / 100) / 10f
-//                                + "km long, time:" + resp.getTime() / 60000f + "min, debug:" + time);
+
 
                         points = createPathLayer(resp);
 
@@ -861,7 +857,7 @@ public class FindYourWayFragment extends Fragment {
         wmgr.startScan();
 
         for (ScanResult R : results) {
-//            if (R.SSID.equalsIgnoreCase("NYP-Student")) {
+           if (R.SSID.equalsIgnoreCase("NYP-Student")) {
                 try {
                     fingerprint.put("mac", R.BSSID.toString());
                     fingerprint.put("rssi", R.level);
@@ -870,7 +866,7 @@ public class FindYourWayFragment extends Fragment {
                     e.printStackTrace();
                 }
             }
-//        }
+        }
         try {
             root.put("group", "group05");
             root.put("username", "p3");
