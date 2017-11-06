@@ -123,6 +123,7 @@ public class FindYourWayFragment extends Fragment {
     AutoCompleteTextView autoCompleteTextViewTo;
     ArrayList<String> aList = new ArrayList<String>();
     DatabaseReference databaseLocation;
+    private String prevLocation;
 
     private OnFragmentInteractionListener mListener;
 
@@ -340,6 +341,7 @@ public class FindYourWayFragment extends Fragment {
                             }
                             Log.d("Last Item After Sort", locationArray.get(locationArray.size()-1).getLocationName() + ", " + locationArray.get(locationArray.size()-1).getCounter());
                             maxLocation = locationArray.get(locationArray.size()-1).getLocationName();
+
                         }
 
                         //-- Compare to Database --
@@ -374,6 +376,9 @@ public class FindYourWayFragment extends Fragment {
                                             markerView.setIcon(icon);
                                             markerView.setTitle("You Are Here");
                                         } else {
+                                            if(!(markerViewCurrent == null)){
+                                                calcPath(locLatitude, locLongitude, markerViewCurrent.getPosition().getLatitude(), markerViewCurrent.getPosition().getLongitude(), mapboxMap);
+                                            }
                                             markerView.setPosition(latLng);
                                             markerView.setIcon(icon);
                                             markerView.setTitle("You Are Here");
@@ -388,7 +393,7 @@ public class FindYourWayFragment extends Fragment {
                             });
                         }
                     }
-                },0,2000); //4500
+                },0,7000); //4500
 
                 //-- OnClick To Set Destination Flag Marker --
                 mapboxMap.setOnMapLongClickListener(new MapboxMap.OnMapLongClickListener() {
@@ -709,7 +714,7 @@ public class FindYourWayFragment extends Fragment {
 
     //---- LoadGraphStorage Method ----
     void loadGraphStorage() {
-        logUser("loading graph (" + Constants.VERSION + ") ... ");
+//        logUser("loading graph (" + Constants.VERSION + ") ... ");
         new GHAsyncTask<Void, Void, Path>() {
             protected Path saveDoInBackground(Void... v) throws Exception {
                 GraphHopper tmpHopp = new GraphHopper().forMobile();
@@ -724,7 +729,7 @@ public class FindYourWayFragment extends Fragment {
                     logUser("An error happened while creating graph:"
                             + getErrorMessage());
                 } else {
-                    logUser("Finished loading graph.");
+//                    logUser("Finished loading graph.");
                 }
                 finishPrepare();
             }
@@ -868,7 +873,7 @@ public class FindYourWayFragment extends Fragment {
             }
         }
         try {
-            root.put("group", "group05");
+            root.put("group", "test05");
             root.put("username", "p3");
             root.put("time", timeStamp);
             root.put("wifi-fingerprint", wifiFingerprint);
