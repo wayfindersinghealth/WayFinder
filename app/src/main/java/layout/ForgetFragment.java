@@ -3,27 +3,33 @@ package layout;
 import android.content.Context;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
-import android.support.v4.media.session.MediaSessionCompat;
-import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.Toast;
+
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 
 import sg.com.singhealth.wayfinder.R;
 
 /**
  * A simple {@link Fragment} subclass.
  * Activities that contain this fragment must implement the
- * {@link StartFragment.OnFragmentInteractionListener} interface
+ * {@link ForgetFragment.OnFragmentInteractionListener} interface
  * to handle interaction events.
- * Use the {@link StartFragment#newInstance} factory method to
+ * Use the {@link ForgetFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class StartFragment extends Fragment {
+public class ForgetFragment extends Fragment {
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
@@ -32,14 +38,12 @@ public class StartFragment extends Fragment {
     // TODO: Rename and change types of parameters
     private String mParam1;
     private String mParam2;
-
-    private Button button_login;
-    private Button button_signup;
-
+    private Button buttonEnter;
+    EditText editTextGetEmail;
 
     private OnFragmentInteractionListener mListener;
 
-    public StartFragment() {
+    public ForgetFragment() {
         // Required empty public constructor
     }
 
@@ -49,11 +53,11 @@ public class StartFragment extends Fragment {
      *
      * @param param1 Parameter 1.
      * @param param2 Parameter 2.
-     * @return A new instance of fragment StartFragment.
+     * @return A new instance of fragment ForgetFragment.
      */
     // TODO: Rename and change types and number of parameters
-    public static StartFragment newInstance(String param1, String param2) {
-        StartFragment fragment = new StartFragment();
+    public static ForgetFragment newInstance(String param1, String param2) {
+        ForgetFragment fragment = new ForgetFragment();
         Bundle args = new Bundle();
         args.putString(ARG_PARAM1, param1);
         args.putString(ARG_PARAM2, param2);
@@ -74,33 +78,40 @@ public class StartFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        final View rootView = inflater.inflate(R.layout.fragment_start, container, false);
-
-        button_login = (Button)rootView.findViewById(R.id.button_login);
-        button_signup = (Button)rootView.findViewById(R.id.button_signup);
-        button_login.setOnClickListener(new View.OnClickListener() {
+       View rootView= inflater.inflate(R.layout.fragment_forget, container, false);
+        editTextGetEmail = (EditText)rootView.findViewById(R.id.editTextGetEmail);
+        buttonEnter = (Button)rootView.findViewById(R.id.buttonEnter);
+        buttonEnter.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View view) {
-                Fragment fragment;
-                fragment = new LoginFragment();
-                FragmentManager fragmentManager = getFragmentManager();
-                fragmentManager.beginTransaction().replace(R.id.content, fragment).commit();
+            public void onClick(View v) {
+                FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+                FirebaseAuth firebaseAuth = FirebaseAuth.getInstance();
+                final String EmailAddress = editTextGetEmail.getText().toString();
+                if (EmailAddress.equals("")) {
+                    Toast.makeText(getActivity(), "Please enter your Email", Toast.LENGTH_SHORT).show();
+                    return;
+                } else {
+                    firebaseAuth.sendPasswordResetEmail(EmailAddress)
+                            .addOnCompleteListener(new OnCompleteListener<Void>() {
+                                @Override
+                                public void onComplete(@NonNull Task<Void> task) {
+                                    if (task.isSuccessful()) {
+                                        Toast.makeText(getActivity(), "Email Sent..", Toast.LENGTH_SHORT).show();
+                                        Fragment fragment;
+                                        fragment = new StartFragment();
+                                        FragmentManager fragmentManager = getFragmentManager();
+                                        fragmentManager.beginTransaction().replace(R.id.content, fragment).commit();
+                                    } else {
+                                        Toast.makeText(getActivity(), "Please Enter your email true", Toast.LENGTH_SHORT).show();
+                                    }
+                                }
+                            });
+
+
+                }
             }
+
         });
-
-        button_signup.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Toast.makeText(getActivity(), "Please use your real Eamil , if you forget password , you can reset password on you email", Toast.LENGTH_LONG).show();
-                Fragment fragment;
-                fragment = new RegisterFragment();
-                FragmentManager fragmentManager = getFragmentManager();
-                fragmentManager.beginTransaction().replace(R.id.content, fragment).commit();
-            }
-        });
-
-
-
 
 
 
@@ -125,19 +136,6 @@ public class StartFragment extends Fragment {
                     + " must implement OnFragmentInteractionListener");
         }
     }
-
-
-    @Override
-    public void onResume() {
-        super.onResume();
-        ((AppCompatActivity)getActivity()).getSupportActionBar().hide();
-    }
-    @Override
-    public void onStop() {
-        super.onStop();
-        ((AppCompatActivity)getActivity()).getSupportActionBar().show();
-    }
-
 
     @Override
     public void onDetach() {

@@ -2,9 +2,12 @@ package layout;
 
 import android.app.ProgressDialog;
 import android.content.Context;
+import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+import android.preference.PreferenceFragment;
 import android.support.annotation.NonNull;
+import android.support.design.widget.BaseTransientBottomBar;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
@@ -20,11 +23,13 @@ import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.android.gms.common.server.FavaDiagnosticsEntity;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.storage.StorageReference;
 
 import sg.com.singhealth.wayfinder.R;
 
@@ -58,7 +63,6 @@ public class LoginFragment extends Fragment {
     private FirebaseAuth firebaseAuth;
     private FragmentManager manager;
     private FragmentTransaction ft;
-    private Button button_backStart;
 
     public LoginFragment() {
         // Required empty public constructor
@@ -111,7 +115,6 @@ public class LoginFragment extends Fragment {
         //    startActivity(new Intent(getActivity(),ProfileFragment.class));
 
         }
-
         buttonSignIn = (ImageButton) rootView.findViewById(R.id.buttonSignin);
         textViewForget = (TextView)rootView.findViewById(R.id.textViewForget) ;
         editTextEmail = (EditText)rootView.findViewById(R.id.editTexEmail);
@@ -122,35 +125,13 @@ public class LoginFragment extends Fragment {
             public void onClick(View view) {
 
                 {
-                    final FirebaseUser user = firebaseAuth.getCurrentUser();
-                    final FirebaseAuth firebaseAuth = FirebaseAuth.getInstance();
-                    final String emailAddress = editTextEmail.getText().toString();
-                    if (emailAddress.equals("")) {
-                        Toast.makeText(getActivity(), "Please enter your Email", Toast.LENGTH_SHORT).show();
-                        return;
-                    }
-                    else {
-                    firebaseAuth.sendPasswordResetEmail(emailAddress)
-                            .addOnCompleteListener(new OnCompleteListener<Void>() {
-                                @Override
-                                public void onComplete(@NonNull Task<Void> task) {
-                                    if (task.isSuccessful()) {
-                                        Log.d(TAG, "Email sent.");
-                                        Toast.makeText(getActivity(), "Email sent successful", Toast.LENGTH_SHORT).show();
-                                        firebaseAuth.signOut();
-                                        Fragment fragment;
-                                        fragment = new LoginFragment();
-                                        FragmentManager fragmentManager = getFragmentManager();
-                                        fragmentManager.beginTransaction().replace(R.id.content, fragment).commit();
+                    Fragment fragment;
+                    fragment = new ForgetFragment();
+                    FragmentManager fragmentManager = getFragmentManager();
+                    fragmentManager.beginTransaction().replace(R.id.content, fragment).commit();
+                }
+                }
 
-                                    } else {
-                                        Toast.makeText(getActivity(), "Email sent Error", Toast.LENGTH_SHORT).show();
-                                    }
-                                }
-                            });
-                }
-                }
-            }
         });
 
         buttonSignIn.setOnClickListener(new View.OnClickListener() {
@@ -206,7 +187,6 @@ public class LoginFragment extends Fragment {
                         });
             }
         });;
-
 
         // Inflate the layout for this fragment
         return rootView;

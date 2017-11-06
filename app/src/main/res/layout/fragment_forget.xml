@@ -1,0 +1,30 @@
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="layout.ForgetFragment"
+    android:background="@drawable/bg">
+
+    <!-- TODO: Update blank fragment layout -->
+    <EditText
+        android:id="@+id/editTextGetEmail"
+        android:layout_width="279dp"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:hint="      Please enter your Email"
+        android:textSize="20dp"
+        android:textStyle="bold"
+        android:singleLine="true"
+        android:textColorHint="#ffffff"/>
+
+    <Button
+        android:id="@+id/buttonEnter"
+        android:layout_width="109dp"
+        android:layout_height="42dp"
+        android:text="Enter"
+        android:layout_gravity="center"
+        android:layout_marginTop="85dp"
+        />
+
+
+</FrameLayout>

@@ -36,6 +36,7 @@ import java.util.Locale;
 import layout.AboutFragment;
 import layout.BlankFragment;
 import layout.FindYourWayFragment;
+import layout.ForgetFragment;
 import layout.LearnFragment;
 import layout.LoginFragment;
 import layout.MainFragment;
@@ -58,7 +59,8 @@ public class MainActivity extends AppCompatActivity
         LoginFragment.OnFragmentInteractionListener,
         StartFragment.OnFragmentInteractionListener,
         RegisterFragment.OnFragmentInteractionListener,
-        BlankFragment.OnFragmentInteractionListener{
+        BlankFragment.OnFragmentInteractionListener,
+        ForgetFragment.OnFragmentInteractionListener{
     SharedPreferences spf;
     SharedPreferences.Editor editor;
     NavigationView navigationView;

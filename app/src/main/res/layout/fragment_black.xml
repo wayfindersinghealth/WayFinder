@@ -29,10 +29,10 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_gravity="center"
-        android:format12Hour="MMM dd, yyyy h:mmaa"
-        android:format24Hour="MMM dd, yyyy H:mmaa"
+        android:format12Hour="EEEE, MMMM dd, yyyy h:mmaa"
+        android:format24Hour="MMMM dd, yyyy. EEEE, H:mmaa"
         android:textAlignment="center"
-        android:textSize="25dp"
+        android:textSize="20dp"
 
         />
 
