@@ -520,23 +520,25 @@ public class LearnFragment extends Fragment {
                         Log.d("FpArray 2nd", fpArraySecond.toString());
 
 
-                        for(int i=0; i<fpArray.size(); i++){
+                        for(int i=0; i<fpArraySecond.size(); i++){
+                            boolean test = true;
                             try {
-                                boolean test = true;
                                 JSONObject fp = new JSONObject();
-                                for(int m=0; m<fpArraySecond.size(); m++){
-                                    if (fpArray.get(i).get("mac").toString().equalsIgnoreCase((String) fpArraySecond.get(m).get("mac"))){
-                                        int averageLevel = ((Integer) fpArray.get(i).get("rssi") + (Integer) fpArraySecond.get(m).get("rssi"))/2;
-                                        fpArray.get(i).put("rssi", averageLevel);
+                                fp.put("mac", fpArraySecond.get(i).get("mac"));
+
+                                for(int m=0; m<fpArray.size(); m++){
+                                    if (fpArray.get(m).get("mac").toString().equalsIgnoreCase(fp.get("mac").toString())){
+                                        int averageLevel = ((Integer) fpArray.get(m).get("rssi") + (Integer) fpArraySecond.get(i).get("rssi"))/2;
+                                        fpArray.get(m).put("rssi", averageLevel);
                                         test= true;
                                         break;
                                     }else{
-                                       fp.put("rssi", fpArraySecond.get(m).get("rssi"));
-                                       fp.put("mac", fpArraySecond.get(m).get("mac"));
                                        test = false;
                                     }
                                 }
+
                                 if (!test){
+                                    fp.put("rssi", fpArraySecond.get(i).get("rssi"));
                                     fpArray.add(fp);
                                 }
                             } catch (JSONException e) {
