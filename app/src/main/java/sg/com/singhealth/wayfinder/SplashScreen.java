@@ -1,17 +1,33 @@
 package sg.com.singhealth.wayfinder;
 
 import android.app.Activity;
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Path;
 import android.os.AsyncTask;
+import android.os.Build;
 import android.os.Bundle;
+import android.os.Environment;
 import android.preference.PreferenceManager;
+import android.util.Log;
 import android.view.Window;
 import android.view.WindowManager;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
+
+import com.graphhopper.GraphHopper;
+import com.graphhopper.util.Constants;
+import com.graphhopper.util.Helper;
+import com.graphhopper.util.ProgressListener;
+import com.mapbox.mapboxsdk.maps.MapView;
+import com.mapbox.mapboxsdk.maps.MapboxMap;
+import com.mapbox.mapboxsdk.maps.OnMapReadyCallback;
+
+import java.io.File;
 
 /**
  * File Name: SplashScreen.java
@@ -25,6 +41,14 @@ public class SplashScreen extends Activity {
     Animation myAnimation;
     ImageView iv;
     TextView tv;
+    MapView mapView;
+
+    //-- Graphhopper Variables --
+    private File mapsFolder;
+    private volatile boolean prepareInProgress = false;
+    private String currentArea = "singapore7";
+    private GraphHopper hopper;
+    private String downloadURL;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

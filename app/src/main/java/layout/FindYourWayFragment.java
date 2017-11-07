@@ -1,9 +1,16 @@
 package layout;
 
+import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.graphics.Color;
 import android.graphics.Path;
+import android.hardware.Sensor;
+import android.hardware.SensorEvent;
+import android.hardware.SensorEventListener;
+import android.hardware.SensorManager;
+import android.hardware.TriggerEvent;
+import android.hardware.TriggerEventListener;
 import android.net.Uri;
 import android.net.wifi.ScanResult;
 import android.net.wifi.WifiManager;
@@ -59,6 +66,7 @@ import com.graphhopper.util.ProgressListener;
 import com.graphhopper.util.StopWatch;
 
 import java.io.File;
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -102,7 +110,7 @@ import sg.com.singhealth.wayfinder.R;
  * Use the {@link FindYourWayFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class FindYourWayFragment extends Fragment {
+public class FindYourWayFragment extends Fragment implements SensorEventListener {
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
@@ -124,6 +132,7 @@ public class FindYourWayFragment extends Fragment {
     ArrayList<String> aList = new ArrayList<String>();
     DatabaseReference databaseLocation;
     private String prevLocation;
+    private MapboxMap mapboxMap;
 
     private OnFragmentInteractionListener mListener;
 
@@ -139,6 +148,12 @@ public class FindYourWayFragment extends Fragment {
     private List<Polyline> calculatedPolylines = new ArrayList<>();
     private List<LatLng> points;
     private List<Polyline> polylines = new ArrayList<Polyline>();
+
+    //-- Significant MotionSensor --
+    private SensorManager sensorManager;
+    private boolean color = false;
+    private View view;
+    private long lastUpdate;
 
     public FindYourWayFragment() {
         // Required empty public constructor
@@ -188,6 +203,7 @@ public class FindYourWayFragment extends Fragment {
             mParam1 = getArguments().getString(ARG_PARAM1);
             mParam2 = getArguments().getString(ARG_PARAM2);
         }
+        sensorManager = (SensorManager) getActivity().getSystemService(Context.SENSOR_SERVICE);
     }
 
     @Override
@@ -262,138 +278,24 @@ public class FindYourWayFragment extends Fragment {
                 mapboxMap.setMaxZoomPreference(20);
                 mapboxMap.setMinZoomPreference(18.7);
 
+//                mSensorManager = (SensorManager) getActivity().getSystemService(Activity.SENSOR_SERVICE);
 
-                //-- Timer to Loops Marker Change ---
-                t = new Timer();
-                t.scheduleAtFixedRate(new TimerTask() {
 
-                    @Override
-                    public void run() {
-                        int times = 10;
-                        boolean truth = true;
-                        ArrayList<LocTracker> locationArray = new ArrayList<>();
+//                mSensor = mSensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
+//                registerSensorListener();
 
-                        try {
-                            for (int t = 0; t <times; t++) {
-                                String locations = new PostTrackAPI().execute("https://ml.internalpositioning.com/track").get();
+                        //-- Timer to Loops Marker Change ---
+//                        t = new Timer();
+//                        t.scheduleAtFixedRate(new TimerTask() {
 
-                                if (locations != null) {
-                                    Log.d("Location Name API", locations);
+//                            @Override
+//                            public void run() {
 
-                                    if (locationArray.size() == 0 ) {
-                                        LocTracker thisLoc = new LocTracker();
-                                        thisLoc.setCounter(1);
-                                        thisLoc.setLocationName(locations);
-                                        locationArray.add(thisLoc);
+//                            }
+//                        },0,7000); //4500
 
-                                    } else {
-                                        for (int i=0; i<locationArray.size(); i++) {
-                                            if (locationArray.get(i).getLocationName().equalsIgnoreCase(locations)) {
-                                                locationArray.get(i).setCounter(locationArray.get(i).getCounter() + 1);
-                                                truth = true;
-                                                break;
-                                            } else {
-                                                truth = false;
-                                            }
-                                        }
-
-                                        if (!truth) {
-                                            LocTracker location = new LocTracker();
-                                            location.setLocationName(locations);
-                                            location.setCounter(1);
-                                            locationArray.add(location);
-                                        }
-                                    }
-
-                                }
-                            }
-                        } catch (InterruptedException e) {
-                            e.printStackTrace();
-                        } catch (ExecutionException e) {
-                            e.printStackTrace();
-                        }
-
-                        //Before Sorting ArrayList
-                        for (int i=0; i < locationArray.size(); i++) {
-                            Log.d("Before Sort", locationArray.get(i).getLocationName() + ", " + locationArray.get(i).getCounter());
-                        }
-
-                        //Comparing and Sorting based on least counter to most counter
-                        int maxCounter;
-                        String maxLocation = null;
-                        if (locationArray.size() == 1){
-                            for (int h = 0; h < locationArray.size(); h++) {
-                                maxLocation = locationArray.get(h).getLocationName();
-                                maxCounter = locationArray.get(h).getCounter();
-                            }
-                        } else if (locationArray.size() > 0) {
-                            //Sorting arraylist according to Smallest to Largest Counter
-                            Collections.sort(locationArray, new Comparator<LocTracker>() {
-                                @Override
-                                public int compare(LocTracker locTracker, LocTracker t1) {
-                                    return Integer.compare(locTracker.getCounter(), t1.getCounter());
-                                }
-                            });
-
-                            //After Sorting ArrayList
-                            for (int j=0; j < locationArray.size(); j++) {
-                                Log.d("After Sort", locationArray.get(j).getLocationName() + ", " + locationArray.get(j).getCounter());
-                            }
-                            Log.d("Last Item After Sort", locationArray.get(locationArray.size()-1).getLocationName() + ", " + locationArray.get(locationArray.size()-1).getCounter());
-                            maxLocation = locationArray.get(locationArray.size()-1).getLocationName();
-
-                        }
-
-                        //-- Compare to Database --
-                        if (maxLocation == null) {
-                            Log.d("maxLocation: ", "NULL");
-                        } else {
-                            String finalLocation = maxLocation.toUpperCase();
-                            Log.d("Final Location", finalLocation);
-                            Log.d("-----------------------", "-----------------------");
-
-                            Query locationQuery = databaseLocation.orderByChild("id").equalTo(finalLocation);
-                            locationQuery.addValueEventListener(new ValueEventListener() {
-                                @Override
-                                public void onDataChange(DataSnapshot dataSnapshot) {
-                                    for (DataSnapshot locationSnapshot : dataSnapshot.getChildren()) {
-                                        //-- Get Longitude and Latitude --
-                                        double locLatitude = (double) locationSnapshot.child("latitude").getValue();
-                                        double locLongitude = (double) locationSnapshot.child("longitude").getValue();
-
-                                        currentLocation = new LatLng(locLatitude, locLongitude);
-                                        Log.d("LatLng", locLatitude + ", " + locLongitude);
-
-                                        //-- Marker Icon --
-                                        IconFactory iconFactory = IconFactory.getInstance(getActivity());
-                                        Icon icon = iconFactory.fromResource(R.drawable.ic_curr_location);
-
-                                        //-- Set Marker on Map --
-                                        LatLng latLng = new LatLng(locLatitude, locLongitude);
-
-                                        if (markerView == null) {
-                                            markerView = mapboxMap.addMarker(new MarkerViewOptions().position(new LatLng(locLatitude, locLongitude)));
-                                            markerView.setIcon(icon);
-                                            markerView.setTitle("You Are Here");
-                                        } else {
-                                            if(!(markerViewCurrent == null)){
-                                                calcPath(locLatitude, locLongitude, markerViewCurrent.getPosition().getLatitude(), markerViewCurrent.getPosition().getLongitude(), mapboxMap);
-                                            }
-                                            markerView.setPosition(latLng);
-                                            markerView.setIcon(icon);
-                                            markerView.setTitle("You Are Here");
-                                        }
-                                    }
-                                }
-
-                                @Override
-                                public void onCancelled(DatabaseError databaseError) {
-
-                                }
-                            });
-                        }
-                    }
-                },0,7000); //4500
+//                    }
+//                };
 
                 //-- OnClick To Set Destination Flag Marker --
                 mapboxMap.setOnMapLongClickListener(new MapboxMap.OnMapLongClickListener() {
@@ -426,11 +328,10 @@ public class FindYourWayFragment extends Fragment {
                                 markerViewCurrent.setTitle("Destination");
                             }
 
-
                             // Calculate Shortest Path
                             calcPath(currentLocation.getLatitude(), currentLocation.getLongitude(), end.getLatitude(), end.getLongitude(), mapboxMap);
 
-                        }else if (currentLocation != null && end != null) {
+                        } else if (currentLocation != null && end != null) {
                             end = point;
                             shortestPathRunning = true;
 
@@ -566,6 +467,172 @@ public class FindYourWayFragment extends Fragment {
 
     //-------- START OF METHODS --------
 
+    @Override
+    public void onSensorChanged(SensorEvent event) {
+        if (event.sensor.getType() == Sensor.TYPE_ACCELEROMETER) {
+            getAccelerometer(event);
+        }
+    }
+
+    private void getAccelerometer(SensorEvent event) {
+        float[] values = event.values;
+        // Movement
+        float x = values[0];
+        float y = values[1];
+        float z = values[2];
+
+        float accelationSquareRoot = (x * x + y * y + z * z)
+                / (SensorManager.GRAVITY_EARTH * SensorManager.GRAVITY_EARTH);
+        long actualTime = event.timestamp;
+        if (accelationSquareRoot >= 2) //
+        {
+            if (actualTime - lastUpdate < 200) {
+                return;
+            }
+            lastUpdate = actualTime;
+            Toast.makeText(getActivity(), "Device was shuffed", Toast.LENGTH_SHORT)
+                    .show();
+//
+//            int times = 10;
+//            boolean truth = true;
+//            ArrayList<LocTracker> locationArray = new ArrayList<>();
+//
+//            try {
+//                for (int t = 0; t <times; t++) {
+//                    String locations = new PostTrackAPI().execute("https://ml.internalpositioning.com/track").get();
+//
+//                    if (locations != null) {
+//                        Log.d("Location Name API", locations);
+//
+//                        if (locationArray.size() == 0 ) {
+//                            LocTracker thisLoc = new LocTracker();
+//                            thisLoc.setCounter(1);
+//                            thisLoc.setLocationName(locations);
+//                            locationArray.add(thisLoc);
+//
+//                        } else {
+//                            for (int i=0; i<locationArray.size(); i++) {
+//                                if (locationArray.get(i).getLocationName().equalsIgnoreCase(locations)) {
+//                                    locationArray.get(i).setCounter(locationArray.get(i).getCounter() + 1);
+//                                    truth = true;
+//                                    break;
+//                                } else {
+//                                    truth = false;
+//                                }
+//                            }
+//
+//                            if (!truth) {
+//                                LocTracker location = new LocTracker();
+//                                location.setLocationName(locations);
+//                                location.setCounter(1);
+//                                locationArray.add(location);
+//                            }
+//                        }
+//
+//                    }
+//                }
+//            } catch (InterruptedException e) {
+//                e.printStackTrace();
+//            } catch (ExecutionException e) {
+//                e.printStackTrace();
+//            }
+//
+//            //Before Sorting ArrayList
+//            for (int i=0; i < locationArray.size(); i++) {
+//                Log.d("Before Sort", locationArray.get(i).getLocationName() + ", " + locationArray.get(i).getCounter());
+//            }
+//
+//            //Comparing and Sorting based on least counter to most counter
+//            int maxCounter;
+//            String maxLocation = null;
+//            if (locationArray.size() == 1){
+//                for (int h = 0; h < locationArray.size(); h++) {
+//                    maxLocation = locationArray.get(h).getLocationName();
+//                    maxCounter = locationArray.get(h).getCounter();
+//                }
+//            } else if (locationArray.size() > 0) {
+//                //Sorting arraylist according to Smallest to Largest Counter
+//                Collections.sort(locationArray, new Comparator<LocTracker>() {
+//                    @Override
+//                    public int compare(LocTracker locTracker, LocTracker t1) {
+//                        return Integer.compare(locTracker.getCounter(), t1.getCounter());
+//                    }
+//                });
+//
+//                //After Sorting ArrayList
+//                for (int j=0; j < locationArray.size(); j++) {
+//                    Log.d("After Sort", locationArray.get(j).getLocationName() + ", " + locationArray.get(j).getCounter());
+//                }
+//                Log.d("Last Item After Sort", locationArray.get(locationArray.size()-1).getLocationName() + ", " + locationArray.get(locationArray.size()-1).getCounter());
+//                maxLocation = locationArray.get(locationArray.size()-1).getLocationName();
+//
+//            }
+//
+//            //-- Compare to Database --
+//            if (maxLocation == null) {
+//                Log.d("maxLocation: ", "NULL");
+//            } else {
+//                String finalLocation = maxLocation.toUpperCase();
+//                Log.d("Final Location", finalLocation);
+//                Log.d("-----------------------", "-----------------------");
+//
+//                Query locationQuery = databaseLocation.orderByChild("id").equalTo(finalLocation);
+//                locationQuery.addValueEventListener(new ValueEventListener() {
+//                    @Override
+//                    public void onDataChange(DataSnapshot dataSnapshot) {
+//                        for (DataSnapshot locationSnapshot : dataSnapshot.getChildren()) {
+//                            //-- Get Longitude and Latitude --
+//                            double locLatitude = (double) locationSnapshot.child("latitude").getValue();
+//                            double locLongitude = (double) locationSnapshot.child("longitude").getValue();
+//
+//                            currentLocation = new LatLng(locLatitude, locLongitude);
+//                            Log.d("LatLng", locLatitude + ", " + locLongitude);
+//
+//                            //-- Marker Icon --
+//                            IconFactory iconFactory = IconFactory.getInstance(getActivity());
+//                            Icon icon = iconFactory.fromResource(R.drawable.ic_curr_location);
+//
+//                            //-- Set Marker on Map --
+//                            LatLng latLng = new LatLng(locLatitude, locLongitude);
+//
+//                            if (markerView == null) {
+//                                markerView = mapboxMap.addMarker(new MarkerViewOptions().position(new LatLng(locLatitude, locLongitude)));
+//                                markerView.setIcon(icon);
+//                                markerView.setTitle("You Are Here");
+//                            } else {
+//                                if(!(markerViewCurrent == null)){
+//                                    calcPath(locLatitude, locLongitude, markerViewCurrent.getPosition().getLatitude(), markerViewCurrent.getPosition().getLongitude(), mapboxMap);
+//                                }
+//                                markerView.setPosition(latLng);
+//                                markerView.setIcon(icon);
+//                                markerView.setTitle("You Are Here");
+//                            }
+//                        }
+//                    }
+//
+//                    @Override
+//                    public void onCancelled(DatabaseError databaseError) {
+//
+//                    }
+//                });
+//            }
+
+        }
+    }
+
+    @Override
+    public void onAccuracyChanged(Sensor sensor, int i) {
+
+    }
+
+    private void registerSensorListener() {
+        sensorManager.registerListener(this, sensorManager.getSensorList(Sensor.TYPE_ACCELEROMETER).get(0), SensorManager.SENSOR_DELAY_NORMAL);
+    }
+//
+//    private void unregisterSensorListener() {
+//        mSensorManager.unregisterListener(this);
+//    }
+
     //---- MapBox onStart Method ----
     @Override
     public void onStart() {
@@ -580,8 +647,10 @@ public class FindYourWayFragment extends Fragment {
     public void onResume() {
         markerView = null;
         super.onResume();
+        registerSensorListener();
         mapView.onResume();
         Log.d("onResume", "On resume method");
+
     }
 
     //---- MapBox onPause Method ----
@@ -590,7 +659,7 @@ public class FindYourWayFragment extends Fragment {
         super.onPause();
         mapView.onPause();
         Log.d("onPause", "On pause method");
-        if(t != null){
+        if (t != null){
             t.cancel();
             t = null;
             markerView = null;
