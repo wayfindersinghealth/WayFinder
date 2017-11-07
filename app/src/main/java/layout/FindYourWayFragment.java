@@ -18,6 +18,8 @@ import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
+import android.os.Handler;
+import android.os.Looper;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
 import android.util.Log;
@@ -605,7 +607,7 @@ public class FindYourWayFragment extends Fragment implements SensorEventListener
         void onFragmentInteraction(Uri uri);
     }
 
-    //-------- START OF METHODS --------
+    //-------- START OF METHODS ---------
 
     @Override
     public void onSensorChanged(SensorEvent event) {
