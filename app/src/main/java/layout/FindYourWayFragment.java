@@ -125,6 +125,9 @@ public class FindYourWayFragment extends Fragment implements SensorEventListener
     private String mParam2;
     MapView mapView;
     Timer t = null;
+    private Handler handler;
+    private Runnable handlerTask;
+
 
     private static MarkerView markerView = null;
     private static MarkerView markerViewCurrent = null;
@@ -285,155 +288,150 @@ public class FindYourWayFragment extends Fragment implements SensorEventListener
                 mapboxMap.setMinZoomPreference(18.7);
 
 
-                            if (movements = true) {
-                                float[] values = sEvent.values;
-                                // Movement
-                                float x = values[0];
-                                float y = values[1];
-                                float z = values[2];
+                handler = new Handler();
+                handlerTask = new Runnable()
+                {
+                    @Override
+                    public void run() {
+                        if(movements){
+                            int times = 10;
+                            boolean truth = true;
+                            ArrayList<LocTracker> locationArray = new ArrayList<>();
 
-                                float accelationSquareRoot = (x * x + y * y + z * z)
-                                        / (SensorManager.GRAVITY_EARTH * SensorManager.GRAVITY_EARTH);
-                                long actualTime = sEvent.timestamp;
-                                if (accelationSquareRoot >= 1.25) //
-                                {
-                                    if (actualTime - lastUpdate < 200) {
-                                        return;
-                                    }
-                                    lastUpdate = actualTime;
+                            try {
+                                for (int t = 0; t < times; t++) {
+                                    String locations = new PostTrackAPI().execute("https://ml.internalpositioning.com/track").get();
 
-                                    int times = 10;
-                                    boolean truth = true;
-                                    ArrayList<LocTracker> locationArray = new ArrayList<>();
+                                    if (locations != null) {
+                                        Log.d("Location Name API", locations);
 
-                                    try {
-                                        for (int t = 0; t < times; t++) {
-                                            String locations = new PostTrackAPI().execute("https://ml.internalpositioning.com/track").get();
+                                        if (locationArray.size() == 0) {
+                                            LocTracker thisLoc = new LocTracker();
+                                            thisLoc.setCounter(1);
+                                            thisLoc.setLocationName(locations);
+                                            locationArray.add(thisLoc);
 
-                                            if (locations != null) {
-                                                Log.d("Location Name API", locations);
-
-                                                if (locationArray.size() == 0) {
-                                                    LocTracker thisLoc = new LocTracker();
-                                                    thisLoc.setCounter(1);
-                                                    thisLoc.setLocationName(locations);
-                                                    locationArray.add(thisLoc);
-
+                                        } else {
+                                            for (int i = 0; i < locationArray.size(); i++) {
+                                                if (locationArray.get(i).getLocationName().equalsIgnoreCase(locations)) {
+                                                    locationArray.get(i).setCounter(locationArray.get(i).getCounter() + 1);
+                                                    truth = true;
+                                                    break;
                                                 } else {
-                                                    for (int i = 0; i < locationArray.size(); i++) {
-                                                        if (locationArray.get(i).getLocationName().equalsIgnoreCase(locations)) {
-                                                            locationArray.get(i).setCounter(locationArray.get(i).getCounter() + 1);
-                                                            truth = true;
-                                                            break;
-                                                        } else {
-                                                            truth = false;
-                                                        }
-                                                    }
-                                                    if (!truth) {
-                                                        LocTracker location = new LocTracker();
-                                                        location.setLocationName(locations);
-                                                        location.setCounter(1);
-                                                        locationArray.add(location);
-                                                    }
-                                                }
-
-                                            }
-                                        }
-                                    } catch (InterruptedException e) {
-                                        e.printStackTrace();
-                                    } catch (ExecutionException e) {
-                                        e.printStackTrace();
-                                    }
-
-                                    //Before Sorting ArrayList
-                                    for (int i = 0; i < locationArray.size(); i++) {
-                                        Log.d("Before Sort", locationArray.get(i).getLocationName() + ", " + locationArray.get(i).getCounter());
-                                    }
-
-                                    //Comparing and Sorting based on least counter to most counter
-                                    int maxCounter;
-                                    String maxLocation = null;
-                                    if (locationArray.size() == 1) {
-                                        for (int h = 0; h < locationArray.size(); h++) {
-                                            maxLocation = locationArray.get(h).getLocationName();
-                                            maxCounter = locationArray.get(h).getCounter();
-                                        }
-                                    } else if (locationArray.size() > 0) {
-                                        //Sorting arraylist according to Smallest to Largest Counter
-                                        Collections.sort(locationArray, new Comparator<LocTracker>() {
-                                            @Override
-                                            public int compare(LocTracker locTracker, LocTracker t1) {
-                                                return Integer.compare(locTracker.getCounter(), t1.getCounter());
-                                            }
-                                        });
-
-                                        //After Sorting ArrayList
-                                        for (int j = 0; j < locationArray.size(); j++) {
-                                            Log.d("After Sort", locationArray.get(j).getLocationName() + ", " + locationArray.get(j).getCounter());
-                                        }
-                                        Log.d("Last Item After Sort", locationArray.get(locationArray.size() - 1).getLocationName() + ", " + locationArray.get(locationArray.size() - 1).getCounter());
-                                        maxLocation = locationArray.get(locationArray.size() - 1).getLocationName();
-
-                                    }
-
-                                    //-- Compare to Database --
-                                    if (maxLocation == null) {
-                                        Log.d("maxLocation: ", "NULL");
-                                    } else {
-                                        String finalLocation = maxLocation.toUpperCase();
-                                        Log.d("Final Location", finalLocation);
-                                        Log.d("-----------------------", "-----------------------");
-
-                                        Query locationQuery = databaseLocation.orderByChild("id").equalTo(finalLocation);
-                                        locationQuery.addValueEventListener(new ValueEventListener() {
-                                            @Override
-                                            public void onDataChange(DataSnapshot dataSnapshot) {
-                                                for (DataSnapshot locationSnapshot : dataSnapshot.getChildren()) {
-                                                    //-- Get Longitude and Latitude --
-                                                    locLatitude = (double) locationSnapshot.child("latitude").getValue();
-                                                    locLongitude = (double) locationSnapshot.child("longitude").getValue();
-
-                                                    currentLocation = new LatLng(locLatitude, locLongitude);
-                                                    Log.d("LatLng", locLatitude + ", " + locLongitude);
-
-
+                                                    truth = false;
                                                 }
                                             }
-
-                                            @Override
-                                            public void onCancelled(DatabaseError databaseError) {
-
+                                            if (!truth) {
+                                                LocTracker location = new LocTracker();
+                                                location.setLocationName(locations);
+                                                location.setCounter(1);
+                                                locationArray.add(location);
                                             }
-                                        });
-                                    }
-
-                                }
-
-                                if (locLatitude != 0 && locLongitude != 0) {
-                                    //-- Set Marker on Map --
-                                    LatLng latLng = new LatLng(locLatitude, locLongitude);
-
-                                    //-- Marker Icon --
-                                    IconFactory iconFactory = IconFactory.getInstance(getActivity());
-                                    Icon icon = iconFactory.fromResource(R.drawable.ic_curr_location);
-
-                                    if (markerView == null) {
-                                        markerView = mapboxMap.addMarker(new MarkerViewOptions().position(new LatLng(locLatitude, locLongitude)));
-                                        markerView.setIcon(icon);
-                                        markerView.setTitle("You Are Here");
-                                    } else {
-                                        if (!(markerViewCurrent == null)) {
-                                            calcPath(locLatitude, locLongitude, markerViewCurrent.getPosition().getLatitude(), markerViewCurrent.getPosition().getLongitude(), mapboxMap);
                                         }
-                                        markerView.setPosition(latLng);
-                                        markerView.setIcon(icon);
-                                        markerView.setTitle("You Are Here");
+
                                     }
                                 }
+                            } catch (InterruptedException e) {
+                                e.printStackTrace();
+                            } catch (ExecutionException e) {
+                                e.printStackTrace();
+                            }
 
+                            //Before Sorting ArrayList
+                            for (int i = 0; i < locationArray.size(); i++) {
+                                Log.d("Before Sort", locationArray.get(i).getLocationName() + ", " + locationArray.get(i).getCounter());
+                            }
+
+                            //Comparing and Sorting based on least counter to most counter
+                            int maxCounter;
+                            String maxLocation = null;
+                            if (locationArray.size() == 1) {
+                                for (int h = 0; h < locationArray.size(); h++) {
+                                    maxLocation = locationArray.get(h).getLocationName();
+                                    maxCounter = locationArray.get(h).getCounter();
+                                }
+                            } else if (locationArray.size() > 0) {
+                                //Sorting arraylist according to Smallest to Largest Counter
+                                Collections.sort(locationArray, new Comparator<LocTracker>() {
+                                    @Override
+                                    public int compare(LocTracker locTracker, LocTracker t1) {
+                                        return Integer.compare(locTracker.getCounter(), t1.getCounter());
+                                    }
+                                });
+
+                                //After Sorting ArrayList
+                                for (int j = 0; j < locationArray.size(); j++) {
+                                    Log.d("After Sort", locationArray.get(j).getLocationName() + ", " + locationArray.get(j).getCounter());
+                                }
+                                Log.d("Last Item After Sort", locationArray.get(locationArray.size() - 1).getLocationName() + ", " + locationArray.get(locationArray.size() - 1).getCounter());
+                                maxLocation = locationArray.get(locationArray.size() - 1).getLocationName();
 
                             }
-                            movements = false;
+
+                            //-- Compare to Database --
+                            if (maxLocation == null) {
+                                Log.d("maxLocation: ", "NULL");
+                            } else {
+                                String finalLocation = maxLocation.toUpperCase();
+                                Log.d("Final Location", finalLocation);
+                                Log.d("-----------------------", "-----------------------");
+
+                                Query locationQuery = databaseLocation.orderByChild("id").equalTo(finalLocation);
+                                locationQuery.addValueEventListener(new ValueEventListener() {
+                                    @Override
+                                    public void onDataChange(DataSnapshot dataSnapshot) {
+                                        for (DataSnapshot locationSnapshot : dataSnapshot.getChildren()) {
+                                            //-- Get Longitude and Latitude --
+                                            locLatitude = (double) locationSnapshot.child("latitude").getValue();
+                                            locLongitude = (double) locationSnapshot.child("longitude").getValue();
+
+                                            currentLocation = new LatLng(locLatitude, locLongitude);
+                                            Log.d("LatLng", locLatitude + ", " + locLongitude);
+
+
+                                        }
+                                    }
+
+                                    @Override
+                                    public void onCancelled(DatabaseError databaseError) {
+
+                                    }
+                                });
+                            }
+
+
+
+                            if (locLatitude != 0 && locLongitude != 0) {
+                                //-- Set Marker on Map --
+                                LatLng latLng = new LatLng(locLatitude, locLongitude);
+
+                                //-- Marker Icon --
+                                IconFactory iconFactory = IconFactory.getInstance(getActivity());
+                                Icon icon = iconFactory.fromResource(R.drawable.ic_curr_location);
+
+                                if (markerView == null) {
+                                    markerView = mapboxMap.addMarker(new MarkerViewOptions().position(new LatLng(locLatitude, locLongitude)));
+                                    markerView.setIcon(icon);
+                                    markerView.setTitle("You Are Here");
+                                } else {
+                                    if (!(markerViewCurrent == null)) {
+                                        calcPath(locLatitude, locLongitude, markerViewCurrent.getPosition().getLatitude(), markerViewCurrent.getPosition().getLongitude(), mapboxMap);
+                                    }
+                                    markerView.setPosition(latLng);
+                                    markerView.setIcon(icon);
+                                    markerView.setTitle("You Are Here");
+                                }
+                            }
+
+                        }else{
+                            Log.d("Movements", "Now False");
+                        }
+                        handler.postDelayed(handlerTask, 1000);
+                    }
+                };
+                handlerTask.run();
+
+
 
 
 
@@ -612,8 +610,28 @@ public class FindYourWayFragment extends Fragment implements SensorEventListener
     @Override
     public void onSensorChanged(SensorEvent event) {
         sEvent = event;
-        movements = true;
+        float[] values = sEvent.values;
+        // Movement
+        float x = values[0];
+        float y = values[1];
+        float z = values[2];
+
+        float accelationSquareRoot = (x * x + y * y + z * z)
+                / (SensorManager.GRAVITY_EARTH * SensorManager.GRAVITY_EARTH);
+        long actualTime = sEvent.timestamp;
+        if (accelationSquareRoot >= 1.25) //
+        {
+            if (actualTime - lastUpdate < 200) {
+                return;
+            }
+            lastUpdate = actualTime;
+            movements = true;
+
+        }else{
+            movements = false;
+        }
     }
+
 
     @Override
     public void onAccuracyChanged(Sensor sensor, int i) {
@@ -659,6 +677,7 @@ public class FindYourWayFragment extends Fragment implements SensorEventListener
             t = null;
             markerView = null;
         }
+
     }
 
     //---- MapBox onStop Method ----
@@ -672,6 +691,7 @@ public class FindYourWayFragment extends Fragment implements SensorEventListener
             t = null;
             markerView = null;
         }
+       handler.removeCallbacks(handlerTask);
     }
 
     //---- MapBox onSaveInstanceState Method ----
@@ -926,7 +946,7 @@ public class FindYourWayFragment extends Fragment implements SensorEventListener
         wmgr.startScan();
 
         for (ScanResult R : results) {
-           if (R.SSID.equalsIgnoreCase("NYP-Student")) {
+            if (R.SSID.equalsIgnoreCase("NYP-Student")) {
                 try {
                     fingerprint.put("mac", R.BSSID.toString());
                     fingerprint.put("rssi", R.level);
