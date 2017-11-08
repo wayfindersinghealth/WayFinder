@@ -423,7 +423,7 @@ public class FindYourWayFragment extends Fragment implements SensorEventListener
                             });
                         }
                     }
-                },0,1000); //4500
+                },0,800); //4500
 
 
 
@@ -667,7 +667,7 @@ public class FindYourWayFragment extends Fragment implements SensorEventListener
             t = null;
             markerView = null;
         }
-        handler.removeCallbacks(handlerTask);
+
     }
 
     //---- MapBox onStop Method ----

@@ -176,6 +176,8 @@ public class LearnFragment extends Fragment {
         IconFactory icFac = IconFactory.getInstance(getActivity());
         final Icon existingLocationIcon = icFac.fromResource(R.drawable.ic_existing_location);
 
+
+
         mapView.getMapAsync(new OnMapReadyCallback() {
 
             @Override
