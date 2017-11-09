@@ -39,11 +39,14 @@ import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 import com.graphhopper.GraphHopper;
 import com.graphhopper.util.Constants;
+import com.graphhopper.util.shapes.Circle;
 import com.mapbox.mapboxsdk.Mapbox;
 import com.mapbox.mapboxsdk.annotations.Icon;
 import com.mapbox.mapboxsdk.annotations.IconFactory;
 import com.mapbox.mapboxsdk.annotations.MarkerView;
 import com.mapbox.mapboxsdk.annotations.MarkerViewOptions;
+import com.mapbox.mapboxsdk.annotations.Polygon;
+import com.mapbox.mapboxsdk.annotations.PolygonOptions;
 import com.mapbox.mapboxsdk.annotations.Polyline;
 import com.mapbox.mapboxsdk.annotations.PolylineOptions;
 import com.mapbox.mapboxsdk.camera.CameraPosition;
@@ -66,6 +69,8 @@ import com.graphhopper.util.Parameters.Routing;
 import com.graphhopper.util.PointList;
 import com.graphhopper.util.ProgressListener;
 import com.graphhopper.util.StopWatch;
+import com.mapbox.mapboxsdk.style.layers.CircleLayer;
+import com.mapbox.mapboxsdk.style.sources.VectorSource;
 
 import java.io.File;
 import java.lang.reflect.Array;
@@ -96,6 +101,12 @@ import sg.com.singhealth.wayfinder.LocTracker;
 import sg.com.singhealth.wayfinder.MainActivity;
 import sg.com.singhealth.wayfinder.R;
 
+import static android.view.View.VISIBLE;
+import static com.mapbox.mapboxsdk.style.layers.PropertyFactory.circleColor;
+import static com.mapbox.mapboxsdk.style.layers.PropertyFactory.circleRadius;
+import static java.lang.Math.cos;
+import static java.lang.Math.sin;
+
 /**
  * File Name: FindYourWayFragment.java
  * Created By: AY17 P3 FYPJ NYP SIT
@@ -124,6 +135,7 @@ public class FindYourWayFragment extends Fragment implements SensorEventListener
     private String mParam1;
     private String mParam2;
     MapView mapView;
+
     Timer t = null;
     private Handler handler;
     private Runnable handlerTask;
@@ -144,7 +156,6 @@ public class FindYourWayFragment extends Fragment implements SensorEventListener
     boolean movements = false;
     SensorEvent sEvent;
 
-
     //-- Graphhopper Variables --
     private File mapsFolder;
     private volatile boolean prepareInProgress = false;
@@ -163,6 +174,7 @@ public class FindYourWayFragment extends Fragment implements SensorEventListener
     private boolean color = false;
     private View view;
     private long lastUpdate;
+
 
     public FindYourWayFragment() {
         // Required empty public constructor
@@ -401,6 +413,14 @@ public class FindYourWayFragment extends Fragment implements SensorEventListener
                                         //-- Set Marker on Map --
                                         LatLng latLng = new LatLng(locLatitude, locLongitude);
 
+                                        CameraPosition position = new CameraPosition.Builder()
+                                                .target(latLng)
+                                                .zoom(19.8) // Sets the zoom
+                                                .tilt(60)
+                                                .build(); // Creates a CameraPosition from the builder
+                                        mapboxMap.animateCamera(CameraUpdateFactory
+                                                .newCameraPosition(position), 2000);
+
                                         if (markerView == null) {
                                             markerView = mapboxMap.addMarker(new MarkerViewOptions().position(new LatLng(locLatitude, locLongitude)));
                                             markerView.setIcon(icon);
@@ -492,8 +512,10 @@ public class FindYourWayFragment extends Fragment implements SensorEventListener
                             CameraPosition position = new CameraPosition.Builder()
                                     .target(zoomLocation)
                                     .zoom(20) // Sets the zoom
+                                    .tilt(60)
                                     .build(); // Creates a CameraPosition from the builder
-                            mapboxMap.setCameraPosition(position);
+                            mapboxMap.animateCamera(CameraUpdateFactory
+                                    .newCameraPosition(position), 2000);
                         }
                     }
                 });
@@ -619,6 +641,7 @@ public class FindYourWayFragment extends Fragment implements SensorEventListener
 
         }else{
             movements = false;
+
         }
     }
 

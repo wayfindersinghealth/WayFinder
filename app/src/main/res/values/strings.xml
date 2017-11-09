@@ -80,7 +80,7 @@
 
 
     <!-- Main menu-->
-    <string name="button_learn">Leran Location</string>
+    <string name="button_learn">Learn Location</string>
     <string name="button_find">Find Your Way</string>
     <string name="button_help">Help</string>
 
