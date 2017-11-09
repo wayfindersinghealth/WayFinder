@@ -293,7 +293,7 @@ public class FindYourWayFragment extends Fragment implements SensorEventListener
 
                     @Override
                     public void run() {
-                        int times = 10;
+                        int times = 8;
                         boolean truth = true;
                         int maxCounter;
                         String maxLocation = null;
@@ -423,7 +423,7 @@ public class FindYourWayFragment extends Fragment implements SensorEventListener
                             });
                         }
                     }
-                },0,800); //4500
+                },0,500); //4500
 
 
 
@@ -664,8 +664,11 @@ public class FindYourWayFragment extends Fragment implements SensorEventListener
         Log.d("onPause", "On pause method");
         if (t != null){
             t.cancel();
-            t = null;
+            t.purge();
             markerView = null;
+        }
+        if(markerViewCurrent != null){
+            markerViewCurrent.remove();
         }
 
     }
@@ -678,8 +681,11 @@ public class FindYourWayFragment extends Fragment implements SensorEventListener
         Log.d("onStop", "On stop method");
         if(t != null){
             t.cancel();
-            t = null;
+            t.purge();
             markerView = null;
+        }
+        if(markerViewCurrent != null){
+            markerViewCurrent.remove();
         }
 
     }
@@ -855,7 +861,7 @@ public class FindYourWayFragment extends Fragment implements SensorEventListener
                                 Polyline polyline = mapboxMap.addPolyline(new PolylineOptions()
                                         .add(points.get(i))
                                         .add(points.get(i + 1))
-                                        .color(Color.parseColor("#F27777"))
+                                        .color(Color.parseColor("#D82B2B"))
                                         .width(3));
                                 polylines.add(polyline);
                             }
@@ -876,7 +882,7 @@ public class FindYourWayFragment extends Fragment implements SensorEventListener
                                 Polyline polyline = mapboxMap.addPolyline(new PolylineOptions()
                                         .add(points.get(i))
                                         .add(points.get(i + 1))
-                                        .color(Color.parseColor("#F27777"))
+                                        .color(Color.parseColor("#D82B2B"))
                                         .width(3));
                                 polylines.add(polyline);
                             }
