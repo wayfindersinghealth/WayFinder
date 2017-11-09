@@ -3,6 +3,7 @@ package layout;
 import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Context;
+import android.graphics.Camera;
 import android.graphics.Color;
 import android.graphics.Path;
 import android.hardware.Sensor;
@@ -140,7 +141,7 @@ public class FindYourWayFragment extends Fragment implements SensorEventListener
     private Handler handler;
     private Runnable handlerTask;
 
-
+    private float degree;
 
     private static MarkerView markerView = null;
     private static MarkerView markerViewCurrent = null;
@@ -305,12 +306,12 @@ public class FindYourWayFragment extends Fragment implements SensorEventListener
 
                     @Override
                     public void run() {
+
                         int times = 8;
                         boolean truth = true;
                         int maxCounter;
                         String maxLocation = null;
                         ArrayList<LocTracker> locationArray = new ArrayList<>();
-
 
                         if(movements){
                             Log.d("Movements", "Is True");
@@ -415,8 +416,9 @@ public class FindYourWayFragment extends Fragment implements SensorEventListener
 
                                         CameraPosition position = new CameraPosition.Builder()
                                                 .target(latLng)
-                                                .zoom(19.8) // Sets the zoom
+                                                .zoom(20) // Sets the zoom
                                                 .tilt(60)
+                                                .bearing(degree)
                                                 .build(); // Creates a CameraPosition from the builder
                                         mapboxMap.animateCamera(CameraUpdateFactory
                                                 .newCameraPosition(position), 2000);
@@ -621,28 +623,38 @@ public class FindYourWayFragment extends Fragment implements SensorEventListener
 
     @Override
     public void onSensorChanged(SensorEvent event) {
-        sEvent = event;
-        float[] values = sEvent.values;
-        // Movement
-        float x = values[0];
-        float y = values[1];
-        float z = values[2];
+        Sensor sensor = event.sensor;
 
-        float accelationSquareRoot = (x * x + y * y + z * z)
-                / (SensorManager.GRAVITY_EARTH * SensorManager.GRAVITY_EARTH);
-        long actualTime = sEvent.timestamp;
-        if (accelationSquareRoot >= 1.2) //
-        {
-            if (actualTime - lastUpdate < 200) {
-                return;
+        if (sensor.getType() == Sensor.TYPE_ORIENTATION){
+            //-- Orientation --
+            degree = Math.round(event.values[0]);
+        } else if (sensor.getType() == Sensor.TYPE_ACCELEROMETER) {
+            //-- Accelerometer --
+            sEvent = event;
+
+            float[] values = sEvent.values;
+            // Movement
+            float x = values[0];
+            float y = values[1];
+            float z = values[2];
+
+            float accelationSquareRoot = (x * x + y * y + z * z)
+                    / (SensorManager.GRAVITY_EARTH * SensorManager.GRAVITY_EARTH);
+            long actualTime = sEvent.timestamp;
+            if (accelationSquareRoot >= 1.2) //
+            {
+                if (actualTime - lastUpdate < 200) {
+                    return;
+                }
+                lastUpdate = actualTime;
+                movements = true;
+
+            }else{
+                movements = false;
             }
-            lastUpdate = actualTime;
-            movements = true;
-
-        }else{
-            movements = false;
-
         }
+
+
     }
 
 
@@ -653,11 +665,12 @@ public class FindYourWayFragment extends Fragment implements SensorEventListener
 
     private void registerSensorListener() {
         sensorManager.registerListener(this, sensorManager.getSensorList(Sensor.TYPE_ACCELEROMETER).get(0), SensorManager.SENSOR_DELAY_NORMAL);
+        sensorManager.registerListener(this, sensorManager.getDefaultSensor(Sensor.TYPE_ORIENTATION), SensorManager.SENSOR_DELAY_GAME);
     }
-//
-//    private void unregisterSensorListener() {
-//        mSensorManager.unregisterListener(this);
-//    }
+
+    private void unregisterSensorListener() {
+        sensorManager.unregisterListener(this);
+    }
 
     //---- MapBox onStart Method ----
     @Override
@@ -683,6 +696,7 @@ public class FindYourWayFragment extends Fragment implements SensorEventListener
     @Override
     public void onPause() {
         super.onPause();
+        unregisterSensorListener();
         mapView.onPause();
         Log.d("onPause", "On pause method");
         if (t != null){
@@ -700,6 +714,7 @@ public class FindYourWayFragment extends Fragment implements SensorEventListener
     @Override
     public void onStop() {
         super.onStop();
+        unregisterSensorListener();
         mapView.onStop();
         Log.d("onStop", "On stop method");
         if(t != null){
