@@ -668,7 +668,7 @@ public class FindYourWayFragment extends Fragment implements SensorEventListener
             markerView = null;
         }
         if(markerViewCurrent != null){
-            markerViewCurrent.remove();
+            markerViewCurrent = null;
         }
 
     }
@@ -685,7 +685,7 @@ public class FindYourWayFragment extends Fragment implements SensorEventListener
             markerView = null;
         }
         if(markerViewCurrent != null){
-            markerViewCurrent.remove();
+            markerViewCurrent = null;
         }
 
     }
