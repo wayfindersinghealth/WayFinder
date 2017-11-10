@@ -150,6 +150,7 @@ public class FindYourWayFragment extends Fragment implements SensorEventListener
     ArrayList<String> aList = new ArrayList<String>();
     DatabaseReference databaseLocation;
 
+    private MapboxMap mapboxMap;
 
     private OnFragmentInteractionListener mListener;
     private double locLatitude = 0;
@@ -281,10 +282,11 @@ public class FindYourWayFragment extends Fragment implements SensorEventListener
         //-- MapBox MapView --
         mapView = (MapView) rootView.findViewById(R.id.mapView);
         mapView.onCreate(savedInstanceState);
-
         mapView.getMapAsync(new OnMapReadyCallback() {
             @Override
             public void onMapReady(final MapboxMap mapboxMap) {
+
+                FindYourWayFragment.this.mapboxMap = mapboxMap;
 
                 //-- Customize map with markers, polylines, etc. --
                 //-- MapBox URL --
@@ -418,7 +420,7 @@ public class FindYourWayFragment extends Fragment implements SensorEventListener
                                                 .target(latLng)
                                                 .zoom(20) // Sets the zoom
                                                 .tilt(60)
-                                                .bearing(degree)
+//                                                .bearing(degree)
                                                 .build(); // Creates a CameraPosition from the builder
                                         mapboxMap.animateCamera(CameraUpdateFactory
                                                 .newCameraPosition(position), 2000);
@@ -516,8 +518,7 @@ public class FindYourWayFragment extends Fragment implements SensorEventListener
                                     .zoom(20) // Sets the zoom
                                     .tilt(60)
                                     .build(); // Creates a CameraPosition from the builder
-                            mapboxMap.animateCamera(CameraUpdateFactory
-                                    .newCameraPosition(position), 2000);
+                            mapboxMap.setCameraPosition(position);
                         }
                     }
                 });
@@ -624,10 +625,15 @@ public class FindYourWayFragment extends Fragment implements SensorEventListener
     @Override
     public void onSensorChanged(SensorEvent event) {
         Sensor sensor = event.sensor;
-
         if (sensor.getType() == Sensor.TYPE_ORIENTATION){
             //-- Orientation --
             degree = Math.round(event.values[0]);
+            CameraPosition position = new CameraPosition.Builder()
+                    .bearing(degree) // Sets the zoom
+                    .build(); // Creates a CameraPosition from the builder
+            mapboxMap.animateCamera(CameraUpdateFactory
+                    .newCameraPosition(position), 2000);
+
         } else if (sensor.getType() == Sensor.TYPE_ACCELEROMETER) {
             //-- Accelerometer --
             sEvent = event;
@@ -652,9 +658,8 @@ public class FindYourWayFragment extends Fragment implements SensorEventListener
             }else{
                 movements = false;
             }
+
         }
-
-
     }
 
 
