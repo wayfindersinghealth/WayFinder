@@ -16,6 +16,7 @@ import android.os.CountDownTimer;
 import android.support.annotation.NonNull;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AlertDialog;
 import android.text.TextUtils;
 import android.util.Log;
@@ -208,12 +209,14 @@ public class LearnFragment extends Fragment {
                     }
                 });
 
+            //----On Click To Remove Location From DB & FIND Server
             mapboxMap.setOnInfoWindowClickListener(new MapboxMap.OnInfoWindowClickListener(){
                 @Override
                 public boolean onInfoWindowClick(@NonNull Marker marker) {
                     deleteLocationClick(marker);
                     mapboxMap.removeMarker(marker);
                     deletedLocation = marker.getTitle().toLowerCase().toString() + ",";
+
                     return false;
                 }
             });
@@ -767,6 +770,11 @@ public class LearnFragment extends Fragment {
                 ref.removeValue();
                 new deleteLocations().execute("https://ml.internalpositioning.com/locations?group=test05&names=" + deletedLocation);
                 dialogInterface.dismiss();
+
+                Fragment fragment;
+                fragment = new LearnFragment();
+                FragmentManager fragmentManager = getFragmentManager();
+                fragmentManager.beginTransaction().replace(R.id.content, fragment).commit();
             }
         });
 
@@ -830,6 +838,8 @@ public class LearnFragment extends Fragment {
             super.onPostExecute(result);
             Log.d("Result of Post", result + " ");
             deletedLocation = null;
+
+
         }
     }
     //-------- END OF CLASS ---------
