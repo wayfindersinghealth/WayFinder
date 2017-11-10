@@ -356,9 +356,9 @@ public class MainActivity extends AppCompatActivity
         });
 
         mBuilder.setView(mView);
-        AlertDialog dialog = mBuilder.create();
+    AlertDialog dialog = mBuilder.create();
         dialog.show();
-    }
+}
 
     //---- Access About Page ----
     public void navigationAbout() {

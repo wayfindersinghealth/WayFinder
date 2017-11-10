@@ -1,5 +1,6 @@
 package layout;
 
+import android.animation.ValueAnimator;
 import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Context;
@@ -52,6 +53,8 @@ import com.mapbox.mapboxsdk.annotations.Polyline;
 import com.mapbox.mapboxsdk.annotations.PolylineOptions;
 import com.mapbox.mapboxsdk.camera.CameraPosition;
 import com.mapbox.mapboxsdk.camera.CameraUpdateFactory;
+import com.mapbox.mapboxsdk.constants.MyBearingTracking;
+import com.mapbox.mapboxsdk.constants.MyLocationTracking;
 import com.mapbox.mapboxsdk.geometry.LatLng;
 import com.mapbox.mapboxsdk.maps.MapView;
 import com.mapbox.mapboxsdk.maps.MapboxMap;
@@ -425,6 +428,9 @@ public class FindYourWayFragment extends Fragment implements SensorEventListener
                                         mapboxMap.animateCamera(CameraUpdateFactory
                                                 .newCameraPosition(position), 2000);
 
+                                        mapboxMap.getTrackingSettings().setMyLocationTrackingMode(MyLocationTracking.TRACKING_FOLLOW);
+                                        mapboxMap.getTrackingSettings().setMyBearingTrackingMode(MyBearingTracking.COMPASS);
+
                                         if (markerView == null) {
                                             markerView = mapboxMap.addMarker(new MarkerViewOptions().position(new LatLng(locLatitude, locLongitude)));
                                             markerView.setIcon(icon);
@@ -436,6 +442,7 @@ public class FindYourWayFragment extends Fragment implements SensorEventListener
                                             markerView.setPosition(latLng);
                                             markerView.setIcon(icon);
                                             markerView.setTitle("You Are Here");
+
                                         }
                                     }
                                 }
@@ -499,8 +506,10 @@ public class FindYourWayFragment extends Fragment implements SensorEventListener
                         }else {
                             Toast.makeText(getActivity(), "Locating, Please Wait." , Toast.LENGTH_SHORT).show();
                         }
-
                     }
+
+
+
                 });
 
 
@@ -689,6 +698,7 @@ public class FindYourWayFragment extends Fragment implements SensorEventListener
     //---- MapBox onResume Method ----
     @Override
     public void onResume() {
+
         markerView = null;
         super.onResume();
         registerSensorListener();
@@ -941,6 +951,8 @@ public class FindYourWayFragment extends Fragment implements SensorEventListener
             }
         }.execute();
     }
+
+
 
     //---- List CreatePathLayer Method ----
     private List<LatLng> createPathLayer(PathWrapper response) {

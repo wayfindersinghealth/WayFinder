@@ -2,6 +2,8 @@ package layout;
 
 import android.content.BroadcastReceiver;
 import android.content.Context;
+import android.content.DialogInterface;
+import android.content.Intent;
 import android.location.Location;
 import android.net.Uri;
 import android.net.wifi.ScanResult;
@@ -13,12 +15,15 @@ import android.os.CountDownTimer;
 import android.support.annotation.NonNull;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
+import android.support.v7.app.AlertDialog;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -30,6 +35,7 @@ import com.google.firebase.database.ValueEventListener;
 import com.mapbox.mapboxsdk.Mapbox;
 import com.mapbox.mapboxsdk.annotations.Icon;
 import com.mapbox.mapboxsdk.annotations.IconFactory;
+import com.mapbox.mapboxsdk.annotations.Marker;
 import com.mapbox.mapboxsdk.annotations.MarkerView;
 import com.mapbox.mapboxsdk.annotations.MarkerViewOptions;
 import com.mapbox.mapboxsdk.camera.CameraPosition;
@@ -199,6 +205,13 @@ public class LearnFragment extends Fragment {
                     }
                 });
 
+            mapboxMap.setOnInfoWindowClickListener(new MapboxMap.OnInfoWindowClickListener(){
+                @Override
+                public boolean onInfoWindowClick(@NonNull Marker marker) {
+                    deleteLocationClick();
+                    return false;
+                }
+            });
 
 
                 //-- Customize map with markers, polylines, etc. --
@@ -241,6 +254,8 @@ public class LearnFragment extends Fragment {
                             existingMarker.setTitle(locationList.get(m).getId());
                         }
                     }
+
+
 
                     @Override
                     public void onCancelled(DatabaseError databaseError) {
@@ -733,5 +748,24 @@ public class LearnFragment extends Fragment {
             super.onPostExecute(result);
         }
     }
+
+    public void deleteLocationClick() {
+        AlertDialog.Builder mBuilder = new AlertDialog.Builder(getActivity());
+//      View mView = getLayoutInflater().inflate(R.layout.delete_location, null);
+        mBuilder.setTitle("Delete This Location?");
+
+        mBuilder.setPositiveButton("Delete", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+                    dialogInterface.dismiss();
+
+            }
+        });
+
+        AlertDialog dialog = mBuilder.create();
+        dialog.show();
+
+    }
     //-------- END OF CLASS ---------
 }
+
