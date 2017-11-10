@@ -9,6 +9,7 @@ import android.net.Uri;
 import android.net.wifi.ScanResult;
 import android.net.wifi.WifiInfo;
 import android.net.wifi.WifiManager;
+import android.nfc.Tag;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.CountDownTimer;
@@ -31,6 +32,7 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 import com.mapbox.mapboxsdk.Mapbox;
 import com.mapbox.mapboxsdk.annotations.Icon;
@@ -208,7 +210,8 @@ public class LearnFragment extends Fragment {
             mapboxMap.setOnInfoWindowClickListener(new MapboxMap.OnInfoWindowClickListener(){
                 @Override
                 public boolean onInfoWindowClick(@NonNull Marker marker) {
-                    deleteLocationClick();
+                    deleteLocationClick(marker);
+                    mapboxMap.removeMarker(marker);
                     return false;
                 }
             });
@@ -749,16 +752,19 @@ public class LearnFragment extends Fragment {
         }
     }
 
-    public void deleteLocationClick() {
+    //-----Deleting Location From FireBase
+    public void deleteLocationClick(final Marker marker) {
         AlertDialog.Builder mBuilder = new AlertDialog.Builder(getActivity());
-//      View mView = getLayoutInflater().inflate(R.layout.delete_location, null);
         mBuilder.setTitle("Delete This Location?");
 
         mBuilder.setPositiveButton("Delete", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialogInterface, int i) {
-                    dialogInterface.dismiss();
+                String markerTitle = marker.getTitle();
 
+                DatabaseReference ref = FirebaseDatabase.getInstance().getReference("locations").child(markerTitle.toUpperCase());
+                ref.removeValue();
+                dialogInterface.dismiss();
             }
         });
 
