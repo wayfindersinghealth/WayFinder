@@ -120,6 +120,7 @@ public class LearnFragment extends Fragment {
     ArrayList<LocationDetail> locationList = new ArrayList<LocationDetail>();
     final JSONArray wifiFingerprint = new JSONArray();
     Snackbar findApSnack;
+    String deletedLocation;
 
     DatabaseReference databaseLocation;
 
@@ -212,6 +213,7 @@ public class LearnFragment extends Fragment {
                 public boolean onInfoWindowClick(@NonNull Marker marker) {
                     deleteLocationClick(marker);
                     mapboxMap.removeMarker(marker);
+                    deletedLocation = marker.getTitle().toLowerCase().toString() + ",";
                     return false;
                 }
             });
@@ -761,9 +763,9 @@ public class LearnFragment extends Fragment {
             @Override
             public void onClick(DialogInterface dialogInterface, int i) {
                 String markerTitle = marker.getTitle();
-
                 DatabaseReference ref = FirebaseDatabase.getInstance().getReference("locations").child(markerTitle.toUpperCase());
                 ref.removeValue();
+                new deleteLocations().execute("https://ml.internalpositioning.com/locations?group=test05&names=" + deletedLocation);
                 dialogInterface.dismiss();
             }
         });
@@ -771,6 +773,64 @@ public class LearnFragment extends Fragment {
         AlertDialog dialog = mBuilder.create();
         dialog.show();
 
+    }
+    //---Deleting Location From FIND API
+    public class deleteLocations extends AsyncTask<String, String, String>{
+        @Override
+        protected String doInBackground(String... params) {
+            HttpsURLConnection connection = null;
+            BufferedReader reader = null;
+            BufferedWriter writer = null;
+            String result;
+
+
+                try {
+                    //Connecting to API
+                    URL link = new URL(params[0]);
+                    connection = (HttpsURLConnection) link.openConnection();
+                    connection.setDoOutput(true);
+                    connection.setRequestProperty("Content-Type", "application/json");
+                    connection.setRequestProperty("Accept", "application/json");
+                    connection.setRequestMethod("DELETE");
+                    connection.connect();
+
+                    //Reading results of Post
+                    reader = new BufferedReader(new InputStreamReader(connection.getInputStream(), "UTF-8"));
+                    String line = null;
+                    StringBuilder sb = new StringBuilder();
+
+                    while ((line = reader.readLine())!= null){
+                        sb.append(line);
+                    }
+                    result = sb.toString();
+                    return result;
+
+                } catch (MalformedURLException e) {
+                    e.printStackTrace();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                } finally {
+                    if (connection != null){
+                        connection.disconnect();
+                    } try {
+                        if(reader != null){
+                            reader.close();
+                        }
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                }
+
+
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(String result){
+            super.onPostExecute(result);
+            Log.d("Result of Post", result + " ");
+            deletedLocation = null;
+        }
     }
     //-------- END OF CLASS ---------
 }
