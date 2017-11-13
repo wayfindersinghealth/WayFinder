@@ -110,6 +110,9 @@ public class LearnFragment extends Fragment {
     private String mParam2;
 
     private OnFragmentInteractionListener mListener;
+
+    private MapboxMap mapboxMap;
+
     View rootView = null;
 
     WifiManager wmgr;
@@ -186,12 +189,12 @@ public class LearnFragment extends Fragment {
         IconFactory icFac = IconFactory.getInstance(getActivity());
         final Icon existingLocationIcon = icFac.fromResource(R.drawable.ic_existing_location);
 
-
-
         mapView.getMapAsync(new OnMapReadyCallback() {
 
             @Override
             public void onMapReady(final MapboxMap mapboxMap) {
+
+                LearnFragment.this.mapboxMap = mapboxMap;
 
                 mapboxMap.setOnMapLongClickListener(new MapboxMap.OnMapLongClickListener() {
 
@@ -214,13 +217,10 @@ public class LearnFragment extends Fragment {
                 @Override
                 public boolean onInfoWindowClick(@NonNull Marker marker) {
                     deleteLocationClick(marker);
-                    mapboxMap.removeMarker(marker);
                     deletedLocation = marker.getTitle().toLowerCase().toString() + ",";
-
                     return false;
                 }
             });
-
 
                 //-- Customize map with markers, polylines, etc. --
                 //-- MapBox URL --
@@ -234,7 +234,6 @@ public class LearnFragment extends Fragment {
                         .build(); // Creates a CameraPosition from the builder
                 mapboxMap.setCameraPosition(position);
                 mapboxMap.animateCamera(CameraUpdateFactory.newCameraPosition(position), 2000);
-
 
                 //-- Set Camera LatLng Bounds --
                 mapboxMap.setLatLngBoundsForCameraTarget(NYPBLKL_BOUNDS);
@@ -262,8 +261,6 @@ public class LearnFragment extends Fragment {
                             existingMarker.setTitle(locationList.get(m).getId());
                         }
                     }
-
-
 
                     @Override
                     public void onCancelled(DatabaseError databaseError) {
@@ -765,6 +762,7 @@ public class LearnFragment extends Fragment {
         mBuilder.setPositiveButton("Delete", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialogInterface, int i) {
+                mapboxMap.removeMarker(marker);
                 String markerTitle = marker.getTitle();
                 DatabaseReference ref = FirebaseDatabase.getInstance().getReference("locations").child(markerTitle.toUpperCase());
                 ref.removeValue();
@@ -775,6 +773,13 @@ public class LearnFragment extends Fragment {
                 fragment = new LearnFragment();
                 FragmentManager fragmentManager = getFragmentManager();
                 fragmentManager.beginTransaction().replace(R.id.content, fragment).commit();
+            }
+        });
+
+        mBuilder.setNegativeButton("Dismiss", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+                dialogInterface.dismiss();
             }
         });
 
