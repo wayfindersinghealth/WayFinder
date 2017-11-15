@@ -312,7 +312,7 @@ public class FindYourWayFragment extends Fragment implements SensorEventListener
                     @Override
                     public void run() {
 
-                        int times = 8;
+                        int times = 20;
                         boolean truth = true;
                         int maxCounter;
                         String maxLocation = null;
@@ -423,7 +423,6 @@ public class FindYourWayFragment extends Fragment implements SensorEventListener
                                                 .target(latLng)
                                                 .zoom(20) // Sets the zoom
                                                 .tilt(60)
-//                                                .bearing(degree)
                                                 .build(); // Creates a CameraPosition from the builder
                                         mapboxMap.animateCamera(CameraUpdateFactory
                                                 .newCameraPosition(position), 2000);
@@ -455,8 +454,6 @@ public class FindYourWayFragment extends Fragment implements SensorEventListener
                         }
                     }
                 },0,500); //4500
-
-
 
                 //-- OnClick To Set Destination Flag Marker --
                 mapboxMap.setOnMapLongClickListener(new MapboxMap.OnMapLongClickListener() {
@@ -656,7 +653,7 @@ public class FindYourWayFragment extends Fragment implements SensorEventListener
             float accelationSquareRoot = (x * x + y * y + z * z)
                     / (SensorManager.GRAVITY_EARTH * SensorManager.GRAVITY_EARTH);
             long actualTime = sEvent.timestamp;
-            if (accelationSquareRoot >= 1.2) //
+            if (accelationSquareRoot >= 5) //
             {
                 if (actualTime - lastUpdate < 200) {
                     return;
@@ -664,7 +661,7 @@ public class FindYourWayFragment extends Fragment implements SensorEventListener
                 lastUpdate = actualTime;
                 movements = true;
 
-            }else{
+            } else {
                 movements = false;
             }
 
@@ -952,8 +949,6 @@ public class FindYourWayFragment extends Fragment implements SensorEventListener
         }.execute();
     }
 
-
-
     //---- List CreatePathLayer Method ----
     private List<LatLng> createPathLayer(PathWrapper response) {
         List<LatLng> geoPoints = new ArrayList<>();
@@ -1008,7 +1003,7 @@ public class FindYourWayFragment extends Fragment implements SensorEventListener
             }
         }
         try {
-            root.put("group", "test05");
+            root.put("group", "video01");
             root.put("username", "p3");
             root.put("time", timeStamp);
             root.put("wifi-fingerprint", wifiFingerprint);

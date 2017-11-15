@@ -104,7 +104,6 @@ public class LearnFragment extends Fragment {
     private static MarkerView markerView;
     private static MarkerView existingMarker;
 
-
     // TODO: Rename and change types of parameters
     private String mParam1;
     private String mParam2;
@@ -401,7 +400,7 @@ public class LearnFragment extends Fragment {
 
     //---- Format Data As JSON Method ----
     public void formatDataAsJSON() {
-        CountDownTimer timer = new CountDownTimer(180000, 2000) {
+        CountDownTimer timer = new CountDownTimer(120000, 2000) {
             String timeStamp = TimeUnit.MILLISECONDS.toSeconds(System.currentTimeMillis()) + "";
             ArrayList<JSONObject> fpArray = new ArrayList<>();
 
@@ -470,7 +469,7 @@ public class LearnFragment extends Fragment {
             @Override
             public void onFinish() {
 
-                CountDownTimer timer = new CountDownTimer(180000, 2000) {
+                CountDownTimer timer = new CountDownTimer(120000, 2000) {
                     String timeStamp = TimeUnit.MILLISECONDS.toSeconds(System.currentTimeMillis()) + "";
                     ArrayList<JSONObject> fpArraySecond = new ArrayList<>();
 
@@ -576,7 +575,7 @@ public class LearnFragment extends Fragment {
                     locText.setEnabled(false);
                     loc = locText.getText().toString();
 
-                    root.put("group", "test05");
+                    root.put("group", "video01");
                     root.put("username", "p3");
                     root.put("location", loc);
                     root.put("time", timeStamp);
@@ -593,7 +592,7 @@ public class LearnFragment extends Fragment {
                     e.printStackTrace();
                 }
                 new PostLearnAPI().execute("https://ml.internalpositioning.com/learn");
-                new GetCalculateAPI().execute("https://ml.internalpositioning.com/calculate?group=test05");
+                new GetCalculateAPI().execute("https://ml.internalpositioning.com/calculate?group=video01");
                 Toast.makeText(getActivity(), "Inserted Into Repository" , Toast.LENGTH_SHORT).show();
                         buttonLearn.setEnabled(true);
                         locText.setEnabled(true);
@@ -766,7 +765,7 @@ public class LearnFragment extends Fragment {
                 String markerTitle = marker.getTitle();
                 DatabaseReference ref = FirebaseDatabase.getInstance().getReference("locations").child(markerTitle.toUpperCase());
                 ref.removeValue();
-                new deleteLocations().execute("https://ml.internalpositioning.com/locations?group=test05&names=" + deletedLocation);
+                new deleteLocations().execute("https://ml.internalpositioning.com/locations?group=video01&names=" + deletedLocation);
                 dialogInterface.dismiss();
 
                 Fragment fragment;
