@@ -756,9 +756,9 @@ public class LearnFragment extends Fragment {
     //-----Deleting Location From FireBase
     public void deleteLocationClick(final Marker marker) {
         AlertDialog.Builder mBuilder = new AlertDialog.Builder(getActivity());
-        mBuilder.setTitle("Delete This Location?");
+        mBuilder.setTitle(R.string.learnDeleteDialogueTitle);
 
-        mBuilder.setPositiveButton("Delete", new DialogInterface.OnClickListener() {
+        mBuilder.setPositiveButton(R.string.learnDelete, new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialogInterface, int i) {
                 mapboxMap.removeMarker(marker);
@@ -775,7 +775,7 @@ public class LearnFragment extends Fragment {
             }
         });
 
-        mBuilder.setNegativeButton("Dismiss", new DialogInterface.OnClickListener() {
+        mBuilder.setNegativeButton(R.string.learnDismiss, new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialogInterface, int i) {
                 dialogInterface.dismiss();

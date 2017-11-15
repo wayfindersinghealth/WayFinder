@@ -21,6 +21,10 @@
     <string name="editTextLearn">Enter Your Location</string>
     <string name="buttonLearn">LEARN</string>
     <string name="textViewDetails">Tap On Map To Place Point.</string>
+    <string name="learnDeleteDialogueTitle">Delete This Location</string>
+    <string name="learnDismiss">Dismiss</string>
+    <string name="learnDelete">Delete</string>
+
 
     <!-- Controls in layout > fragment_find_your_way.xml Page -->
     <string name="textViewTo">To:</string>
