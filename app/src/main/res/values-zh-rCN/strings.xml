@@ -52,4 +52,7 @@
     <string name="find_help">为您规划一条最方便的路线去您要去的目的地</string>
     <string name="Simplified">简单的介绍</string>
     <string name="learn_help">找到您当前所在的位置</string>
+    <string name="learnDismiss">返回</string>
+    <string name="learnDelete">删除</string>
+    <string name="learnDeleteDialogueTitle">删除当前地点</string>
 </resources>
