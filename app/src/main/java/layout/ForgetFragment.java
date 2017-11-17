@@ -88,7 +88,7 @@ public class ForgetFragment extends Fragment {
                 FirebaseAuth firebaseAuth = FirebaseAuth.getInstance();
                 final String EmailAddress = editTextGetEmail.getText().toString();
                 if (EmailAddress.equals("")) {
-                    Toast.makeText(getActivity(), "Please enter your Email", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getActivity(), "Please Enter Your Email", Toast.LENGTH_SHORT).show();
                     return;
                 } else {
                     firebaseAuth.sendPasswordResetEmail(EmailAddress)
@@ -102,7 +102,7 @@ public class ForgetFragment extends Fragment {
                                         FragmentManager fragmentManager = getFragmentManager();
                                         fragmentManager.beginTransaction().replace(R.id.content, fragment).commit();
                                     } else {
-                                        Toast.makeText(getActivity(), "Please Enter your email true", Toast.LENGTH_SHORT).show();
+                                        Toast.makeText(getActivity(), "Please Enter A Vaild Email", Toast.LENGTH_SHORT).show();
                                     }
                                 }
                             });

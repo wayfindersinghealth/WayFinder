@@ -146,17 +146,17 @@ public class RegisterFragment extends Fragment {
                     return;
                 }
                 if (password.length()<6){
-                    Toast.makeText(getActivity(), "Password is more of six" , Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getActivity(), "Password Is Less Than Six character" , Toast.LENGTH_SHORT).show();
                     return;
                 }
                 if (TextUtils.isEmpty(email)){
                     //email is empty
-                    Toast.makeText(getActivity(), "Please enter Email" , Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getActivity(), "Please Enter Your Email" , Toast.LENGTH_SHORT).show();
                     return;
                 }
                 if(TextUtils.isEmpty(password)){
                     //password is empty
-                    Toast.makeText(getActivity(), "Please enter Password" , Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getActivity(), "Please Enter Your Password" , Toast.LENGTH_SHORT).show();
                     return;
                 }
 
@@ -212,7 +212,7 @@ public class RegisterFragment extends Fragment {
                                     fragmentManager.beginTransaction().replace(R.id.content, fragment).commit();
 
                                 }else {
-                                    Toast.makeText(getActivity(),"Counld not register , please try again",Toast.LENGTH_SHORT).show();
+                                    Toast.makeText(getActivity(),"Could not register, Please Try Again",Toast.LENGTH_SHORT).show();
                                     Dialog.dismiss();
                                     return;
                                 }
