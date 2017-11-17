@@ -180,7 +180,7 @@ public class LoginFragment extends Fragment {
 
                                 else{
                                     Dialog.dismiss();
-                                    Toast.makeText(getActivity(),"Email or Password is Error",Toast.LENGTH_SHORT).show();
+                                    Toast.makeText(getActivity(),"Email or Password is Incorrect", Toast.LENGTH_SHORT).show();
                                     return;
                                 }
                             }
