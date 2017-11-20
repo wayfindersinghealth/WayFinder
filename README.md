@@ -10,19 +10,19 @@ WAYFINDER aims to help patients and visitors alike navigate their way with ease 
 
 **Keywords**: Indoor GPS, WiFi Positioning, Indoor Mapping, Indoor Navigation, Indoor Positioning
 
-# Features
+## Features
 
-## 1\. Splash Screen
+### 1\. Splash Screen
 
 - Circular Progress View 
 
 - Fade in Animation
 
-## 2\. Application Introduction
+### 2\. Application Introduction
 
 - Application Introduction
 
-## 3\. Learn
+### 3\. Learn
 
 - EditText Input Location
 
@@ -34,7 +34,7 @@ WAYFINDER aims to help patients and visitors alike navigate their way with ease 
 
 - Learning Locations Using POST/Learn, GET/Calculate, GET/Locations
 
-## 4\. Find Your Way
+### 4\. Find Your Way
 
 - AutoCompleteTextView To
 
@@ -48,20 +48,18 @@ WAYFINDER aims to help patients and visitors alike navigate their way with ease 
 
 - MarkerView to Mark Current Location
 
-## 5\. Help
+### 5\. Help
 
-## 6\. Language Preference
+### 6\. Language Preference
 
 - Alert Dialog
 
 - Spinner 
 
-# More Information
+## More Information
 
 See the full documentation at [NYP SIT AES HealthBuddy-WAYFINDER](https://aes.sit.nyp.edu.sg/FYPJ/SP02551/2017P3/Project%20Documentation/Forms/Overall%20View.aspx)
 
-# References
+## References
 
 Thanks to [Circular Progress View](https://github.com/rahatarmanahmed/CircularProgressView), [Application Introduction](https://github.com/apl-devs/AppIntro), [FIND API](https://www.internalpositioning.com/), [MapBox](https://www.mapbox.com/), [FireBase](https://firebase.google.com/), [GraphHopper](https://www.graphhopper.com/) for awesome open source features, maps and database.
-
-
