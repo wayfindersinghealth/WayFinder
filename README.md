@@ -68,7 +68,7 @@ WAYFINDER aims to help patients and visitors alike navigate their way with ease 
 
 - Spinner 
 
-## More Information
+## More Information 
 
 For more information, see the full documentation at [NYP SIT AES HealthBuddy-WAYFINDER](https://aes.sit.nyp.edu.sg/FYPJ/SP02551/2017P3/Project%20Documentation/Forms/Overall%20View.aspx)
 
