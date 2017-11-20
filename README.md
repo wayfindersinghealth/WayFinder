@@ -56,6 +56,10 @@ WAYFINDER aims to help patients and visitors alike navigate their way with ease 
 
 - Spinner 
 
+# More Information
+
+See the full documentation at <https://aes.sit.nyp.edu.sg/FYPJ/SP02551/2017P3/Project%20Documentation/Forms/Overall%20View.aspx>.
+
 # References
 
 Thanks to [Circular Progress View](https://github.com/rahatarmanahmed/CircularProgressView), [Application Introduction](https://github.com/apl-devs/AppIntro), [FIND API](https://www.internalpositioning.com/), [MapBox](https://www.mapbox.com/), [FireBase](https://firebase.google.com/), [GraphHopper](https://www.graphhopper.com/) for awesome open source features, maps and database.
