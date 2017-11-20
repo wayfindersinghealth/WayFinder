@@ -1,6 +1,6 @@
 # ![](https://github.com/wayfindersinghealth/WayFinder/blob/master/WayFinderIcon.png) HealthBuddy - WAYFINDER
 
-![](https://github.com/wayfindersinghealth/WayFinder/blob/master/WayFinder%20Poster%20Dark.png)
+![](https://github.com/wayfindersinghealth/WayFinder/blob/master/WayFinder%20Dark%20Poster.png)
 
 ## About WAYFINDER
 
