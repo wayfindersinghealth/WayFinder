@@ -1,6 +1,8 @@
 # ![](https://github.com/wayfindersinghealth/WayFinder/blob/master/WayFinderIcon.png) HealthBuddy - WAYFINDER
 
-About WAYFINDER
+![](https://github.com/wayfindersinghealth/WayFinder/blob/master/WayFinder%20Poster%20Dark.png)
+
+## About WAYFINDER
 
 This project is about WAYFINDER, an Internal Positioning System for Indoor Navigation based off Wi-Fi access points relative to the mobile device.
 
