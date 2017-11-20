@@ -653,7 +653,7 @@ public class FindYourWayFragment extends Fragment implements SensorEventListener
             float accelationSquareRoot = (x * x + y * y + z * z)
                     / (SensorManager.GRAVITY_EARTH * SensorManager.GRAVITY_EARTH);
             long actualTime = sEvent.timestamp;
-            if (accelationSquareRoot >= 3.5) //
+            if (accelationSquareRoot >= 1.5) //
             {
                 if (actualTime - lastUpdate < 200) {
                     return;
