@@ -1,5 +1,4 @@
-![]() 
-# WayFinder
+# ![](https://github.com/wayfindersinghealth/WayFinder/blob/master/WayFinderIcon.png) WayFinder
 
 About Way Finder
 
