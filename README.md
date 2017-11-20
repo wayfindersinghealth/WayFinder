@@ -22,7 +22,9 @@ WAYFINDER aims to help patients and visitors alike navigate their way with ease 
 
 - Application Introduction
 
-### 3\. Learn
+### 3\. Login / Sign Up / Register
+
+### 4\. Learn
 
 - EditText Input Location
 
@@ -34,11 +36,13 @@ WAYFINDER aims to help patients and visitors alike navigate their way with ease 
 
 - Learning Locations Using POST/Learn, GET/Calculate, GET/Locations
 
-### 4\. Find Your Way
+- Delete location
 
-- AutoCompleteTextView To
+### 5\. Find Your Way
 
-- Retrieve Destination Locations using GET/Locations to store in AutoCompleteTextView To
+- AutoCompleteTextView
+
+- Retrieve Destination Locations using GET/Locations to store in AutoCompleteTextView
 
 - MapBox map from previous semester
 
@@ -48,9 +52,17 @@ WAYFINDER aims to help patients and visitors alike navigate their way with ease 
 
 - MarkerView to Mark Current Location
 
-### 5\. Help
+- Floating Action Button to quickly get to the user's current location.
 
-### 6\. Language Preference
+- GraphHopper to draw the routes from the user current location to their destination.
+
+- Accelerometer to start the POST/Track API.
+
+- Gyroscope to rotate the map and face in the same direction as the user.
+
+### 6\. Help
+
+### 7\. Language Preference
 
 - Alert Dialog
 
@@ -58,7 +70,7 @@ WAYFINDER aims to help patients and visitors alike navigate their way with ease 
 
 ## More Information
 
-See the full documentation at [NYP SIT AES HealthBuddy-WAYFINDER](https://aes.sit.nyp.edu.sg/FYPJ/SP02551/2017P3/Project%20Documentation/Forms/Overall%20View.aspx)
+For more information, see the full documentation at [NYP SIT AES HealthBuddy-WAYFINDER](https://aes.sit.nyp.edu.sg/FYPJ/SP02551/2017P3/Project%20Documentation/Forms/Overall%20View.aspx)
 
 ## References
 
