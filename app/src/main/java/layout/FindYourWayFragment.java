@@ -632,14 +632,18 @@ public class FindYourWayFragment extends Fragment implements SensorEventListener
     public void onSensorChanged(SensorEvent event) {
         Sensor sensor = event.sensor;
         if (sensor.getType() == Sensor.TYPE_ORIENTATION){
-            //-- Orientation --
-            degree = Math.round(event.values[0]);
-            CameraPosition position = new CameraPosition.Builder()
-                    .bearing(degree) // Sets the zoom
-                    .build(); // Creates a CameraPosition from the builder
-            mapboxMap.animateCamera(CameraUpdateFactory
-                    .newCameraPosition(position), 2000);
+            if (mapboxMap == null) {
 
+            }
+            else {
+                //-- Orientation --
+                degree = Math.round(event.values[0]);
+                CameraPosition position = new CameraPosition.Builder()
+                        .bearing(degree) // Sets the zoom
+                        .build(); // Creates a CameraPosition from the builder
+                mapboxMap.animateCamera(CameraUpdateFactory
+                        .newCameraPosition(position), 2000);
+            }
         } else if (sensor.getType() == Sensor.TYPE_ACCELEROMETER) {
             //-- Accelerometer --
             sEvent = event;
@@ -653,7 +657,7 @@ public class FindYourWayFragment extends Fragment implements SensorEventListener
             float accelationSquareRoot = (x * x + y * y + z * z)
                     / (SensorManager.GRAVITY_EARTH * SensorManager.GRAVITY_EARTH);
             long actualTime = sEvent.timestamp;
-            if (accelationSquareRoot >= 1.5) //
+            if (accelationSquareRoot >= 1.3) //
             {
                 if (actualTime - lastUpdate < 200) {
                     return;
